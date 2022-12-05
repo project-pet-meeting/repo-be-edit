@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,10 +13,12 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.member.dto.MemberDto;
+import sideproject.petmeeting.member.dto.request.MemberDto;
+import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,17 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class MemberControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Mock
-    MemberService memberService;
-
-    @Mock
-    MemberRepository memberRepository;
+    @Autowired MockMvc mockMvc;
+    @Autowired ObjectMapper objectMapper;
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
 
     @Test
@@ -60,8 +53,6 @@ class MemberControllerTest {
                 .image(memberDto.getImage())
                 .build();
 
-        Mockito.when(memberRepository.save(member)).thenReturn(member);
-        Mockito.when(memberService.join(memberDto)).thenReturn(member);
 
         mockMvc.perform(post("/api/member/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +60,7 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(memberDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("data.id").exists())
 
         ;
     }
@@ -88,8 +79,6 @@ class MemberControllerTest {
                 .image(memberDto.getImage())
                 .build();
 
-        Mockito.when(memberRepository.save(member)).thenReturn(member);
-        Mockito.when(memberService.join(memberDto)).thenReturn(member);
 
         mockMvc.perform(post("/api/member/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,11 +100,29 @@ class MemberControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/member/signup")
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(member)))
+                        .content(objectMapper.writeValueAsString(member)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("닉네임 중복 검사 테스트")
+    public void checkDuplication() throws Exception {
+
+        NicknameRequestDto nickname = NicknameRequestDto.builder()
+                .nickname("Tommy").build();
+        assertThat(nickname).isNotNull();
+
+        mockMvc.perform(post("/api/member/nickname")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(nickname)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("message").isString())
         ;
     }
 }

@@ -3,7 +3,7 @@ package sideproject.petmeeting.member.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.member.dto.MemberDto;
+import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 
 @Service

@@ -1,4 +1,4 @@
-package sideproject.petmeeting.member.dto;
+package sideproject.petmeeting.member.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDto {
+public class NicknameRequestDto {
     @NotEmpty
     private String nickname;
-    @NotEmpty
-    private String password;
-    @NotEmpty
-    private String email;
-    @NotEmpty
-    private String image;
 }
