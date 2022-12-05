@@ -61,8 +61,9 @@ class MemberControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("data.id").exists())
-
         ;
+
+        assertThat(memberRepository.findByEmail(memberDto.getEmail())).isPresent();
     }
 
     @Test
@@ -105,6 +106,36 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(member)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 email 로 가입시 error 발생")
+    public void existMEmber_409Error() throws Exception {
+        // Given
+        Member member = Member.builder()
+                .id(1L)
+                .nickname("Tommy")
+                .password("test")
+                .email("test@test.com")
+                .image("test-image")
+                .build();
+        memberRepository.save(member);
+
+        MemberDto memberDto = MemberDto.builder()
+                .nickname("Tommy")
+                .password("test")
+                .email("test@test.com")
+                .image("test-image.url")
+                .build();
+
+
+        mockMvc.perform(post("/api/member/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(objectMapper.writeValueAsString(memberDto)))
+                .andDo(print())
+                .andExpect(status().isConflict())
         ;
     }
 
