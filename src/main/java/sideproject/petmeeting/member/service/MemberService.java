@@ -80,7 +80,7 @@ public class MemberService {
             throw new IllegalStateException("잘못된 접근입니다.");
         }
         tokenProvider.validateToken(httpServletRequest.getHeader("Authorization").substring(7));
-        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization"));
+        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization").substring(7));
         Optional<Member> optionalMember = memberRepository.findByEmail(authorization);
         if (optionalMember.isEmpty()) {
             throw new IllegalStateException("회원이 존재하지 않습니다");
@@ -98,7 +98,7 @@ public class MemberService {
             throw new IllegalStateException("잘못된 접근입니다.");
         }
         tokenProvider.validateToken(httpServletRequest.getHeader("Authorization").substring(7));
-        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization"));
+        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization").substring(7));
         Optional<Member> optionalMember = memberRepository.findByEmail(authorization);
         if (optionalMember.isEmpty()) {
             throw new IllegalStateException("회원이 존재하지 않습니다");
