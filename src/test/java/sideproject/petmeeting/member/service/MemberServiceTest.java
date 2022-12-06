@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 class MemberServiceTest {
 
     @Autowired
