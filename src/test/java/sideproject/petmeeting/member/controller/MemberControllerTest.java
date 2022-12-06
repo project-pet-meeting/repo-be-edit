@@ -376,4 +376,18 @@ class MemberControllerTest {
         ;
         assertThat(refreshTokenRepository.findAll().size()).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("Email 검증 로직 ")
+    public void EmailConfirm() throws Exception {
+        this.mockMvc.perform(post("/api/member/emailConfirm")
+                        .param("email", "kbs4520@naver.com")
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.object").exists())
+        ;
+
+
+    }
 }
