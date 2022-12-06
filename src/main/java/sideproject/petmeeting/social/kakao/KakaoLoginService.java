@@ -51,20 +51,15 @@ public class KakaoLoginService {
         KakaoUserInfo userInfo = getUserInfo(accessToken);
 
         // 3. 이메일 중복 검사
-        String email = userInfo.getEmail();
-        Member member = memberRepository.findByEmail(email).orElse(null);
-        if (member == null) {
-            Member kakaoMember = buildMember(userInfo);
-            memberRepository.save(kakaoMember);
-        }
+        Member member = registerKakaoMember(userInfo);
 
         // 4. 강제 로그인 처리
-        forceLogin(member);
+        forceLogin(httpServletResponse, member);
 
         // 5. 토큰 생성
         generateToken(httpServletResponse, member);
 
-        return memberRepository.findByEmail(email).get();
+        return member;
     }
 
     private static KakaoUserInfo getUserInfo(String accessToken) throws JsonProcessingException {
@@ -124,24 +119,34 @@ public class KakaoLoginService {
         return jsonNode.get("access_token").asText();
     }
 
-    private Member buildMember(KakaoUserInfo userInfo) {
-        String nickname = userInfo.getNickname();
-        if (nickname == null) {
-            nickname = "kakao" + UUID.randomUUID().toString();
+    private Member registerKakaoMember(KakaoUserInfo userInfo) {
+        String email = userInfo.getEmail();
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        if (member == null) {
+            String nickname = userInfo.getNickname();
+            if (nickname == null) {
+                nickname = "kakao" + UUID.randomUUID();
+            }
+            Member kakaoMember = Member.builder()
+                    .nickname(nickname)
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .email(userInfo.getEmail())
+                    .image(userInfo.getImgUrl())
+                    .userRole(ROLE_MEMBER)
+                    .build();
+            member = kakaoMember;
+            memberRepository.save(member);
         }
-        Member kakaoMember = Member.builder()
-                .nickname(nickname)
-                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
-                .email(userInfo.getEmail())
-                .image(userInfo.getImgUrl())
-                .userRole(ROLE_MEMBER)
-                .build();
-        return kakaoMember;
+        return member;
     }
 
-    private static void forceLogin(Member member) {
+    private void forceLogin(HttpServletResponse httpServletResponse, Member member) {
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        httpServletResponse.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+        httpServletResponse.addHeader("RefreshToken", tokenDto.getRefreshToken());
+
         UserDetailsImpl userDetails = new UserDetailsImpl(member);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, tokenDto.getAccessToken(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
