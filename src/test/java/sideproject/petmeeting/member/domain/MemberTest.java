@@ -2,9 +2,10 @@ package sideproject.petmeeting.member.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+@ActiveProfiles("test")
 class MemberTest {
 
 

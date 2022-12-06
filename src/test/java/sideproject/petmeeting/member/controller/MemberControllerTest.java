@@ -8,10 +8,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberDto;
@@ -21,12 +26,16 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,6 +44,7 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class MemberControllerTest {
 
@@ -50,9 +60,19 @@ class MemberControllerTest {
     RefreshTokenRepository refreshTokenRepository;
 
     @BeforeEach
-    public void setup() {
+    public void setup(WebApplicationContext webApplicationContext,
+                      RestDocumentationContextProvider restDocumentationContextProvider) {
         refreshTokenRepository.deleteAll();
         memberRepository.deleteAll();
+
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+//                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .apply(documentationConfiguration(restDocumentationContextProvider)
+                        .operationPreprocessors()
+                        .withRequestDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint())
+                        .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
+                .alwaysDo(print())
+                .build();
     }
 
 
@@ -82,6 +102,28 @@ class MemberControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("data.id").exists())
+                .andDo(document("member-signup",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept-header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("member nickname"),
+                                fieldWithPath("password").description("member password"),
+                                fieldWithPath("email").description("member email"),
+                                fieldWithPath("image").description("member image")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("status of response"),
+                                fieldWithPath("message").description("message of response"),
+                                fieldWithPath("data.id").description("id of member"),
+                                fieldWithPath("data.links[0].rel").description("relation of url"),
+                                fieldWithPath("data.links[0].href").description("relational link")
+                        )
+                ))
         ;
 
         assertThat(memberRepository.findByEmail(memberDto.getEmail())).isPresent();
