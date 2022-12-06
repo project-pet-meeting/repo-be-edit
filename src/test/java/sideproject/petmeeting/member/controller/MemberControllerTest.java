@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
@@ -67,8 +68,8 @@ class MemberControllerTest {
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext,
                       RestDocumentationContextProvider restDocumentationContextProvider) {
-        refreshTokenRepository.deleteAll();
-        memberRepository.deleteAll();
+//        refreshTokenRepository.deleteAll();
+//        memberRepository.deleteAll();
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 //                .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -87,9 +88,9 @@ class MemberControllerTest {
 
         // Member 생성
         MemberDto memberDto = MemberDto.builder()
-                .nickname("Tommy")
-                .password("test")
-                .email("test@test.com")
+                .nickname("Tommy2")
+                .password("test2")
+                .email("test2@test.com")
                 .build();
 
         String fileName = "memberImage";
