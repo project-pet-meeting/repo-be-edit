@@ -12,7 +12,9 @@ import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
 import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.dto.PostPageResponseDto;
+import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostRequestDto;
@@ -21,11 +23,13 @@ import sideproject.petmeeting.post.dto.PostResponseDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final HeartPostRepository heartPostRepository;
     private final S3Uploader s3Uploader;
 
     /**
@@ -170,6 +174,57 @@ public class PostService {
 
         postRepository.deleteById(postId);
     }
+
+    /**
+     * 게시글 좋아요
+     * @param postId : '좋아요' 할 게시글 id
+     * @param member : 게시글에 '좋아요'를 한 사용자
+     */
+    @Transactional
+    public void addPostHeart(Long postId, Member member) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST)
+        );
+
+        if (heartPostRepository.findByPostAndMember(post, member).isPresent()) {
+            throw new BusinessException("이미 '좋아요'한 게시글입니다.", ErrorCode.ALREADY_HEARTED);
+        }
+
+        HeartPost heartPost = HeartPost.builder()
+                .post(post)
+                .member(member)
+                .build();
+
+        heartPostRepository.save(heartPost);
+
+        Integer countHeart = heartPostRepository.findCountHeart(postId);
+
+        post.addCountHeart(countHeart);
+    }
+
+
+    /**
+     * 게시글 좋아요 취소
+     * @param postId : '좋아요' 취소 할 게시글 id
+     * @param member : 게시글에 '좋아요' 취소를 한 사용자
+     */
+    @Transactional
+    public void deletePostHeart(Long postId, Member member) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST)
+        );
+
+        Optional<HeartPost> heartOptional = heartPostRepository.findByPostAndMember(post, member);
+        if (heartOptional.isEmpty()) {
+            throw new BusinessException("'좋아요' 하지 않은 게시글입니다.", ErrorCode.HEART_NOT_FOUND);
+        }
+
+        heartPostRepository.delete(heartOptional.get());
+        int countHeart = heartPostRepository.findCountHeart(postId);
+
+        post.addCountHeart(countHeart);
+    }
+
 
     /**
      * post 데이터를 postResponseDto 로 build

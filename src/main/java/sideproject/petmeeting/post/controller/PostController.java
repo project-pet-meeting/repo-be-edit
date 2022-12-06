@@ -126,4 +126,44 @@ public class PostController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * 게시글 좋아요
+     * @param postId : '좋아요' 할 게시글 id
+     * @param userDetails : 게시글에 '좋아요'를 한 User
+     * @return : 좋아요 성공 응답
+     */
+    @PostMapping("/post/heart/{postId}")
+    public ResponseEntity<Object> addPostHeart(@PathVariable Long postId,
+                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.addPostHeart(postId, userDetails.getMember());
+
+        ResponseResource responseResource = new ResponseResource(null);
+        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withRel("heart-delete"));
+
+        Response response = new Response(StatusEnum.OK, "좋아요 성공", responseResource);
+
+        return  new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * 게시글 좋아요 취소
+     * @param postId : 좋아요' 취소 할 게시글 id
+     * @param userDetails 게시글에 '좋아요' 취소를 한 user
+     * @return : 좋아요 취소 성공 응답
+     */
+    @DeleteMapping( "/post/heart/{postId}")
+    public ResponseEntity<Object> deletePostHeart(@PathVariable Long postId,
+                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePostHeart(postId, userDetails.getMember());
+
+        ResponseResource responseResource = new ResponseResource(null);
+        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withRel("heart-post"));
+
+        Response response = new Response(StatusEnum.OK, "좋아요 취소 성공", responseResource);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

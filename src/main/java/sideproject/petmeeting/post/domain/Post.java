@@ -63,6 +63,14 @@ public class Post extends Timestamped {
         this.imageUrl =imageUrl;
     }
 
+    /**
+     * 좋아요 합계 저장
+     * @param numHeart
+     */
+    public void addCountHeart(Integer numHeart) {
+        this.numHeart = numHeart;
+    }
+
 
 
 }
