@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +26,8 @@ public class Member{
     private String password;
     private String email;
     private String image;
+    @Enumerated(value = STRING)
+    private UserRole userRole;
 
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();
