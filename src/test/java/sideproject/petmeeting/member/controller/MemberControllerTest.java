@@ -1,6 +1,7 @@
 package sideproject.petmeeting.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +48,12 @@ class MemberControllerTest {
     MemberRepository memberRepository;
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
+
+    @BeforeEach
+    public void setup() {
+        refreshTokenRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
 
 
     @Test
@@ -173,7 +180,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원 로그인 테스트")
-    public String login() throws Exception {
+    public void login_OK() throws Exception {
         // Given
         Member member = Member.builder()
                 .id(1L)
@@ -202,7 +209,6 @@ class MemberControllerTest {
                 () -> assertThat(perform.andReturn().getResponse().getHeader("Authorization")).isNotNull(),
                 () -> assertThat(perform.andReturn().getResponse().getHeader("RefreshToken")).isNotNull()
         );
-        return perform.andReturn().getResponse().getHeader("Authorization").substring(7);
     }
 
     @Test
@@ -280,6 +286,7 @@ class MemberControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(memberUpdateRequest)))
+                .andDo(print())
                 .andExpect(status().isOk())
         ;
         assertAll(
@@ -323,6 +330,7 @@ class MemberControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
+                .andDo(print())
         ;
         assertThat(refreshTokenRepository.findAll().size()).isEqualTo(0);
     }
