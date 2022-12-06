@@ -20,7 +20,6 @@ import sideproject.petmeeting.security.UserDetailsServiceImpl;
 import sideproject.petmeeting.security.exception.AccessDeniedHandlerException;
 import sideproject.petmeeting.security.exception.AuthenticationEntryPointException;
 
-import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -67,8 +66,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(STATELESS)
                     .and()
                 .authorizeRequests()
-                .antMatchers(OPTIONS,"/**/*").permitAll()
-                .antMatchers("/api/member/nickname", "/api/member/signup").permitAll()
+                .antMatchers("/api/member/signup", "/api/member/nickname", "/api/member/login").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
