@@ -4,12 +4,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @SpringBootTest
@@ -18,22 +21,30 @@ class MemberServiceTest {
     @Autowired
     MemberRepository memberRepository;
 
+    @Autowired
+    MemberService memberservice;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Test
     @DisplayName("Member 가 정상적으로 저장이 되는 지 확인 하는 테스트")
     public void join() {
         // Given
-        Member member = Member.builder()
+        MemberDto member = MemberDto.builder()
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
                 .image("test-image.url")
                 .build();
         // When
-        Member savedMember = memberRepository.save(member);
-
+        Member savedMember = memberservice.join(member);
         Optional<Member> findMember = memberRepository.findById(savedMember.getId());
 
         // Then
-        assertThat(savedMember.getId()).isEqualTo(findMember.get().getId());
+        assertAll(
+                () -> assertThat(savedMember.getId()).isEqualTo(findMember.get().getId()),
+                () -> assertThat(passwordEncoder.matches(member.getPassword(), findMember.get().getPassword())).isTrue()
+        );
     }
 }

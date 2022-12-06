@@ -8,15 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
@@ -26,6 +24,8 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.member.validator.MemberValidator;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +38,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 import static sideproject.petmeeting.common.StatusEnum.CREATED;
 
 @Controller
-@RequestMapping(value = "api/member", produces = HAL_JSON_VALUE)
+@RequestMapping(value = "/api/member", produces = HAL_JSON_VALUE)
 @AllArgsConstructor
 public class MemberController {
 
@@ -109,8 +109,31 @@ public class MemberController {
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, Errors errors, HttpServletResponse httpServletResponse) {
+        try {
+            Response response = new Response();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+            if (errors.hasErrors()) {
+                response.setStatus(StatusEnum.BAD_REQUEST);
+                response.setMessage("다시 시도해 주세요");
+                response.setData(errors);
+                return new ResponseEntity<>(response, headers, BAD_REQUEST);
+            }
+            memberService.login(loginRequestDto, httpServletResponse);
+            response.setStatus(StatusEnum.OK);
+            response.setMessage("로그인에 성공하였습니다.");
+            response.setData(loginRequestDto.getEmail());
+            return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "다시 로그인 해주세요.", e);
+        }
+    }
+
     @PutMapping
-    public ResponseEntity updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, Errors errors) {
+    public ResponseEntity updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, HttpServletRequest httpServletRequest, Errors errors, HttpServletResponse httpServletResponse) {
         Response response = new Response();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
@@ -122,10 +145,23 @@ public class MemberController {
             return new ResponseEntity<>(response, headers, BAD_REQUEST);
         }
 
-        Member updateMember = memberService.update(memberUpdateRequest);
+        Member updateMember = memberService.update(memberUpdateRequest, httpServletRequest, httpServletResponse);
         response.setStatus(StatusEnum.OK);
-        response.setMessage("회원 수정인 완료되었습니다.");
+        response.setMessage("회원 수정이 완료되었습니다.");
         response.setData(updateMember.getEmail());
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/logout")
+    public ResponseEntity logout(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        memberService.logout(httpServletRequest);
+        response.setStatus(StatusEnum.OK);
+        response.setMessage("로그아웃 완료");
+        response.setData(null);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
