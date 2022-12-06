@@ -1,4 +1,4 @@
-package sideproject.petmeeting.myPage;
+package sideproject.petmeeting.myPage.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,6 @@ import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.dto.MeetingResponseDto;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.myPage.dto.MyHeartPostDto;
 import sideproject.petmeeting.myPage.dto.MyMeetingDto;
 import sideproject.petmeeting.myPage.dto.MyPostDto;
@@ -22,21 +21,20 @@ import sideproject.petmeeting.post.repository.PostRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class MyPageService {
-    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final MeetingRepository meetingRepository;
     private final HeartPostRepository heartPostRepository;
 
-    //회원(내) 프로필 정보 보기
+    /**
+     * 마이페이지 - 내 정보 조회
+     * @param member : 사용자
+     * @return : 사용자 정보
+     */
     public MyProfileDto getProfile(Member member) {
-        Optional.ofNullable(memberRepository.findByEmail(member.getEmail()).orElseThrow(
-                () -> new BusinessException("존재하지 않는 회원입니다.", ErrorCode.POST_NOT_EXIST)
-        ));
 
         return MyProfileDto.builder()
                 .id(member.getId())
@@ -47,12 +45,16 @@ public class MyPageService {
     }
 
 
-    // 회원(내) 작성한 글 전체 보기
+    /**
+     * 마이페이지 - 내가 작성한 게시글 조회
+     * @param member : 사용자
+     * @return : 사용자의 작성한 게시글 리스트
+     */
     @Transactional
-    public MyPostDto getMyPost(Member member) throws BusinessException {
+    public MyPostDto getMyPost(Member member) {
         List<Post> myPostList = postRepository.findAllByMemberId(member.getId());
         if (null == myPostList) {
-            throw new BusinessException("내가 작성한 게시글이 없습니다.", ErrorCode.MEETING_NOT_EXIST);
+            throw new BusinessException("내가 작성한 게시글이 없습니다.", ErrorCode.MY_POST_NOT_EXIST);
         }
 
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
@@ -81,12 +83,16 @@ public class MyPageService {
     }
 
 
-    // 회원(내) 작성한 모임 전체 보기
+    /**
+     * 마이페이지 - 내가 만든 모임 조회
+     * @param member : 사용자
+     * @return : 사용자가 만든 모임 리스트
+     */
     @Transactional
-    public MyMeetingDto getMyMeeting(Member member) throws BusinessException {
+    public MyMeetingDto getMyMeeting(Member member) {
         List<Meeting> myMeetingList = meetingRepository.findAllByMemberId(member.getId());
         if (null == myMeetingList) {
-            throw new BusinessException("내가 만든 모임이 없습니다.", ErrorCode.MEETING_NOT_EXIST);
+            throw new BusinessException("내가 만든 모임이 없습니다.", ErrorCode.MY_MEETING_NOT_EXIST);
         }
 
 
@@ -121,12 +127,16 @@ public class MyPageService {
     }
 
 
-    // 마이페이지 내가 찜한 코스 조회
+    /**
+     * 마이페이지 - 내가 '좋아요'한 게시글 조회
+     * @param member : 사용자
+     * @return : 사용자가 '좋아요'한 게시글 리스트
+     */
     @Transactional
-    public MyHeartPostDto getMyHeartPost(Member member) throws BusinessException {
+    public MyHeartPostDto getMyHeartPost(Member member) {
         List<HeartPost> myHeartPostList = heartPostRepository.findAllByMemberId(member.getId());
         if (null == myHeartPostList) {
-            throw new BusinessException("내가 '좋아요'한 게시글이 없습니다.", ErrorCode.MEETING_NOT_EXIST);
+            throw new BusinessException("내가 '좋아요'한 게시글이 없습니다.", ErrorCode.MY_HEART_POST_NOT_EXIST);
         }
 
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
