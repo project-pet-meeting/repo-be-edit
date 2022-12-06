@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
+import sideproject.petmeeting.post.domain.Post;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -28,6 +29,8 @@ public class Member{
     private String image;
     @Enumerated(value = STRING)
     private UserRole userRole;
+    @OneToMany(mappedBy = "member")
+    private List<Post> post = new ArrayList<>();
 
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();
