@@ -8,10 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
@@ -150,8 +147,21 @@ public class MemberController {
 
         Member updateMember = memberService.update(memberUpdateRequest, httpServletRequest, httpServletResponse);
         response.setStatus(StatusEnum.OK);
-        response.setMessage("회원 수정인 완료되었습니다.");
+        response.setMessage("회원 수정이 완료되었습니다.");
         response.setData(updateMember.getEmail());
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/logout")
+    public ResponseEntity logout(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        memberService.logout(httpServletRequest);
+        response.setStatus(StatusEnum.OK);
+        response.setMessage("로그아웃 완료");
+        response.setData(null);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 

@@ -20,12 +20,13 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -203,6 +204,7 @@ class MemberControllerTest {
         );
         return perform.andReturn().getResponse().getHeader("Authorization").substring(7);
     }
+
     @Test
     @DisplayName("회원 로그인 시 값 누락시 에러 처리")
     public void login_Error() throws Exception {
@@ -255,6 +257,7 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
+        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
@@ -311,4 +314,16 @@ class MemberControllerTest {
         );
     }
 
+    @Test
+    @DisplayName("정상적인 로그아웃 처리")
+    public void logOut() throws Exception {
+        //
+        mockMvc.perform(delete("/api/member/logout")
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(0);
+    }
 }

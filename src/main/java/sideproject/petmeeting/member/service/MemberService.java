@@ -11,6 +11,7 @@ import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.security.TokenProvider;
+import sideproject.petmeeting.token.domain.RefreshToken;
 import sideproject.petmeeting.token.dto.TokenDto;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
@@ -76,5 +77,20 @@ public class MemberService {
         httpServletResponse.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         httpServletResponse.addHeader("RefreshToken", tokenDto.getRefreshToken());
         return updateMember;
+    }
+
+    public void logout(HttpServletRequest httpServletRequest) {
+        if (httpServletRequest.getHeader("Authorization") == null || httpServletRequest.getHeader("Authorization").isEmpty()) {
+            throw new IllegalStateException("잘못된 접근입니다.");
+        }
+        tokenProvider.validateToken(httpServletRequest.getHeader("Authorization").substring(7));
+        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization"));
+        Optional<Member> optionalMember = memberRepository.findByEmail(authorization);
+        if (optionalMember.isEmpty()) {
+            throw new IllegalStateException("회원이 존재하지 않습니다");
+        }
+        Member member = optionalMember.get();
+        RefreshToken refreshToken = refreshTokenRepository.findByMember(member).get();
+        refreshTokenRepository.delete(refreshToken);
     }
 }
