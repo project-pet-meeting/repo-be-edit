@@ -16,12 +16,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import sideproject.petmeeting.comment.domain.Comment;
 import sideproject.petmeeting.comment.dto.request.CommentRequestDto;
+import sideproject.petmeeting.comment.dto.request.CommentUpdateRequest;
 import sideproject.petmeeting.comment.repository.CommentRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
-import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.repository.PostRepository;
+import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -30,8 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,6 +73,7 @@ class CommentControllerTest {
     public void setup(WebApplicationContext webApplicationContext,
                       RestDocumentationContextProvider restDocumentationContextProvider) {
 
+        commentRepository.deleteAll();
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 //                .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -173,14 +174,12 @@ class CommentControllerTest {
         Post savedPost = postRepository.findById(1L).get();
 
         Comment firstComment = Comment.builder()
-                .id(1L)
                 .content("first comment")
                 .member(savedMember)
                 .post(savedPost)
                 .build();
 
         Comment secondComment = Comment.builder()
-                .id(2L)
                 .content("second comment")
                 .member(savedMember)
                 .post(savedPost)
@@ -196,7 +195,7 @@ class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.object[0].id").exists())
                 .andExpect(jsonPath("data.object[0].content").exists())
-                ;
+        ;
     }
 
     @Test
@@ -212,9 +211,105 @@ class CommentControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("정상적인 요청 시 댓글 업데이트 ")
+    public void updateComment() throws Exception {
+        Member savedMember = memberRepository.findById(1L).get();
+        Post savedPost = postRepository.findById(1L).get();
 
+        Comment comment = Comment.builder()
+                .content("first comment")
+                .member(savedMember)
+                .post(savedPost)
+                .build();
+        Comment savedComment = commentRepository.save(comment);
+
+        CommentUpdateRequest updatedComment = CommentUpdateRequest.builder()
+                .content("updated comment")
+                .build();
+
+        this.mockMvc.perform(put("/api/comment/" + savedComment.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
+                        .content(objectMapper.writeValueAsString(updatedComment)))
+                .andExpect(status().isOk())
+        ;
+        Comment findComment = commentRepository.findById(savedComment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo("updated comment");
+    }
+
+    @Test
+    @DisplayName("비정상적인 요청시 에러 발생")
+    public void updateComment_BAD_REQUEST() throws Exception {
+        Member savedMember = memberRepository.findById(1L).get();
+        Post savedPost = postRepository.findById(1L).get();
+
+        Comment comment = Comment.builder()
+                .content("first comment")
+                .member(savedMember)
+                .post(savedPost)
+                .build();
+        commentRepository.save(comment);
+
+        CommentUpdateRequest updatedComment = CommentUpdateRequest.builder()
+                .content("updated comment")
+                .build();
+
+        this.mockMvc.perform(put("/api/comment/2")
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
+                        .content(objectMapper.writeValueAsString(updatedComment)))
+                .andExpect(status().isBadRequest())
+        ;
+    }
+
+    @Test
+    @DisplayName("정상적인 요청시 댓글 삭제")
+    public void deleteComment() throws Exception {
+        Member savedMember = memberRepository.findById(1L).get();
+        Post savedPost = postRepository.findById(1L).get();
+
+        Comment comment = Comment.builder()
+                .content("first comment")
+                .member(savedMember)
+                .post(savedPost)
+                .build();
+        Comment savedComment = commentRepository.save(comment);
+
+        this.mockMvc.perform(delete("/api/comment/" + savedComment.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+        assertThat(commentRepository.findById(savedComment.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("비정상적인 요청시 오류 발생")
+    public void deleteComment_BAD_REQUEST() throws Exception {
+        Member savedMember = memberRepository.findById(1L).get();
+        Post savedPost = postRepository.findById(1L).get();
+
+        Comment comment = Comment.builder()
+                .content("first comment")
+                .member(savedMember)
+                .post(savedPost)
+                .build();
+        commentRepository.save(comment);
+
+        this.mockMvc.perform(delete("/api/comment/100" )
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isBadRequest())
+        ;
+    }
 
     private static Member buildMember() {
+
         Member member = Member.builder()
                 .id(1L)
                 .nickname("Tommy")

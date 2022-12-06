@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.comment.domain.Comment;
 import sideproject.petmeeting.comment.dto.request.CommentRequestDto;
+import sideproject.petmeeting.comment.dto.request.CommentUpdateRequest;
 import sideproject.petmeeting.comment.dto.response.CommentResponseDto;
 import sideproject.petmeeting.comment.repository.CommentRepository;
 import sideproject.petmeeting.common.exception.BusinessException;
@@ -49,15 +50,23 @@ public class CommentService {
         Member member = checkAuthentication(httpServletRequest);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         List<Comment> commentList =commentRepository.findAllByPostId(postId);
-        for (Comment comment : commentList) {
-            commentResponseDtoList.add(CommentResponseDto.builder()
-                    .id(comment.getId())
-                    .content(comment.getContent())
-                    .build());
-        }
+        buildCommentList(commentResponseDtoList, commentList);
 
         return commentResponseDtoList;
 
+    }
+
+    @Transactional
+    public void updateComment(Long commentId, CommentUpdateRequest commentUpdateRequest, HttpServletRequest httpServletRequest) {
+        checkAuthentication(httpServletRequest);
+        Comment comment = commentRepository.findById(commentId).get();
+        comment.update(commentUpdateRequest);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, HttpServletRequest httpServletRequest) {
+        checkAuthentication(httpServletRequest);
+        commentRepository.deleteById(commentId);
     }
 
     private static void checkPostExistence(Optional<Post> optionalPost) {
@@ -89,4 +98,12 @@ public class CommentService {
         return member;
     }
 
+    private static void buildCommentList(List<CommentResponseDto> commentResponseDtoList, List<Comment> commentList) {
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(CommentResponseDto.builder()
+                    .id(comment.getId())
+                    .content(comment.getContent())
+                    .build());
+        }
+    }
 }

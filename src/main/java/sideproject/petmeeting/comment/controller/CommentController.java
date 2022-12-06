@@ -10,13 +10,15 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import sideproject.petmeeting.comment.domain.Comment;
 import sideproject.petmeeting.comment.dto.request.CommentRequestDto;
+import sideproject.petmeeting.comment.dto.request.CommentUpdateRequest;
 import sideproject.petmeeting.comment.dto.response.CommentResponseDto;
+import sideproject.petmeeting.comment.repository.CommentRepository;
 import sideproject.petmeeting.comment.service.CommentService;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
-import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.post.domain.Post;
+import sideproject.petmeeting.post.repository.PostRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -37,6 +39,7 @@ public class CommentController {
 
     private final CommentService commentService;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
 
     @PostMapping(value = "/{postId}")
@@ -69,7 +72,7 @@ public class CommentController {
     @GetMapping(value = "/{postId}")
     public ResponseEntity getCommentList(@PathVariable Long postId,
                                          HttpServletRequest httpServletRequest
-                                         ) {
+    ) {
         Response message = new Response();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
@@ -89,6 +92,61 @@ public class CommentController {
         message.setMessage("메세지 조회 완료");
         message.setData(responseResource);
 
+        return new ResponseEntity(message, headers, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{commentId}")
+    public ResponseEntity editComment(@PathVariable Long commentId,
+                                      @RequestBody CommentUpdateRequest commentUpdateRequest,
+                                      HttpServletRequest httpServletRequest,
+                                      Errors errors) {
+        Response message = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        if (errors.hasErrors()) {
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("다시 시도해주세요");
+            message.setData(errors);
+            return new ResponseEntity<>(message, headers, BAD_REQUEST);
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("해당 댓글이 존재하지 않습니다.");
+            message.setData(commentId);
+            return new ResponseEntity(message, headers, BAD_REQUEST);
+        }
+        commentService.updateComment(commentId, commentUpdateRequest, httpServletRequest);
+        ResponseResource responseResource = new ResponseResource(commentId);
+        responseResource.add(linkTo(CommentController.class).withSelfRel());
+        message.setStatus(OK);
+        message.setMessage("메세지 조회 완료");
+        message.setData(responseResource);
+        return new ResponseEntity(message, headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable Long commentId,
+                                        HttpServletRequest httpServletRequest) {
+        Response message = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            message.setStatus(StatusEnum.BAD_REQUEST);
+            message.setMessage("해당 댓글이 존재하지 않습니다.");
+            message.setData(commentId);
+            return new ResponseEntity(message, headers, BAD_REQUEST);
+        }
+        commentService.deleteComment(commentId, httpServletRequest);
+        ResponseResource responseResource = new ResponseResource(commentId);
+        responseResource.add(linkTo(CommentController.class).withSelfRel());
+        message.setStatus(OK);
+        message.setMessage("댓글 삭제 완료");
+        message.setData(responseResource);
         return new ResponseEntity(message, headers, HttpStatus.OK);
     }
 }

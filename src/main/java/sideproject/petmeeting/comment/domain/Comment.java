@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import sideproject.petmeeting.comment.dto.request.CommentUpdateRequest;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.post.domain.Post;
 
@@ -27,4 +28,7 @@ public class Comment {
     private Member member;
     private String content;
 
+    public void update(CommentUpdateRequest commentUpdateRequest) {
+        this.content = commentUpdateRequest.getContent();
+    }
 }
