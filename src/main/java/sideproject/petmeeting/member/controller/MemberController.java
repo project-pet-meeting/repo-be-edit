@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
@@ -23,10 +24,12 @@ import sideproject.petmeeting.member.emailvalidation.EmailServiceImpl;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.member.validator.MemberValidator;
+import sideproject.petmeeting.post.dto.PostRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -49,7 +52,9 @@ public class MemberController {
     private final EmailServiceImpl emailService;
 
     @PostMapping(value = "/signup")
-    public ResponseEntity signup(@RequestBody @Valid MemberDto memberDto, Errors errors) {
+    public ResponseEntity signup(@RequestPart(value = "data") @Valid MemberDto memberDto,
+                                 @RequestPart(value = "image", required = false) @Valid MultipartFile image,
+                                 Errors errors) throws IOException {
         try {
             Response response = new Response();
             HttpHeaders headers = new HttpHeaders();
@@ -62,7 +67,7 @@ public class MemberController {
                 return new ResponseEntity<>(response, headers, BAD_REQUEST);
             }
 
-            Member savedMember = memberService.join(memberDto);
+            Member savedMember = memberService.join(memberDto, image);
 
             SignupResponseDto signupResponseDto = new SignupResponseDto(savedMember.getId());
 
