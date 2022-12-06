@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,16 +22,19 @@ import sideproject.petmeeting.comment.repository.CommentRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
-import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.post.domain.Post;
+import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -121,7 +125,27 @@ class CommentControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(commentRequestDto)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andDo(document("create-comment",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("comment").description("comment content")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("status of action"),
+                                fieldWithPath("message").description("message of action"),
+                                fieldWithPath("data.object").description("id of created comment"),
+                                fieldWithPath("data.links[0].rel").description("relation"),
+                                fieldWithPath("data.links[0].href").description("url of action")
+                        )
+                ));
 
         Comment comment = commentRepository.findById(1L).get();
         // Then
@@ -195,6 +219,26 @@ class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("data.object[0].id").exists())
                 .andExpect(jsonPath("data.object[0].content").exists())
+                .andDo(document("get-comment",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.object[0].id").description("id of comment"),
+                                        fieldWithPath("data.object[0].content").description("content of comment"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+
+                )
         ;
     }
 
@@ -212,7 +256,7 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("정상적인 요청 시 댓글 업데이트 ")
+    @DisplayName("정상적인 요청 시 댓글 업데이트")
     public void updateComment() throws Exception {
         Member savedMember = memberRepository.findById(1L).get();
         Post savedPost = postRepository.findById(1L).get();
@@ -234,7 +278,28 @@ class CommentControllerTest {
                         .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(updatedComment)))
                 .andExpect(status().isOk())
+                .andDo(document("update-comment",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("update content")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("status of action"),
+                                fieldWithPath("message").description("message of action"),
+                                fieldWithPath("data.object").description("id of updated comment"),
+                                fieldWithPath("data.links[0].rel").description("relation"),
+                                fieldWithPath("data.links[0].href").description("url of action")
+                        )
+                ))
         ;
+
         Comment findComment = commentRepository.findById(savedComment.getId()).get();
         assertThat(findComment.getContent()).isEqualTo("updated comment");
     }
@@ -283,6 +348,24 @@ class CommentControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
+                .andDo(document("delete-comment",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.object").description("id of deleted comment"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                );
         ;
         assertThat(commentRepository.findById(savedComment.getId())).isEmpty();
     }
@@ -300,7 +383,7 @@ class CommentControllerTest {
                 .build();
         commentRepository.save(comment);
 
-        this.mockMvc.perform(delete("/api/comment/100" )
+        this.mockMvc.perform(delete("/api/comment/100")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))

@@ -17,8 +17,8 @@ import sideproject.petmeeting.comment.service.CommentService;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
-import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.repository.PostRepository;
+import sideproject.petmeeting.post.domain.Post;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -58,10 +58,10 @@ public class CommentController {
         }
         Comment comment = commentService.createComment(postId, commentRequestDto, httpServletRequest);
         ResponseResource responseResource = new ResponseResource(comment.getId());
-        responseResource.add(linkTo(CommentController.class).withSelfRel());
-        responseResource.add(linkTo(CommentController.class).withRel("edit comment"));
-        responseResource.add(linkTo(CommentController.class).withRel("get comment"));
-        responseResource.add(linkTo(CommentController.class).withRel("delete comment"));
+        responseResource.add(linkTo(CommentController.class).slash(postId).withSelfRel());
+        responseResource.add(linkTo(CommentController.class).slash(comment.getId()).withRel("edit comment"));
+        responseResource.add(linkTo(CommentController.class).slash(comment.getId()).withRel("get comment"));
+        responseResource.add(linkTo(CommentController.class).slash(comment.getId()).withRel("delete comment"));
 
         message.setStatus(CREATED);
         message.setMessage("댓글 작성 완료되었습니다");
@@ -86,7 +86,7 @@ public class CommentController {
         }
         List<CommentResponseDto> commentList = commentService.getCommentList(postId, httpServletRequest);
         ResponseResource responseResource = new ResponseResource(commentList);
-        responseResource.add(linkTo(CommentController.class).withSelfRel());
+        responseResource.add(linkTo(CommentController.class).slash(postId).withSelfRel());
 
         message.setStatus(OK);
         message.setMessage("메세지 조회 완료");
@@ -120,9 +120,10 @@ public class CommentController {
         }
         commentService.updateComment(commentId, commentUpdateRequest, httpServletRequest);
         ResponseResource responseResource = new ResponseResource(commentId);
-        responseResource.add(linkTo(CommentController.class).withSelfRel());
+        responseResource.add(linkTo(CommentController.class).slash(commentId).withSelfRel());
+        responseResource.add(linkTo(CommentController.class).slash(commentId).withRel("delete comment"));
         message.setStatus(OK);
-        message.setMessage("메세지 조회 완료");
+        message.setMessage("댓글 수정 완료");
         message.setData(responseResource);
         return new ResponseEntity(message, headers, HttpStatus.OK);
     }
@@ -143,7 +144,7 @@ public class CommentController {
         }
         commentService.deleteComment(commentId, httpServletRequest);
         ResponseResource responseResource = new ResponseResource(commentId);
-        responseResource.add(linkTo(CommentController.class).withSelfRel());
+        responseResource.add(linkTo(CommentController.class).slash(commentId).withSelfRel());
         message.setStatus(OK);
         message.setMessage("댓글 삭제 완료");
         message.setData(responseResource);
