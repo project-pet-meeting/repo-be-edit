@@ -1,4 +1,4 @@
-package sideproject.petmeeting.member.dto.request;
+package sideproject.petmeeting.comment.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,15 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Builder
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDto {
-    @NotEmpty(message = "빈 값일 수 없습니다.")
-    private String nickname;
-    @NotEmpty
-    private String password;
-    @NotEmpty
-    private String email;
+public class CommentRequestDto {
+    @NotEmpty @NotNull
+    private String comment;
 }

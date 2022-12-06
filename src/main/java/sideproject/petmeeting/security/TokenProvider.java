@@ -1,17 +1,17 @@
 package sideproject.petmeeting.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.token.domain.RefreshToken;
 import sideproject.petmeeting.token.dto.TokenDto;
@@ -19,6 +19,7 @@ import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 
@@ -42,7 +43,12 @@ public class TokenProvider {
     }
 
     // 토큰 생성
+    @Transactional
     public TokenDto generateTokenDto(Member member) {
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByMember(member);
+        if (!optionalRefreshToken.isEmpty()) {
+            refreshTokenRepository.delete(optionalRefreshToken.get());
+        }
         long now = new Date().getTime();
 
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -96,5 +102,25 @@ public class TokenProvider {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
         }
         return false;
+    }
+
+    public String getUserEmailByToken(String accessToken) {
+        String token;
+        if (!StringUtils.hasText(accessToken) && !accessToken.startsWith("Bearer ")) {
+            return null;
+        }
+        Claims claims;
+        try {
+            claims = Jwts
+                    .parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 Token 입니다.");
+            return null;
+        }
+        return claims.get("sub").toString();
     }
 }
