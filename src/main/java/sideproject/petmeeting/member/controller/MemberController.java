@@ -63,13 +63,12 @@ public class MemberController {
 
             Member savedMember = memberService.join(memberDto);
 
-            WebMvcLinkBuilder selfLinkBuilder = linkTo(MemberController.class).slash(savedMember.getId());
-            URI createdUri = selfLinkBuilder.toUri();
-
             SignupResponseDto signupResponseDto = new SignupResponseDto(savedMember.getId());
 
             ResponseResource memberResource = new ResponseResource(signupResponseDto);
-            memberResource.add(linkTo(MemberController.class).withRel("query-events"));
+            memberResource.add(linkTo(MemberController.class).withSelfRel());
+            memberResource.add(linkTo(MemberController.class).slash(savedMember.getId()).withRel("profile-edit"));
+            memberResource.add(linkTo(MemberController.class).slash("/logout").withRel("log-out"));
 
             response.setStatus(CREATED);
             response.setMessage("회원 가입 성공");
@@ -97,15 +96,17 @@ public class MemberController {
         Optional<Member> findMember = memberRepository.findByNickname(nicknameRequestDto.getNickname());
         if (findMember.isPresent()) {
             ResponseResource memberResource = new ResponseResource("이미 존재하는 닉네임 입니다.");
-
+            memberResource.add(linkTo(MemberController.class).withSelfRel());
             message.setStatus(StatusEnum.OK);
             message.setMessage("이미 존재하는 닉네임 입니다.");
             message.setData(nicknameResponseDto);
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         }
+        ResponseResource responseResource = new ResponseResource(nicknameResponseDto);
+        responseResource.add(linkTo(MemberController.class).withSelfRel());
         message.setStatus(StatusEnum.OK);
         message.setMessage("사용가능한 닉네임 입니다.");
-        message.setData(nicknameResponseDto);
+        message.setData(responseResource);
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
@@ -123,9 +124,11 @@ public class MemberController {
                 return new ResponseEntity<>(response, headers, BAD_REQUEST);
             }
             memberService.login(loginRequestDto, httpServletResponse);
+            ResponseResource responseResource = new ResponseResource(loginRequestDto.getEmail());
+            responseResource.add(linkTo(MemberController.class).withSelfRel());
             response.setStatus(StatusEnum.OK);
             response.setMessage("로그인에 성공하였습니다.");
-            response.setData(loginRequestDto.getEmail());
+            response.setData(responseResource);
             return new ResponseEntity<>(response, headers, HttpStatus.OK);
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(BAD_REQUEST, "다시 로그인 해주세요.", e);
@@ -146,9 +149,12 @@ public class MemberController {
         }
 
         Member updateMember = memberService.update(memberUpdateRequest, httpServletRequest, httpServletResponse);
+        ResponseResource responseResource = new ResponseResource(updateMember.getEmail());
+        responseResource.add(linkTo(MemberController.class).withSelfRel());
+        responseResource.add(linkTo(MemberController.class).slash("logout").withRel("logout"));
         response.setStatus(StatusEnum.OK);
         response.setMessage("회원 수정이 완료되었습니다.");
-        response.setData(updateMember.getEmail());
+        response.setData(responseResource);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
@@ -159,9 +165,11 @@ public class MemberController {
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
         memberService.logout(httpServletRequest);
+        ResponseResource responseResource = new ResponseResource(null);
+        responseResource.add(linkTo(MemberController.class).withSelfRel());
         response.setStatus(StatusEnum.OK);
         response.setMessage("로그아웃 완료");
-        response.setData(null);
+        response.setData(responseResource);
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
