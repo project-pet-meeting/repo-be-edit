@@ -3,6 +3,7 @@ package sideproject.petmeeting.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -105,9 +106,7 @@ public class TokenProvider {
 
     public String getUserEmailByToken(String accessToken) {
         String token;
-        if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ")) {
-            token = accessToken.substring(7);
-        } else {
+        if (!StringUtils.hasText(accessToken) && !accessToken.startsWith("Bearer ")) {
             return null;
         }
         Claims claims;
@@ -116,7 +115,7 @@ public class TokenProvider {
                     .parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(accessToken)
                     .getBody();
         } catch (ExpiredJwtException e) {
             log.info("만료된 Token 입니다.");
