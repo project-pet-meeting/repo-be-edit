@@ -97,3 +97,35 @@
 `POST` 요청을 사용하여 회원가입을 진행 할 수 있다.
 
 operation::member-signup[snippets='response-fields,curl-request,http-response']
+
+=== 로그인
+
+`POST` 요청을 사용하여 로그인을 진행 할 수 있다.
+
+// opertation::member-login
+
+[[resources-events]]
+== 댓글
+
+댓글 리소스는 댓글 작성, 조회, 수정 및 삭제를 할 때 사용한다.
+
+[[resource-events-list]]
+=== 댓글 작성
+`POST` 요청을 사용해 댓글 작성을 진행 할 수 있다.
+
+operation::create-comment['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 댓글 조회
+`GET` 요청을 사용해 댓글 목록을 확인 할 수 있다.
+
+operation::get-comment['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 댓글 수정
+`PUT` 요청을 사용해 댓글을 수정 할 수 있다.
+
+operation::update-comment['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 댓글 삭제
+`DELETE` 요청을 사용해 댓글을 삭제 할 수 있다.
+
+operation::delete-comment['snippets=request-fields,http-request,response-fields,http-response']
