@@ -14,12 +14,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.MemberDto;
+import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.hateoas.MediaTypes.HAL_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,8 +59,8 @@ class MemberControllerTest {
 
 
         mockMvc.perform(post("/api/member/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(memberDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -82,7 +86,7 @@ class MemberControllerTest {
 
 
         mockMvc.perform(post("/api/member/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(APPLICATION_JSON)
                         .content(this.objectMapper.writeValueAsString(memberDto)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -101,8 +105,8 @@ class MemberControllerTest {
                 .build();
 
         mockMvc.perform(post("/api/member/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(member)))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
@@ -131,8 +135,8 @@ class MemberControllerTest {
 
 
         mockMvc.perform(post("/api/member/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(memberDto)))
                 .andDo(print())
                 .andExpect(status().isConflict())
@@ -148,12 +152,45 @@ class MemberControllerTest {
         assertThat(nickname).isNotNull();
 
         mockMvc.perform(post("/api/member/nickname")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(nickname)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("message").isString())
         ;
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 테스트")
+    public void updateMember() throws Exception {
+
+        Member member = Member.builder()
+                .id(1L)
+                .nickname("Tommy")
+                .password("test")
+                .email("test@test.com")
+                .image("test-image")
+                .build();
+
+        memberRepository.save(member);
+
+        MemberUpdateRequest memberUpdateRequest = MemberUpdateRequest.builder()
+                .originEmail("test@test.com")
+                .nickname("TommyKim")
+                .password("test2")
+                .email("test@naver.com")
+                .image("test-image2")
+                .build();
+
+
+        mockMvc.perform(put("/api/member")
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON)
+                        .content(objectMapper.writeValueAsString(memberUpdateRequest)))
+                .andExpect(status().isOk())
+        ;
+
+        assertThat(memberRepository.findByEmail("test@naver.com")).isPresent();
     }
 }

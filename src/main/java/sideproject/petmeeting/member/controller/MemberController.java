@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,6 +18,7 @@ import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.MemberDto;
+import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
 import sideproject.petmeeting.member.dto.response.NicknameResponseDto;
 import sideproject.petmeeting.member.dto.response.SignupResponseDto;
@@ -106,4 +108,25 @@ public class MemberController {
         message.setData(nicknameResponseDto);
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
+
+    @PutMapping
+    public ResponseEntity updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, Errors errors) {
+        Response response = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        if (errors.hasErrors()) {
+            response.setStatus(StatusEnum.BAD_REQUEST);
+            response.setMessage("다시 시도해 주세요");
+            response.setData(errors);
+            return new ResponseEntity<>(response, headers, BAD_REQUEST);
+        }
+
+        Member updateMember = memberService.update(memberUpdateRequest);
+        response.setStatus(StatusEnum.OK);
+        response.setMessage("회원 수정인 완료되었습니다.");
+        response.setData(updateMember.getEmail());
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
 }
