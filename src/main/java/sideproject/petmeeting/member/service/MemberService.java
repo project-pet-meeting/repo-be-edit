@@ -1,11 +1,15 @@
 package sideproject.petmeeting.member.service;
 
 import lombok.AllArgsConstructor;
+import net.bytebuddy.pool.TypePool;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.member.domain.UserRole;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
@@ -17,6 +21,7 @@ import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
@@ -30,18 +35,27 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final S3Uploader s3Uploader;
 
-    public Member join(MemberDto memberDto) throws ResponseStatusException {
+    public Member join(MemberDto memberDto, MultipartFile image) throws ResponseStatusException, IOException {
 
         Optional<Member> optionalMember = memberRepository.findByEmail(memberDto.getEmail());
         if (optionalMember.isPresent()) {
             throw new IllegalStateException("이미 회원이 존재합니다.");
         }
+        String imageUrl;
+        if (image == null) {
+            imageUrl = "https://kimsky.s3.ap-northeast-2.amazonaws.com/member/image/%E1%84%92%E1%85%AC%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%80%E1%85%B5%E1%84%87%E1%85%A9%E1%86%AB%E1%84%8B%E1%85%B5%E1%84%86%E1%85%B5%E1%84%8C%E1%85%B5.jpeg";
+        } else {
+            imageUrl = s3Uploader.upload(image, "/member/image");
+        }
+
+
         Member member = Member.builder()
                 .nickname(memberDto.getNickname())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .email(memberDto.getEmail())
-                .image(memberDto.getImage())
+                .image(imageUrl)
                 .userRole(ROLE_MEMBER)
                 .build();
 

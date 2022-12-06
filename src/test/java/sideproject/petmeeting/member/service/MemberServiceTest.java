@@ -10,6 +10,7 @@ import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -31,16 +32,15 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("Member 가 정상적으로 저장이 되는 지 확인 하는 테스트")
-    public void join() {
+    public void join() throws IOException {
         // Given
         MemberDto member = MemberDto.builder()
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
-                .image("test-image.url")
                 .build();
         // When
-        Member savedMember = memberservice.join(member);
+        Member savedMember = memberservice.join(member, null);
         Optional<Member> findMember = memberRepository.findById(savedMember.getId());
 
         // Then

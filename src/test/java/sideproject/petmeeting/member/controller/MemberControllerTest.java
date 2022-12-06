@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,10 +27,14 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -85,45 +90,47 @@ class MemberControllerTest {
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
-                .image("test-image.url")
-                .build();
-        Member member = Member.builder()
-                .nickname(memberDto.getNickname())
-                .password(memberDto.getPassword())
-                .email(memberDto.getEmail())
-                .image(memberDto.getImage())
                 .build();
 
+        String fileName = "memberImage";
+        String contentType = "jpeg";
+        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("images",
+                fileName + "." + contentType,
+                contentType,
+                fileInputStream);
+        String memberDtoJson = objectMapper.writeValueAsString(memberDto);
+        MockMultipartFile data = new MockMultipartFile("data", "data", "application/json", memberDtoJson.getBytes(StandardCharsets.UTF_8));
 
-        mockMvc.perform(post("/api/member/signup")
-                        .contentType(APPLICATION_JSON)
-                        .accept(HAL_JSON)
-                        .content(objectMapper.writeValueAsString(memberDto)))
+        mockMvc.perform(multipart("/api/member/signup")
+                        .file(image)
+                        .file(data))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("data.id").exists())
-                .andDo(document("member-signup",
-                        requestHeaders(
-                                headerWithName(HttpHeaders.ACCEPT).description("accept-header"),
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
-                        ),
-                        requestFields(
-                                fieldWithPath("nickname").description("member nickname"),
-                                fieldWithPath("password").description("member password"),
-                                fieldWithPath("email").description("member email"),
-                                fieldWithPath("image").description("member image")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("status of response"),
-                                fieldWithPath("message").description("message of response"),
-                                fieldWithPath("data.id").description("id of member"),
-                                fieldWithPath("data.links[0].rel").description("relation of url"),
-                                fieldWithPath("data.links[0].href").description("relational link")
-                        )
-                ))
+//                .andDo(document("member-signup",
+//                        requestHeaders(
+//                                headerWithName(HttpHeaders.ACCEPT).description("accept-header"),
+//                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
+//                        ),
+//                        requestFields(
+//                                fieldWithPath("nickname").description("member nickname"),
+//                                fieldWithPath("password").description("member password"),
+//                                fieldWithPath("email").description("member email"),
+//                                fieldWithPath("image").description("member image")
+//                        ),
+//                        responseHeaders(
+//                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("status").description("status of response"),
+//                                fieldWithPath("message").description("message of response"),
+//                                fieldWithPath("data.id").description("id of member"),
+//                                fieldWithPath("data.links[0].rel").description("relation of url"),
+//                                fieldWithPath("data.links[0].href").description("relational link")
+//                        )
+//                ))
         ;
 
         assertThat(memberRepository.findByEmail(memberDto.getEmail())).isPresent();
@@ -136,17 +143,23 @@ class MemberControllerTest {
         // Member 생성
         MemberDto memberDto = MemberDto.builder()
                 .build();
-        Member member = Member.builder()
-                .nickname(memberDto.getNickname())
-                .password(memberDto.getPassword())
-                .email(memberDto.getEmail())
-                .image(memberDto.getImage())
-                .build();
+
+        String fileName = "memberImage";
+        String contentType = "jpeg";
+        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("images",
+                fileName + "." + contentType,
+                contentType,
+                fileInputStream);
+        String memberDtoJson = objectMapper.writeValueAsString(memberDto);
+        MockMultipartFile data = new MockMultipartFile("data", "data", "application/json", memberDtoJson.getBytes(StandardCharsets.UTF_8));
 
 
-        mockMvc.perform(post("/api/member/signup")
-                        .contentType(APPLICATION_JSON)
-                        .content(this.objectMapper.writeValueAsString(memberDto)))
+
+        mockMvc.perform(multipart("/api/member/signup")
+                        .file(image)
+                        .file(data))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
         ;
@@ -163,10 +176,20 @@ class MemberControllerTest {
                 .image("test-image")
                 .build();
 
-        mockMvc.perform(post("/api/member/signup")
-                        .contentType(APPLICATION_JSON)
-                        .accept(HAL_JSON)
-                        .content(objectMapper.writeValueAsString(member)))
+        String fileName = "memberImage";
+        String contentType = "jpeg";
+        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("images",
+                fileName + "." + contentType,
+                contentType,
+                fileInputStream);
+        String memberDtoJson = objectMapper.writeValueAsString(member);
+        MockMultipartFile data = new MockMultipartFile("data", "data", "application/json", memberDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/member/signup")
+                        .file(image)
+                        .file(data))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
         ;
@@ -189,14 +212,23 @@ class MemberControllerTest {
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
-                .image("test-image.url")
                 .build();
 
+        String fileName = "memberImage";
+        String contentType = "jpeg";
+        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        MockMultipartFile image = new MockMultipartFile("images",
+                fileName + "." + contentType,
+                contentType,
+                fileInputStream);
+        String memberDtoJson = objectMapper.writeValueAsString(memberDto);
+        MockMultipartFile data = new MockMultipartFile("data", "data", "application/json", memberDtoJson.getBytes(StandardCharsets.UTF_8));
 
-        mockMvc.perform(post("/api/member/signup")
-                        .contentType(APPLICATION_JSON)
-                        .accept(HAL_JSON)
-                        .content(objectMapper.writeValueAsString(memberDto)))
+
+        mockMvc.perform(multipart("/api/member/signup")
+                        .file(image)
+                        .file(data))
                 .andDo(print())
                 .andExpect(status().isConflict())
         ;
@@ -375,5 +407,19 @@ class MemberControllerTest {
                 .andDo(print())
         ;
         assertThat(refreshTokenRepository.findAll().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("Email 검증 로직 ")
+    public void EmailConfirm() throws Exception {
+        this.mockMvc.perform(post("/api/member/emailConfirm")
+                        .param("email", "kbs4520@naver.com")
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.object").exists())
+        ;
+
+
     }
 }

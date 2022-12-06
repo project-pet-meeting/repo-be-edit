@@ -1,7 +1,6 @@
 package sideproject.petmeeting.member.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
@@ -20,14 +20,16 @@ import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
 import sideproject.petmeeting.member.dto.response.NicknameResponseDto;
 import sideproject.petmeeting.member.dto.response.SignupResponseDto;
+import sideproject.petmeeting.member.emailvalidation.EmailServiceImpl;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.member.validator.MemberValidator;
+import sideproject.petmeeting.post.dto.PostRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -40,15 +42,19 @@ import static sideproject.petmeeting.common.StatusEnum.CREATED;
 @Controller
 @RequestMapping(value = "/api/member", produces = HAL_JSON_VALUE)
 @AllArgsConstructor
+@RestController
 public class MemberController {
 
     //== Dependency Injection ==//
     private final MemberValidator memberValidator;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final EmailServiceImpl emailService;
 
     @PostMapping(value = "/signup")
-    public ResponseEntity signup(@RequestBody @Valid MemberDto memberDto, Errors errors){
+    public ResponseEntity signup(@RequestPart(value = "data") @Valid MemberDto memberDto,
+                                 @RequestPart(value = "image", required = false) @Valid MultipartFile image,
+                                 Errors errors) throws IOException {
         try {
             Response response = new Response();
             HttpHeaders headers = new HttpHeaders();
@@ -61,7 +67,7 @@ public class MemberController {
                 return new ResponseEntity<>(response, headers, BAD_REQUEST);
             }
 
-            Member savedMember = memberService.join(memberDto);
+            Member savedMember = memberService.join(memberDto, image);
 
             SignupResponseDto signupResponseDto = new SignupResponseDto(savedMember.getId());
 
@@ -173,4 +179,22 @@ public class MemberController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
+    /**
+     * 이메일 인증
+     * @param email : 검증 할 Email 주소
+     */
+    @PostMapping("/emailConfirm")
+    public ResponseEntity emailConfirm(@RequestParam String email) throws Exception {
+        Response response = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        String confirm = emailService.sendSimpleMessage(email);
+
+        ResponseResource responseResource = new ResponseResource(confirm);
+        responseResource.add(linkTo(MemberController.class).slash("emailConfirm").withSelfRel());
+        response.setStatus(StatusEnum.OK);
+        response.setMessage("Email 검증을 진행해주세요");
+        response.setData(responseResource);
+        return new ResponseEntity<>(response,headers,HttpStatus.OK);
+    }
 }
