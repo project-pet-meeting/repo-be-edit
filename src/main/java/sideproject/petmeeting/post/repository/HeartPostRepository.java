@@ -6,6 +6,7 @@ import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.domain.Post;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface HeartPostRepository extends JpaRepository<HeartPost, Long> {
@@ -16,5 +17,7 @@ public interface HeartPostRepository extends JpaRepository<HeartPost, Long> {
     // Heart Count 구하기
     @Query(value = "SELECT COUNT(h.id) FROM HeartPost h WHERE h.post.id = :PostId")
     int findCountHeart(Long PostId);
+
+    List<HeartPost> findAllByMemberId(Long id);
 
 }
