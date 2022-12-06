@@ -67,6 +67,7 @@ public class SecurityConfig {
                     .and()
                 .authorizeRequests()
                 .antMatchers("/api/member/signup", "/api/member/nickname", "/api/member/login", "/api/member/emailConfirm").permitAll()
+                .antMatchers("/user/kakao/*").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
