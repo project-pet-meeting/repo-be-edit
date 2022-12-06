@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateRequest {
-    private String originEmail;
     private String nickname;
     private String password;
     private String email;
