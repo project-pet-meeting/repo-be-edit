@@ -113,7 +113,7 @@ class CommentControllerTest {
     public void createComment() throws Exception {
         // Given
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
-                .comment("test comment")
+                .content("test comment")
                 .build();
 
         Post savedPost = postRepository.findById(1L).get();
@@ -159,7 +159,7 @@ class CommentControllerTest {
     public void createComment_No_Post() throws Exception {
         // Given
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
-                .comment("test comment")
+                .content("test comment")
                 .build();
 
         this.mockMvc.perform(post("/api/comment/2")

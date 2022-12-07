@@ -33,7 +33,12 @@ public enum ErrorCode {
 
     // == Token == //
     NEED_LOGIN(401, "NEED_LOGIN", "로그인이 필요합니다."),
-    INVALID_TOKEN(404, "INVALID_TOKEN", "올바르지 않은 토큰입니다.")
+    INVALID_TOKEN(404, "INVALID_TOKEN", "올바르지 않은 토큰입니다."),
+
+    // == MyPage ==//
+    MY_POST_NOT_EXIST(404, "MY_POST_NOT_EXIST", "내가 작성한 게시글이 존재하지 않습니다."),
+    MY_MEETING_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 만든 모임이 존재하지 않습니다."),
+    MY_HEART_POST_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 '좋아요'한 게시글이 존재하지 않습니다."),
 
     ;
 
