@@ -36,7 +36,6 @@ public class Member{
         this.nickname = memberUpdateRequest.getEmail();
         this.password = memberUpdateRequest.getPassword();
         this.email = memberUpdateRequest.getEmail();
-        this.image = memberUpdateRequest.getImage();
         return this;
     }
 }
