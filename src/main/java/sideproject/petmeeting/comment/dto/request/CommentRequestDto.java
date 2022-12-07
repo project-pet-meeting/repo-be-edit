@@ -14,5 +14,5 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class CommentRequestDto {
     @NotEmpty @NotNull
-    private String comment;
+    private String content;
 }
