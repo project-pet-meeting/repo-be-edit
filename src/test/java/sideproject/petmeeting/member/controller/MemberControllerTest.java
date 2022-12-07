@@ -352,7 +352,6 @@ class MemberControllerTest {
                 .nickname("TommyKim")
                 .password("test2")
                 .email("test@naver.com")
-                .image("test-image2")
                 .build();
 
         // When & Then
@@ -379,7 +378,6 @@ class MemberControllerTest {
                 .nickname("TommyKim")
                 .password("test2")
                 .email("test@naver.com")
-                .image("test-image2")
                 .build();
 
         // When & Then
