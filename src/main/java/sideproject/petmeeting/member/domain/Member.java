@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.post.domain.Post;
 
@@ -31,6 +32,8 @@ public class Member{
     private UserRole userRole;
     @OneToMany(mappedBy = "member")
     private List<Post> post = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<ChatMember> chatMembers = new ArrayList<>();
 
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();
