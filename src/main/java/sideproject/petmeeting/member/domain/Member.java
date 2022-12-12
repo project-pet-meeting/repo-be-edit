@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sideproject.petmeeting.chat.domain.ChatMember;
+import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.post.domain.Post;
 
@@ -20,7 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @Builder
 @Entity
-public class Member{
+public class Member extends Timestamped {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

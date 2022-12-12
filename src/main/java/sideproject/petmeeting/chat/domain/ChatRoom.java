@@ -1,6 +1,7 @@
 package sideproject.petmeeting.chat.domain;
 
 import lombok.*;
+import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.post.domain.Post;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoom {
+public class ChatRoom extends Timestamped {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

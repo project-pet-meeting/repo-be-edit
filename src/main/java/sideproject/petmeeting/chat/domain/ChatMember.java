@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.member.domain.Member;
 
 import javax.persistence.*;
+
+import java.sql.Time;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -16,7 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatMember {
+public class ChatMember extends Timestamped {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
