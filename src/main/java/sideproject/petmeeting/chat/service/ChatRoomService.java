@@ -6,13 +6,18 @@ import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.chat.dto.request.ChatRoomRequestDto;
+import sideproject.petmeeting.chat.dto.response.ChatRoomResponseDto;
 import sideproject.petmeeting.chat.repository.ChatMemberRepository;
 import sideproject.petmeeting.chat.repository.ChatRoomRepository;
+import sideproject.petmeeting.comment.dto.response.CommentResponseDto;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.repository.PostRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +43,20 @@ public class ChatRoomService {
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         chatMemberRepository.save(chatMember);
         return savedChatRoom;
+    }
+
+    public List<ChatRoomResponseDto> getChatRoomList() {
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAll();
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRoomList) {
+            chatRoomResponseDtoList.add(
+                    ChatRoomResponseDto.builder()
+                            .id(chatRoom.getId())
+                            .postId(chatRoom.getPost().getId())
+                            .roomName(chatRoom.getRoomName())
+                            .build()
+            );
+        }
+        return chatRoomResponseDtoList;
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.chat.dto.request.ChatRoomRequestDto;
+import sideproject.petmeeting.chat.dto.response.ChatRoomResponseDto;
 import sideproject.petmeeting.chat.service.ChatRoomService;
 import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
@@ -21,10 +22,12 @@ import sideproject.petmeeting.security.TokenProvider;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static sideproject.petmeeting.common.StatusEnum.CREATED;
+import static sideproject.petmeeting.common.StatusEnum.OK;
 import static sideproject.petmeeting.common.exception.ErrorCode.INVALID_TOKEN;
 import static sideproject.petmeeting.common.exception.ErrorCode.NEED_LOGIN;
 
@@ -63,6 +66,25 @@ public class ChatController {
         message.setData(responseResource);
         return new ResponseEntity(message, headers, HttpStatus.CREATED);
 
+    }
+
+    @GetMapping
+    public ResponseEntity getChatRoomList(HttpServletRequest httpServletRequest
+                                          ) {
+        Response message = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+
+        Member member = checkAuthentication(httpServletRequest);
+        List<ChatRoomResponseDto> chatRoomList = chatRoomService.getChatRoomList();
+        ResponseResource responseResource = new ResponseResource(chatRoomList);
+        responseResource.add(linkTo(ChatController.class).withSelfRel());
+
+        message.setStatus(OK);
+        message.setMessage("채팅방 조회 완료");
+        message.setData(responseResource);
+        return new ResponseEntity(message, headers, HttpStatus.OK);
     }
 
     private Member checkAuthentication(HttpServletRequest httpServletRequest) {

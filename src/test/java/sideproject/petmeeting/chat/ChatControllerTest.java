@@ -1,6 +1,7 @@
 package sideproject.petmeeting.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.chat.dto.request.ChatRoomRequestDto;
 import sideproject.petmeeting.chat.repository.ChatMemberRepository;
 import sideproject.petmeeting.chat.repository.ChatRoomRepository;
+import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
@@ -30,6 +32,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,8 +42,7 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
-@Rollback
+@Slf4j
 class ChatControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -57,11 +59,8 @@ class ChatControllerTest {
     @Autowired
     ChatMemberRepository chatMemberRepository;
 
-    @Order(1)
-    @Test
-    @DisplayName("기본 Entity 생성")
-    public void setup() {
-
+    @BeforeEach
+    void init() {
         Member member = Member.builder()
                 .id(1L)
                 .nickname("Tommy")
@@ -80,14 +79,23 @@ class ChatControllerTest {
         postRepository.save(post);
     }
 
+    @AfterEach
+    void clear() {
+        chatRoomRepository.deleteAll();
+        postRepository.deleteAll();
+        refreshTokenRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
+
     @Test
-    @Order(2)
     @DisplayName("정상적인 채팅방 생성")
     @Transactional
     public void createChatRoom() throws Exception {
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto("test room");
 
-        this.mockMvc.perform(post("/api/chat/1")
+        Post post = postRepository.findByTitle("post").get();
+
+        this.mockMvc.perform(post("/api/chat/" + post.getId())
                         .header("Authorization", getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(HAL_JSON)
@@ -95,10 +103,10 @@ class ChatControllerTest {
                 )
                 .andExpect(status().isCreated());
 
-        Member member = memberRepository.findById(1L).get();
-        ChatRoom chatRoom = chatRoomRepository.findById(1L).get();
+        Member member = memberRepository.findByEmail("test@test.com").get();
+        ChatRoom chatRoom = chatRoomRepository.findById(post.getId()).get();
         ChatMember chatMember = chatMemberRepository.findById(1L).get();
-        Post post = postRepository.findById(1L).get();
+
 
         assertAll(
                 () -> assertThat(chatRoomRepository.findAll().size()).isEqualTo(1),
@@ -112,18 +120,49 @@ class ChatControllerTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("게시글이 없을 경우 Error 처리")
     public void createChatRoom_BadRequest() throws Exception {
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto("test room");
+            this.mockMvc.perform(post("/api/chat/10")
+                            .header("Authorization", getAccessToken())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(HAL_JSON)
+                            .content(objectMapper.writeValueAsString(chatRoomRequestDto))
+                    )
+                    .andExpect(status().isNotFound());
 
-        this.mockMvc.perform(post("/api/chat/10")
+    }
+
+    @Test
+    @DisplayName("채팅방 정보 조회")
+    public void getChatRoomList() throws Exception {
+
+        // Given
+        Post post = Post.builder()
+                .title("post2")
+                .content("content")
+                .imageUrl("test-test.com")
+                .member(memberRepository.findByEmail("test@test.com").get())
+                .build();
+        Post savedPost = postRepository.save(post);
+        Post findPost = postRepository.findByTitle("post").get();
+        ChatRoom chatRoom1 = ChatRoom.builder()
+                .post(findPost)
+                .roomName("first chat room")
+                .build();
+        ChatRoom chatRoom2 = ChatRoom.builder()
+                .post(savedPost)
+                .roomName("second chat room")
+                .build();
+        chatRoomRepository.save(chatRoom1);
+        chatRoomRepository.save(chatRoom2);
+
+        this.mockMvc.perform(get("/api/chat")
                         .header("Authorization", getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(HAL_JSON)
-                        .content(objectMapper.writeValueAsString(chatRoomRequestDto))
-                )
-                .andExpect(status().isNotFound());
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test
