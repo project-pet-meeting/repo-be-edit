@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.member.domain.Member;
@@ -32,8 +31,6 @@ import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
-import sideproject.petmeeting.post.service.TestUserDetailsService;
-import sideproject.petmeeting.security.UserDetailsImpl;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
@@ -49,7 +46,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.mo
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,8 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
 import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
-import static sideproject.petmeeting.post.service.TestUserDetailsService.PASSWORD;
-import static sideproject.petmeeting.post.service.TestUserDetailsService.USERNAME;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -86,12 +80,12 @@ class PostControllerTest {
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
 
-    private final TestUserDetailsService testUserDetailsService = new TestUserDetailsService();
-    private UserDetailsImpl userDetails;
+    public static final String USERNAME = "postController@Username.com";
+    public static final String PASSWORD = "password";
 
 
     @BeforeEach
-    public void setup(RestDocumentationContextProvider restDocumentationContextProvider) throws Exception {
+    public void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
 
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
@@ -103,9 +97,13 @@ class PostControllerTest {
                         .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
+    }
 
+    @Order(0)
+    @Test
+    @DisplayName("공통으로 사용하는 ENTITY 생성")
+    public void memberBuild() {
         Member member = Member.builder()
-                .id(1L)
                 .nickname(USERNAME)
                 .password(PASSWORD)
                 .email(USERNAME)
@@ -113,39 +111,17 @@ class PostControllerTest {
                 .userRole(ROLE_MEMBER)
                 .build();
         memberRepository.save(member);
-        getAccessToken();
-        userDetails = (UserDetailsImpl) testUserDetailsService.loadUserByUsername(USERNAME);
-
     }
 
-//    @AfterEach
-//    public void afterEach() {
-//        heartPostRepository.deleteAllInBatch();
-//        postRepository.deleteAllInBatch();
-//        memberRepository.deleteAllInBatch();
-//        refreshTokenRepository.deleteAllInBatch();
-//    }
-
-//    @Order(0)
-//    @Test
-//    @DisplayName("공통으로 사용하는 ENTITY 생성")
-//    public void entityBuild() {
-//        Member member = buildMember();
-//        memberRepository.save(member);
-//    }
-
-//    @Transactional
     @Test
     @DisplayName("게시글 작성 - 정상 응답")
     public void createPost() throws Exception {
-
         // Given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .category(Category.valueOf("RECOMMAND"))
                 .title("제목입니다.")
                 .content("내용입니다.")
                 .build();
-
 
         // MockMultipartFile 을  MultipartFile 인터페이스를 상속받아 mock 구현
         String fileName = "jjang";
@@ -171,7 +147,6 @@ class PostControllerTest {
                                 .file(data)
                                 .file(image)
                                 .header("Authorization", getAccessToken())
-                                .with(user(userDetails))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(HAL_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -208,14 +183,12 @@ class PostControllerTest {
 //                )
         ;
 
-
         // Then
         assertThat(postRequestDto.getCategory()).isEqualTo(RECOMMAND);
         assertThat(postRequestDto.getTitle()).isEqualTo("제목입니다.");
         assertThat(postRequestDto.getContent()).isEqualTo("내용입니다.");
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 작성 - data 값이 빈값으로 들어 온 경우 error 발생 (valid 유효성 검사)")
     public void createPost_DataEmpty() throws Exception {
@@ -247,23 +220,22 @@ class PostControllerTest {
         mockMvc.perform(multipart("/api/post")
                         .file(data)
                         .file(image)
-                        .header("Authorization", getAccessToken())
-                        .with(user(userDetails)))
+                        .header("Authorization", getAccessToken()))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
-//    @Transactional
     @Test
     @DisplayName("전체 게시글 조회 - 정상응답")
     public void getAllPosts() throws Exception {
-
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -273,7 +245,7 @@ class PostControllerTest {
                 .category(FREEPRESENT)
                 .title("second post title")
                 .content("second post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -325,16 +297,17 @@ class PostControllerTest {
     }
 
 
-//    @Transactional
     @Test
     @DisplayName("단일 게시글 조회 - 정상응답")
     public void getPost() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -380,19 +353,20 @@ class PostControllerTest {
         assertThat(firstPost.getCategory()).isEqualTo(RECOMMAND);
         assertThat(firstPost.getTitle()).isEqualTo("first post title");
         assertThat(firstPost.getContent()).isEqualTo("first post content");
-        assertThat(firstPost.getMember().getNickname()).isEqualTo("user@example.com");
+        assertThat(firstPost.getMember().getNickname()).isEqualTo(USERNAME);
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 조회 - 게시글이 존재하지 않는 경우 Error")
     public void getPost_No_Post() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -407,16 +381,17 @@ class PostControllerTest {
         ;
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 수정 - 정상응답")
     public void putPost() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -451,7 +426,6 @@ class PostControllerTest {
                         .file(data)
                         .file(image)
                         .header("Authorization", getAccessToken())
-                        .with(user(userDetails))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(HAL_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -465,16 +439,14 @@ class PostControllerTest {
         assertThat(postRequestDto.getContent()).isEqualTo("수정 내용");
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 수정 - 권한이 없는 경우 Error")
     public void putPost_Not_Authorization() throws Exception {
         // Given
         Member member2 = Member.builder()
-                .id(2L)
-                .nickname("nickname")
+                .nickname("notAuthorization")
                 .password(PASSWORD)
-                .email("nickname")
+                .email("notAuthorization")
                 .image("test-image")
                 .userRole(ROLE_MEMBER)
                 .build();
@@ -484,7 +456,7 @@ class PostControllerTest {
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(2L).orElseThrow())
+                .member(memberRepository.findByNickname("notAuthorization").orElseThrow())
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -519,7 +491,6 @@ class PostControllerTest {
                         .file(data)
                         .file(image)
                         .header("Authorization", getAccessToken())
-                        .with(user(userDetails))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(HAL_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -527,16 +498,17 @@ class PostControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 삭제 - 정상응답")
     public void deletePost() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -571,16 +543,14 @@ class PostControllerTest {
 
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 삭제 - 권한이 없는 경우 Error")
     public void deletePost_Not_Authorization() throws Exception {
         // Given
         Member member2 = Member.builder()
-                .id(2L)
-                .nickname("nickname")
+                .nickname("notAuthorization2")
                 .password(PASSWORD)
-                .email("nickname")
+                .email("notAuthorization2")
                 .image("test-image")
                 .userRole(ROLE_MEMBER)
                 .build();
@@ -590,7 +560,7 @@ class PostControllerTest {
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(2L).orElseThrow())
+                .member(memberRepository.findByNickname("notAuthorization2").orElseThrow())
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -606,16 +576,17 @@ class PostControllerTest {
                 .andDo(print());
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 좋아요 - 정상 응답")
     public void createHeartPost() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
@@ -653,20 +624,21 @@ class PostControllerTest {
     @DisplayName("게시글 좋아요 취소 - 정상응답")
     public void deleteHeartPost() throws Exception {
         // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         Post firstPost = Post.builder()
                 .category(RECOMMAND)
                 .title("first post title")
                 .content("first post content")
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
                 .build();
         postRepository.save(firstPost);
 
         HeartPost heart = HeartPost.builder()
-                .id(1L)
                 .post(firstPost)
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .build();
         heartPostRepository.save(heart);
 
@@ -697,24 +669,6 @@ class PostControllerTest {
 
     }
 
-    private static Member buildMember() {
-
-        Member member = Member.builder()
-                .id(1L)
-                .nickname(USERNAME)
-                .password(PASSWORD)
-                .email(USERNAME)
-                .image("test-image")
-                .userRole(ROLE_MEMBER)
-                .build();
-        return member;
-    }
-
-
-
-
-
-
     private String getAccessToken() throws Exception {
         // Given
         LoginRequestDto loginRequestDto = new LoginRequestDto(USERNAME, PASSWORD);
@@ -726,13 +680,10 @@ class PostControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
+//        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
-        return perform.andReturn().getResponse().getHeader("Authorization")
-
-                ;
+        return perform.andReturn().getResponse().getHeader("Authorization");
     }
-
 
     private MockMultipartHttpServletRequestBuilder multipartPutBuilder(final String url) {
         final MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url);
