@@ -54,6 +54,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     //ASCII DOC
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
