@@ -190,7 +190,7 @@ class MyPageServiceTest {
         HeartPost heartPost = HeartPost.builder()
                 .id(1L)
                 .post(postRepository.findById(1L).orElseThrow())
-                .member(memberRepository.findById(1L).orElseThrow())
+                .member(savedMember)
                 .build();
         heartPostRepository.save(heartPost);
 
