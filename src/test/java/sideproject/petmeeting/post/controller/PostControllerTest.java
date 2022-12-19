@@ -31,7 +31,6 @@ import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
-import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
@@ -44,8 +43,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -77,8 +75,6 @@ class PostControllerTest {
     MemberRepository memberRepository;
     @Autowired
     PostRepository postRepository;
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
 
     public static final String USERNAME = "postController@Username.com";
     public static final String PASSWORD = "password";
@@ -93,8 +89,8 @@ class PostControllerTest {
                 .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentationContextProvider)
                         .operationPreprocessors()
-                        .withRequestDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint())
-                        .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
+                        .withRequestDefaults(modifyUris().host("localhost").removePort(), prettyPrint())
+                        .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
     }
@@ -118,22 +114,16 @@ class PostControllerTest {
     public void createPost() throws Exception {
         // Given
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(Category.valueOf("RECOMMAND"))
+                .category(Category.valueOf("RECOMMEND"))
                 .title("제목입니다.")
                 .content("내용입니다.")
                 .build();
 
-        // MockMultipartFile 을  MultipartFile 인터페이스를 상속받아 mock 구현
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "jjang.png",
+                "image/png",
+                "<<png data>>".getBytes());
 
         String postRequestDtoJson = objectMapper.writeValueAsString(postRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -153,38 +143,43 @@ class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("data.id").exists())
-//                .andDo(document("{method-name}-post",
-//                                requestHeaders(
-//                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
-//                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
-//                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
-//                                ),
-//                                responseHeaders(
-//                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
-//                                ),
-//                                responseFields(
-//                                        fieldWithPath("status").description("status of action"),
-//                                        fieldWithPath("message").description("message of action"),
-//                                        fieldWithPath("data.id").description("id of post"),
-//                                        fieldWithPath("data.category").description("category of post"),
-//                                        fieldWithPath("data.title").description("title of post"),
-//                                        fieldWithPath("data.content").description("content of post"),
-//                                        fieldWithPath("data.imageUrl").description("imageUrl of post"),
-//                                        fieldWithPath("data.numHeart").description("numHeart of post"),
-//                                        fieldWithPath("data.authorId").description("authorId of post"),
-//                                        fieldWithPath("data.authorNickname").description("authorNickname of post"),
-//                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
-//                                        fieldWithPath("data.createdAt").description("createdAt of post"),
-//                                        fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
-//                                        fieldWithPath("data.links[0].rel").description("relation"),
-//                                        fieldWithPath("data.links[0].href").description("url of action")
-//                                )
-//                        )
-//                )
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("category").description("category of postRequestDto"),
+                                        fieldWithPath("title").description("title of postRequestDto"),
+                                        fieldWithPath("content").description("content of postRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of post"),
+                                        fieldWithPath("data.category").description("category of post"),
+                                        fieldWithPath("data.title").description("title of post"),
+                                        fieldWithPath("data.content").description("content of post"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.authorId").description("authorId of post"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
+                                        fieldWithPath("data.createdAt").description("createdAt of post"),
+                                        fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
         ;
 
         // Then
-        assertThat(postRequestDto.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(postRequestDto.getCategory()).isEqualTo(RECOMMEND);
         assertThat(postRequestDto.getTitle()).isEqualTo("제목입니다.");
         assertThat(postRequestDto.getContent()).isEqualTo("내용입니다.");
     }
@@ -192,22 +187,15 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 작성 - data 값이 빈값으로 들어 온 경우 error 발생 (valid 유효성 검사)")
     public void createPost_DataEmpty() throws Exception {
-
         // Given
         PostRequestDto postRequestDto = PostRequestDto.builder()
                 .build();
 
-        // MockMultipartFile 을  MultipartFile 인터페이스를 상속받아 mock 구현
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "jjang.png",
+                "image/png",
+                "<<png data>>".getBytes());
 
         String postRequestDtoJson = objectMapper.writeValueAsString(postRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -232,7 +220,7 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -258,7 +246,7 @@ class PostControllerTest {
                 .contentType(APPLICATION_JSON)
                 .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-allPosts",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -304,7 +292,7 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -319,7 +307,7 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-Post",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -350,7 +338,7 @@ class PostControllerTest {
         ;
 
         // Then
-        assertThat(firstPost.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(firstPost.getCategory()).isEqualTo(RECOMMEND);
         assertThat(firstPost.getTitle()).isEqualTo("first post title");
         assertThat(firstPost.getContent()).isEqualTo("first post content");
         assertThat(firstPost.getMember().getNickname()).isEqualTo(USERNAME);
@@ -363,7 +351,7 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -388,7 +376,7 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -403,16 +391,11 @@ class PostControllerTest {
                 .content("수정 내용")
                 .build();
 
-        String fileName = "memberImage";
-        String contentType = "jpeg";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "memberImage.jpeg",
+                "image/jpeg",
+                "<<jpeg data>>".getBytes());
 
         String postRequestDtoJson = objectMapper.writeValueAsString(postRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -431,7 +414,44 @@ class PostControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.id").exists());
+                .andExpect(jsonPath("data.id").exists())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("category").description("category of postRequestDto"),
+                                        fieldWithPath("title").description("title of postRequestDto"),
+                                        fieldWithPath("content").description("content of postRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.VARY).description("vary"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content-type"),
+                                        headerWithName(HttpHeaders.PRAGMA).description("pragma"),
+                                        headerWithName(HttpHeaders.EXPIRES).description("expires")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of post"),
+                                        fieldWithPath("data.category").description("category of post"),
+                                        fieldWithPath("data.title").description("title of post"),
+                                        fieldWithPath("data.content").description("content of post"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.authorId").description("authorId of post"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
+                                        fieldWithPath("data.createdAt").description("createdAt of post"),
+                                        fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
 
         // Then
         assertThat(postRequestDto.getCategory()).isEqualTo(FREEPRESENT);
@@ -453,7 +473,7 @@ class PostControllerTest {
         memberRepository.save(member2);
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(memberRepository.findByNickname("notAuthorization").orElseThrow())
@@ -505,7 +525,7 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -516,13 +536,12 @@ class PostControllerTest {
 
         // When
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/post/" + firstPost.getId())
-                        .param("postId", firstPost.getId().toString())
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("delete-post",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -557,7 +576,7 @@ class PostControllerTest {
         memberRepository.save(member2);
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(memberRepository.findByNickname("notAuthorization2").orElseThrow())
@@ -568,7 +587,6 @@ class PostControllerTest {
 
         // When
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/post/" + firstPost.getId())
-                        .param("postId", firstPost.getId().toString())
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
@@ -583,12 +601,11 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
                 .imageUrl("imageUrl")
-                .numHeart(0)
                 .build();
         postRepository.save(firstPost);
 
@@ -598,7 +615,7 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("post-HeartPost",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -619,7 +636,6 @@ class PostControllerTest {
 
     }
 
-//    @Transactional
     @Test
     @DisplayName("게시글 좋아요 취소 - 정상응답")
     public void deleteHeartPost() throws Exception {
@@ -627,12 +643,12 @@ class PostControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
                 .imageUrl("imageUrl")
-                .numHeart(0)
+                .numHeart(1)
                 .build();
         postRepository.save(firstPost);
 
@@ -648,7 +664,7 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("delete-HeartPost",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -680,7 +696,6 @@ class PostControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-//        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
