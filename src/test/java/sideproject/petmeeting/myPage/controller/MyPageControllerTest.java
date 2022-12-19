@@ -85,8 +85,8 @@ class MyPageControllerTest {
                 .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentationContextProvider)
                         .operationPreprocessors()
-                        .withRequestDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint())
-                        .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
+                        .withRequestDefaults(modifyUris().host("localhost").removePort(), prettyPrint())
+                        .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
     }
@@ -107,7 +107,7 @@ class MyPageControllerTest {
 
     @Test
     @DisplayName("내 정보 조회 - 정상응답")
-    public void getMyProfileTest() throws Exception {
+    public void getMyProfile() throws Exception {
         log.info("내 정보 조회 시작");
 
         // When
@@ -116,7 +116,7 @@ class MyPageControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-MyProfile",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -151,7 +151,7 @@ class MyPageControllerTest {
 
     @Test
     @DisplayName("내가 작성한 게시글 조회 - 정상응답")
-    public void getMyPostsTest() throws Exception {
+    public void getMyPosts() throws Exception {
         log.info("내가 작성한 게시글 조회 시작");
 
         // Given
@@ -184,7 +184,7 @@ class MyPageControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-Myposts",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -218,7 +218,7 @@ class MyPageControllerTest {
 
     @Test
     @DisplayName("내가 생성한 모임 조회 - 정상응답")
-    public void getMyMeetingsTest() throws Exception {
+    public void getMyMeetings() throws Exception {
         log.info("내가 생성한 모임 조회 시작");
 
         // Given
@@ -233,7 +233,7 @@ class MyPageControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -248,7 +248,7 @@ class MyPageControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -261,7 +261,7 @@ class MyPageControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-MyMeetings",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -302,7 +302,7 @@ class MyPageControllerTest {
 
     @Test
     @DisplayName("내가 좋아요한 게시글 조회 - 정상응답")
-    public void getMyHeartPostsTest() throws Exception {
+    public void getMyHeartPosts() throws Exception {
         log.info("내가 좋아요한 게시글 조회 시작");
 
         // Given
@@ -345,7 +345,7 @@ class MyPageControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-MyHeartPosts",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -376,7 +376,6 @@ class MyPageControllerTest {
         ;
         log.info("내가 좋아요한 게시글 조회 종료");
 
-
     }
 
     private String getAccessToken() throws Exception {
@@ -390,8 +389,6 @@ class MyPageControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        log.info("RefreshToken 검증");
-//        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization")
 

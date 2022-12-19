@@ -129,3 +129,29 @@ operation::update-comment['snippets=request-fields,http-request,response-fields,
 `DELETE` 요청을 사용해 댓글을 삭제 할 수 있다.
 
 operation::delete-comment['snippets=request-fields,http-request,response-fields,http-response']
+
+[[resources-events]]
+== 마이페이지
+
+마이페이지 리소스는 내 정보 조회, 내가 작성한 게시글 조회, 내가 생성한 모임 조회, 내가 '좋아요한' 게시글 조회를 할 때 사용한다.
+
+[[resource-events-list]]
+=== 내 정보 조회
+`GET` 요청을 사용해 내 정보를 확인 할 수 있다.
+
+operation::my-page-controller-test/get-my-profile['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 내가 작성한 게시글 조회
+`GET` 요청을 사용해 내가 작성한 게시글 목록을 확인 할 수 있다.
+
+operation::my-page-controller-test/get-my-posts['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 내가 생성한 모임 조회
+`GET` 요청을 사용해 내가 생성한 모임 목록을 확인 할 수 있다.
+
+operation::my-page-controller-test/get-my-meetings['snippets=request-fields,http-request,response-fields,http-response']
+
+=== 내가 '좋아요'한 게시글 조회
+`GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인 할 수 있다.
+
+operation::my-page-controller-test/get-my-heart-posts['snippets=request-fields,http-request,response-fields,http-response']
