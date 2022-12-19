@@ -29,7 +29,6 @@ import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
 
-import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -41,8 +40,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,8 +79,8 @@ class MeetingControllerTest {
                 .apply(springSecurity())
                 .apply(documentationConfiguration(restDocumentationContextProvider)
                         .operationPreprocessors()
-                        .withRequestDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint())
-                        .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
+                        .withRequestDefaults(modifyUris().host("localhost").removePort(), prettyPrint())
+                        .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
     }
@@ -112,21 +110,16 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
 
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "jjang.png",
+                "image/png",
+                "<<png data>>".getBytes());
 
         String meetingRequestDtoJson = objectMapper.writeValueAsString(meetingRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -145,7 +138,52 @@ class MeetingControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("data.id").exists());
+                .andExpect(jsonPath("data.id").exists())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("title").description("title of meetingRequestDto"),
+                                        fieldWithPath("content").description("content of meetingRequestDto"),
+                                        fieldWithPath("address").description("address of meetingRequestDto"),
+                                        fieldWithPath("coordinateX").description("coordinateX of meetingRequestDto"),
+                                        fieldWithPath("coordinateY").description("coordinateY of meetingRequestDto"),
+                                        fieldWithPath("placeName").description("placeName of meetingRequestDto"),
+                                        fieldWithPath("time").description("time of meetingRequestDto"),
+                                        fieldWithPath("recruitNum").description("recruitNum of meetingRequestDto"),
+                                        fieldWithPath("species").description("species of meetingRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of meeting"),
+                                        fieldWithPath("data.title").description("title of meeting"),
+                                        fieldWithPath("data.content").description("content of meeting"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of meeting"),
+                                        fieldWithPath("data.address").description("address of meeting"),
+                                        fieldWithPath("data.coordinateX").description("coordinateX of meeting"),
+                                        fieldWithPath("data.coordinateY").description("coordinateY of meeting"),
+                                        fieldWithPath("data.placeName").description("placeName of meeting"),
+                                        fieldWithPath("data.time").description("time of meeting"),
+                                        fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.species").description("species of meeting"),
+                                        fieldWithPath("data.authorId").description("authorId of meeting"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of meeting"),
+                                        fieldWithPath("data.createdAt").description("createdAt of meeting"),
+                                        fieldWithPath("data.modifiedAt").description("modifiedAt of meeting"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
 
         // Then
         assertThat(meetingRequestDto.getTitle()).isEqualTo("first meeting title");
@@ -160,17 +198,11 @@ class MeetingControllerTest {
         MeetingRequestDto meetingRequestDto = MeetingRequestDto.builder()
                 .build();
 
-        // MockMultipartFile 을  MultipartFile 인터페이스를 상속받아 mock 구현
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "jjang.png",
+                "image/png",
+                "<<png data>>".getBytes());
 
         String meetingRequestDtoJson = objectMapper.writeValueAsString(meetingRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -203,7 +235,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -218,7 +250,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -231,7 +263,7 @@ class MeetingControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-allMeetings",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -289,7 +321,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -301,7 +333,7 @@ class MeetingControllerTest {
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("get-Meeting",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -357,7 +389,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -374,7 +406,7 @@ class MeetingControllerTest {
 
     @Test
     @DisplayName("모임 수정 - 정상 응답")
-    public void updateMeeting() throws Exception {
+    public void putMeeting() throws Exception {
         // Given
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
@@ -387,7 +419,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -400,21 +432,16 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
 
-        String fileName = "memberImage";
-        String contentType = "jpeg";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "jjang.png",
+                "image/png",
+                "<<png data>>".getBytes());
 
         String meetingRequestDtoJson = objectMapper.writeValueAsString(meetingRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -433,7 +460,52 @@ class MeetingControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("data.id").exists());
+                .andExpect(jsonPath("data.id").exists())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("title").description("title of meetingRequestDto"),
+                                        fieldWithPath("content").description("content of meetingRequestDto"),
+                                        fieldWithPath("address").description("address of meetingRequestDto"),
+                                        fieldWithPath("coordinateX").description("coordinateX of meetingRequestDto"),
+                                        fieldWithPath("coordinateY").description("coordinateY of meetingRequestDto"),
+                                        fieldWithPath("placeName").description("placeName of meetingRequestDto"),
+                                        fieldWithPath("time").description("time of meetingRequestDto"),
+                                        fieldWithPath("recruitNum").description("recruitNum of meetingRequestDto"),
+                                        fieldWithPath("species").description("species of meetingRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of meeting"),
+                                        fieldWithPath("data.title").description("title of meeting"),
+                                        fieldWithPath("data.content").description("content of meeting"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of meeting"),
+                                        fieldWithPath("data.address").description("address of meeting"),
+                                        fieldWithPath("data.coordinateX").description("coordinateX of meeting"),
+                                        fieldWithPath("data.coordinateY").description("coordinateY of meeting"),
+                                        fieldWithPath("data.placeName").description("placeName of meeting"),
+                                        fieldWithPath("data.time").description("time of meeting"),
+                                        fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.species").description("species of meeting"),
+                                        fieldWithPath("data.authorId").description("authorId of meeting"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of meeting"),
+                                        fieldWithPath("data.createdAt").description("createdAt of meeting"),
+                                        fieldWithPath("data.modifiedAt").description("modifiedAt of meeting"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
 
         // Then
         assertThat(meetingRequestDto.getTitle()).isEqualTo("수정 제목");
@@ -442,7 +514,7 @@ class MeetingControllerTest {
 
     @Test
     @DisplayName("모임 수정 - 권한이 없는 경우 Error")
-    public void updateMeeting_Not_Authorization() throws Exception {
+    public void putMeeting_Not_Authorization() throws Exception {
         // Given
         Member member2 = Member.builder()
                 .nickname("meetingModify")
@@ -462,7 +534,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -475,21 +547,16 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
 
-        String fileName = "memberImage";
-        String contentType = "jpeg";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "memberImage.jpeg",
+                "image/jpeg",
+                "<<jpeg data>>".getBytes());
 
         String meetingRequestDtoJson = objectMapper.writeValueAsString(meetingRequestDto);
         MockMultipartFile data = new MockMultipartFile(
@@ -525,7 +592,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -539,7 +606,7 @@ class MeetingControllerTest {
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("delete-meeting",
+                .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
                                         headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                         headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
@@ -582,7 +649,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -609,7 +676,6 @@ class MeetingControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-//        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
