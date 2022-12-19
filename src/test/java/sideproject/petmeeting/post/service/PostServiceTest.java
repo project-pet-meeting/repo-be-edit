@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -56,28 +56,24 @@ class PostServiceTest {
     public void createPostTest() throws IOException {
         // Given
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("제목입니다.")
                 .content("내용입니다.")
                 .build();
 
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "memberImage.jpeg",
+                "image/jpeg",
+                "<<jpeg data>>".getBytes());
 
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
         // When
         PostResponseDto savedPost = postService.createPost(postRequestDto, image, savedMember);
 
         // Then
-        assertThat(savedPost.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(savedPost.getCategory()).isEqualTo(RECOMMEND);
         assertThat(savedPost.getTitle()).isEqualTo("제목입니다.");
         assertThat(savedPost.getContent()).isEqualTo("내용입니다.");
     }
@@ -89,7 +85,7 @@ class PostServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -99,7 +95,7 @@ class PostServiceTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -123,7 +119,7 @@ class PostServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -131,11 +127,12 @@ class PostServiceTest {
                 .numHeart(0)
                 .build();
         postRepository.save(firstPost);
+
         // When
         PostResponseDto savedPost = postService.getPost(firstPost.getId());
 
         // Then
-        assertThat(savedPost.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(savedPost.getCategory()).isEqualTo(RECOMMEND);
         assertThat(savedPost.getTitle()).isEqualTo("first post title");
         assertThat(savedPost.getContent()).isEqualTo("first post content");
     }
@@ -147,7 +144,7 @@ class PostServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -157,27 +154,22 @@ class PostServiceTest {
         postRepository.save(firstPost);
 
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("제목입니다.")
                 .content("내용입니다.")
                 .build();
 
-        String fileName = "jjang";
-        String contentType = "png";
-        String filePath = "src/test/resources/testImage/" + fileName + "." + contentType;
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-
         MockMultipartFile image = new MockMultipartFile(
                 "image",
-                fileName + "." + contentType,
-                contentType,
-                fileInputStream);
+                "memberImage.jpeg",
+                "image/jpeg",
+                "<<jpeg data>>".getBytes());
 
         // When
         PostResponseDto savedPost = postService.updatePost(firstPost.getId(), postRequestDto, image, savedMember);
 
         // Then
-        assertThat(savedPost.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(savedPost.getCategory()).isEqualTo(RECOMMEND);
         assertThat(savedPost.getTitle()).isEqualTo("제목입니다.");
         assertThat(savedPost.getContent()).isEqualTo("내용입니다.");
     }
@@ -189,7 +181,7 @@ class PostServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)

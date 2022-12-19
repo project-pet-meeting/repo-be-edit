@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -158,7 +158,7 @@ class MyPageControllerTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -311,7 +311,7 @@ class MyPageControllerTest {
 
         log.info("첫번째 게시글 작성");
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)

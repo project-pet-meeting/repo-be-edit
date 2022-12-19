@@ -4,8 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
 class PostTest {
 
@@ -15,7 +14,7 @@ class PostTest {
 
         // Given
         Post post= Post.builder()
-                .category(Category.RECOMMAND)
+                .category(Category.RECOMMEND)
                 .title("test title")
                 .content("test content")
                 .imageUrl("test imageUrl")
@@ -23,6 +22,10 @@ class PostTest {
 
         // Then
         assertThat(post).isNotNull();
+        assertThat(post.getCategory()).isEqualTo(RECOMMEND);
+        assertThat(post.getTitle()).isEqualTo("test title");
+        assertThat(post.getContent()).isEqualTo("test content");
+        assertThat(post.getImageUrl()).isEqualTo("test imageUrl");
     }
 
     @Test
@@ -31,7 +34,7 @@ class PostTest {
 
         // Given
         Post post= Post.builder()
-                .category(Category.RECOMMAND)
+                .category(Category.RECOMMEND)
                 .title("test Update title")
                 .content("test Update content")
                 .imageUrl("test Update imageUrl")
@@ -39,7 +42,7 @@ class PostTest {
 
         // Then
         assertThat(post).isNotNull();
-        assertThat(post.getCategory()).isEqualTo(RECOMMAND);
+        assertThat(post.getCategory()).isEqualTo(RECOMMEND);
         assertThat(post.getTitle()).isEqualTo("test Update title");
         assertThat(post.getContent()).isEqualTo("test Update content");
         assertThat(post.getImageUrl()).isEqualTo("test Update imageUrl");
