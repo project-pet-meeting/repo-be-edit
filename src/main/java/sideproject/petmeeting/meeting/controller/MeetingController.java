@@ -37,10 +37,10 @@ public class MeetingController {
      * @return :
      */
     @PostMapping("/meeting")
-    public ResponseEntity<Object> createPost(@RequestPart(value = "data") @Valid MeetingRequestDto meetingRequestDto, // @valid 객체 검증 수행
-                                             @RequestPart(value = "image", required = false) @Valid MultipartFile image,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             Errors errors) throws IOException {
+    public ResponseEntity<Object> createMeeting(@RequestPart(value = "data") @Valid MeetingRequestDto meetingRequestDto, // @valid 객체 검증 수행
+                                                @RequestPart(value = "image", required = false) @Valid MultipartFile image,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                Errors errors) throws IOException {
 
         if (errors.hasErrors()) {
             Response response = new Response(StatusEnum.BAD_REQUEST, "다시 시도해 주세요", errors);
