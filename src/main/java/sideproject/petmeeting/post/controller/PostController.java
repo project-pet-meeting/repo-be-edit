@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sideproject.petmeeting.common.Response;
@@ -37,7 +38,8 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<Object> createPost(@RequestPart(value = "data") @Valid PostRequestDto postRequestDto, // @valid 객체 검증 수행
                                              @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                             @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                             Errors errors) throws IOException {
 
         PostResponseDto postResponseDto = postService.createPost(postRequestDto, image, userDetails.getMember());
 

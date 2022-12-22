@@ -113,7 +113,7 @@ class CommentControllerTest {
     public void createComment() throws Exception {
         // Given
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
-                .comment("test comment")
+                .content("test comment")
                 .build();
 
         Post savedPost = postRepository.findById(1L).get();
@@ -133,7 +133,7 @@ class CommentControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
-                                fieldWithPath("comment").description("comment content")
+                                fieldWithPath("content").description("comment content")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
@@ -159,7 +159,7 @@ class CommentControllerTest {
     public void createComment_No_Post() throws Exception {
         // Given
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
-                .comment("test comment")
+                .content("test comment")
                 .build();
 
         this.mockMvc.perform(post("/api/comment/2")

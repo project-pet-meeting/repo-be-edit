@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.post.dto.PostRequestDto;
@@ -14,8 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import java.util.List;
-
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -52,10 +52,9 @@ public class Post extends Timestamped {
     @ManyToOne(fetch = LAZY)
     private Member member;
 
-    @JsonIgnore
-    @JoinColumn(name = "post_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<HeartPost> heartPost;
+    @OneToOne(fetch = LAZY, mappedBy = "post", cascade = ALL)
+    private ChatRoom chatRoom;
+
 
     /**
      * 게시글 수정

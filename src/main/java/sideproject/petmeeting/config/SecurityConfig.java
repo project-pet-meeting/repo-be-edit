@@ -20,6 +20,9 @@ import sideproject.petmeeting.security.UserDetailsServiceImpl;
 import sideproject.petmeeting.security.exception.AccessDeniedHandlerException;
 import sideproject.petmeeting.security.exception.AuthenticationEntryPointException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -51,11 +54,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors()
-                .configurationSource(configurationSource());
-
         http.csrf()
                 .disable()
+            .cors()
+                .configurationSource(configurationSource())
+                    .and()
                 .headers().frameOptions().disable()
                     .and()
                 .exceptionHandling()
@@ -68,6 +71,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/member/signup", "/api/member/nickname", "/api/member/login", "/api/member/emailConfirm").permitAll()
                 .antMatchers("/user/kakao/*", "/user/naver/*").permitAll()
+                .antMatchers("/ws-stomp/**", "/chat/**","/webjars/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -81,15 +85,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "RefreshToken"));
         corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-
-
 }
