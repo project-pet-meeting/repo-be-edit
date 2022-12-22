@@ -88,7 +88,6 @@ class MemberControllerTest {
 
         // Member 생성
         MemberDto memberDto = MemberDto.builder()
-                .nickname("Tommy2")
                 .password("test2")
                 .email("test2@test.com")
                 .build();
@@ -210,7 +209,6 @@ class MemberControllerTest {
         memberRepository.save(member);
 
         MemberDto memberDto = MemberDto.builder()
-                .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
                 .build();

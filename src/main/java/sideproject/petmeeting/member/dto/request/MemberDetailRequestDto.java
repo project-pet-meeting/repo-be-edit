@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberUpdateRequest {
+public class MemberDetailRequestDto {
+    @NotEmpty
     private String nickname;
-    private String password;
-    private String email;
+    @NotEmpty
     private String location;
+
 }

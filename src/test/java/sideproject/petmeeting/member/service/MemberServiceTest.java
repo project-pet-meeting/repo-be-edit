@@ -35,7 +35,6 @@ class MemberServiceTest {
     public void join() throws IOException {
         // Given
         MemberDto member = MemberDto.builder()
-                .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
                 .build();
