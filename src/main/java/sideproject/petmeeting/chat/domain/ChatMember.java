@@ -9,8 +9,6 @@ import sideproject.petmeeting.member.domain.Member;
 
 import javax.persistence.*;
 
-import java.sql.Time;
-
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 

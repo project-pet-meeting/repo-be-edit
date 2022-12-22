@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import sideproject.petmeeting.chat.domain.ChatRoom;
+import sideproject.petmeeting.chat.domain.RedisChatRoom;
 import sideproject.petmeeting.chat.repository.ChatRoomRepository;
+import sideproject.petmeeting.chat.repository.RedisChatRoomRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final RedisChatRoomRepository redisChatRoomRepository;
 
     @GetMapping("/room")
     public String rooms(Model model) {
@@ -29,19 +32,20 @@ public class ChatRoomController {
 
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoom> room() {
-        return chatRoomRepository.findAll();
+    public List<RedisChatRoom> room() {
+        return redisChatRoomRepository.findAllRoom();
     }
 
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestParam String name) {
-        ChatRoom chatroom = ChatRoom.builder()
-                .roomName(name)
-                .chatMembers(null)
-                .post(null)
-                .build();
-        return chatRoomRepository.save(chatroom);
+    public RedisChatRoom createRoom(@RequestParam String name) {
+//        ChatRoom chatroom = ChatRoom.builder()
+//                .roomName(name)
+//                .chatMembers(null)
+//                .post(null)
+//                .build();
+//        return chatRoomRepository.save(chatroom);
+        return redisChatRoomRepository.createChatRoom(name,"1");
     }
 
     @GetMapping("/room/enter/{roomId}")
@@ -52,7 +56,7 @@ public class ChatRoomController {
 
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public Optional<ChatRoom> roomInfo(@PathVariable Long roomId) {
-        return chatRoomRepository.findById(roomId);
+    public RedisChatRoom roomInfo(@PathVariable String roomId) {
+        return redisChatRoomRepository.findRoomById(roomId);
     }
 }

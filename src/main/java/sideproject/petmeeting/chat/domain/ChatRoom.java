@@ -21,6 +21,7 @@ public class ChatRoom extends Timestamped {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+    private String roomId;
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "postId")
     private Post post;
