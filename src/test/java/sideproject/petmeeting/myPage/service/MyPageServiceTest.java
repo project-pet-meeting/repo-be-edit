@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.RECOMMAND;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -86,7 +86,7 @@ class MyPageServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -96,7 +96,7 @@ class MyPageServiceTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -168,7 +168,7 @@ class MyPageServiceTest {
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
 
         Post firstPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("first post title")
                 .content("first post content")
                 .member(savedMember)
@@ -178,7 +178,7 @@ class MyPageServiceTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(RECOMMAND)
+                .category(RECOMMEND)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
