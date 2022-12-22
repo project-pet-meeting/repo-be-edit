@@ -134,9 +134,9 @@ class PostControllerTest {
 
         // When
         mockMvc.perform(multipart("/api/post")
-                                .file(data)
-                                .file(image)
-                                .header("Authorization", getAccessToken())
+                        .file(data)
+                        .file(image)
+                        .header("Authorization", getAccessToken())
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .accept(HAL_JSON)
                         .characterEncoding(StandardCharsets.UTF_8))
@@ -241,10 +241,10 @@ class PostControllerTest {
 
         // When & Then
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post")
-                .param("page", String.valueOf(0))
-                .header("Authorization", getAccessToken())
-                .contentType(APPLICATION_JSON)
-                .accept(HAL_JSON))
+                        .param("page", String.valueOf(0))
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("{class-name}/{method-name}",
                                 requestHeaders(
