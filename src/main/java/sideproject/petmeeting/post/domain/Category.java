@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Category {
-    RECOMMAND("추천"),
+    RECOMMEND("추천"),
     FREEPRESENT("무료나눔"),
     FRIEND("친구맺기"),
     ETC("기타");

@@ -15,7 +15,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import static javax.persistence.CascadeType.ALL;
+import java.util.List;
+
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -52,7 +53,12 @@ public class Post extends Timestamped {
     @ManyToOne(fetch = LAZY)
     private Member member;
 
-    @OneToOne(fetch = LAZY, mappedBy = "post", cascade = ALL)
+    @JsonIgnore
+    @JoinColumn(name = "post_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<HeartPost> heartPost;
+
+    @OneToOne(fetch = LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private ChatRoom chatRoom;
 
 
