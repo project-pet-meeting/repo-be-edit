@@ -8,17 +8,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
-import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.post.domain.HeartPost;
-import sideproject.petmeeting.post.dto.PostPageResponseDto;
-import sideproject.petmeeting.post.repository.HeartPostRepository;
-import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.post.domain.Post;
+import sideproject.petmeeting.post.dto.PostPageResponseDto;
 import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.dto.PostResponseDto;
+import sideproject.petmeeting.post.repository.HeartPostRepository;
+import sideproject.petmeeting.post.repository.PostRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -197,7 +197,7 @@ public class PostService {
 
         heartPostRepository.save(heartPost);
 
-        Integer countHeart = heartPostRepository.findCountHeart(postId);
+        Integer countHeart = heartPostRepository.countByPostId(postId);
 
         post.addCountHeart(countHeart);
     }
@@ -220,7 +220,8 @@ public class PostService {
         }
 
         heartPostRepository.delete(heartOptional.get());
-        int countHeart = heartPostRepository.findCountHeart(postId);
+
+        Integer countHeart = heartPostRepository.countByPostId(postId);
 
         post.addCountHeart(countHeart);
     }
