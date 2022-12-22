@@ -79,7 +79,7 @@ public class CommentService {
         Comment comment = Comment.builder()
                 .member(member)
                 .post(optionalPost.get())
-                .content(commentRequestDto.getComment())
+                .content(commentRequestDto.getContent())
                 .build();
         return comment;
     }
