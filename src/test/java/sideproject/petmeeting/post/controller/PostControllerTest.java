@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.member.domain.Member;
@@ -110,6 +111,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 작성 - 정상 응답")
     public void createPost() throws Exception {
         // Given
@@ -214,6 +216,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("전체 게시글 조회 - 정상응답")
     public void getAllPosts() throws Exception {
         // Given
@@ -286,6 +289,7 @@ class PostControllerTest {
 
 
     @Test
+    @Transactional
     @DisplayName("단일 게시글 조회 - 정상응답")
     public void getPost() throws Exception {
         // Given
@@ -370,6 +374,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 수정 - 정상응답")
     public void putPost() throws Exception {
         // Given
@@ -595,6 +600,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 좋아요 - 정상 응답")
     public void createHeartPost() throws Exception {
         // Given
@@ -637,6 +643,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 좋아요 취소 - 정상응답")
     public void deleteHeartPost() throws Exception {
         // Given
