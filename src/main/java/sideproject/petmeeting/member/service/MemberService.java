@@ -1,7 +1,6 @@
 package sideproject.petmeeting.member.service;
 
 import lombok.AllArgsConstructor;
-import net.bytebuddy.pool.TypePool;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.member.domain.UserRole;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
+import sideproject.petmeeting.member.dto.request.MemberDetailRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.member.repository.MemberRepository;
@@ -52,7 +51,7 @@ public class MemberService {
 
 
         Member member = Member.builder()
-                .nickname(memberDto.getNickname())
+//                .nickname(memberDto.getNickname())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .email(memberDto.getEmail())
                 .image(imageUrl)
@@ -63,6 +62,28 @@ public class MemberService {
         return savedMember;
 
     }
+
+    // 회원 가입 상세(닉네임, 지역)
+    @Transactional
+    public Member detailMember(MemberDetailRequestDto memberDetailRequestDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        if (httpServletRequest.getHeader("Authorization") == null || httpServletRequest.getHeader("Authorization").isEmpty()) {
+            throw new IllegalStateException("잘못된 접근입니다.");
+        }
+        tokenProvider.validateToken(httpServletRequest.getHeader("Authorization").substring(7));
+        String authorization = tokenProvider.getUserEmailByToken(httpServletRequest.getHeader("Authorization").substring(7));
+        Optional<Member> optionalMember = memberRepository.findByEmail(authorization);
+        if (optionalMember.isEmpty()) {
+            throw new IllegalStateException("회원이 존재하지 않습니다");
+        }
+        Member member = optionalMember.get();
+        Member updateMember = member.detail(memberDetailRequestDto);
+        TokenDto tokenDto = tokenProvider.generateTokenDto(updateMember);
+        httpServletResponse.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+        httpServletResponse.addHeader("RefreshToken", tokenDto.getRefreshToken());
+        return updateMember;
+    }
+
+
     @Transactional
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse) {
         Optional<Member> optionalMember = memberRepository.findByEmail(loginRequestDto.getEmail());

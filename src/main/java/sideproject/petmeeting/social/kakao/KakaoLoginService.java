@@ -36,7 +36,7 @@ public class KakaoLoginService {
     @Value("${kakao.clientId}")
     private String clientId;
 
-    @Value(("${kakao.redirect.uri}"))
+    @Value("${kakao.redirect.uri}")
     private String redirectUri;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.common.Timestamped;
+import sideproject.petmeeting.member.dto.request.MemberDetailRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.post.domain.Post;
 
@@ -29,6 +30,7 @@ public class Member extends Timestamped {
     private String password;
     private String email;
     private String image;
+    private String location;
     @Enumerated(value = STRING)
     private UserRole userRole;
     @OneToMany(mappedBy = "member")
@@ -40,6 +42,13 @@ public class Member extends Timestamped {
         this.nickname = memberUpdateRequest.getEmail();
         this.password = memberUpdateRequest.getPassword();
         this.email = memberUpdateRequest.getEmail();
+        this.location = memberUpdateRequest.getLocation();
+        return this;
+    }
+
+    public Member detail(MemberDetailRequestDto memberDetailRequestDto) {
+        this.nickname = memberDetailRequestDto.getNickname();
+        this.location = memberDetailRequestDto.getLocation();
         return this;
     }
 }

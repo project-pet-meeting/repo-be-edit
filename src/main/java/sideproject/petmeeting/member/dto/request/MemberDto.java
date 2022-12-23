@@ -13,8 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberDto {
-    @NotEmpty(message = "빈 값일 수 없습니다.")
-    private String nickname;
     @NotEmpty
     private String password;
     @NotEmpty
