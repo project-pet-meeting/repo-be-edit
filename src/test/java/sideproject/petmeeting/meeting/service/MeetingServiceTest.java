@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.dto.MeetingPageResponseDto;
 import sideproject.petmeeting.meeting.dto.MeetingRequestDto;
@@ -49,6 +50,7 @@ class MeetingServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 생성 테스트 - 정상 응답")
     public void createMeeting() throws IOException {
         // Given
@@ -85,7 +87,8 @@ class MeetingServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 전체 조회 테스트 - 정상 응답")
+    @Transactional
+    @DisplayName("모임 전체 조회 테스트 - 정상 응답")
     public void getAllMeeting() {
         // Given
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
@@ -129,7 +132,8 @@ class MeetingServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 단일 조회 테스트 - 정상 응답")
+    @Transactional
+    @DisplayName("모임 단일 조회 테스트 - 정상 응답")
     public void getMeeting() {
         // Given
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
@@ -158,7 +162,7 @@ class MeetingServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 수정 테스트 - 정상 응답")
+    @DisplayName("모임 수정 테스트 - 정상 응답")
     public void updateMeeting() throws IOException {
         // Given
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
@@ -209,7 +213,8 @@ class MeetingServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 테스트 - 정상 응답")
+    @Transactional
+    @DisplayName("모임 삭제 테스트 - 정상 응답")
     public void meetingDelete() throws IOException {
         // Given
         Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
