@@ -23,6 +23,9 @@ public enum ErrorCode {
     INVALID_FILE_TYPE(415, "INVALID_FILE_TYPE", "업로드 할 수 있는 파일 형식은 jpg, jpeg, png 입니다."),
     FILE_CONVERT_FAIL(400, "FILE_CONVERT_FAIL","MultipartFile -> File 변환 실패" ),
 
+    // == Pet ==//
+    PET_NOT_EXIST(404, "PET_NOT_EXIST", "반려동물 정보가 존재하지 않습니다."),
+
     // == Post ==//
     POST_NOT_EXIST(404, "POST_NOT_EXIST", "게시글이 존재하지 않습니다."),
     ALREADY_HEARTED(409, "ALREADY_HEARTED", "이미 좋아요를 누른 게시글 입니다."),
