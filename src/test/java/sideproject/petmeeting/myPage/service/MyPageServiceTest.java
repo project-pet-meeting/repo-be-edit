@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
@@ -59,6 +60,7 @@ class MyPageServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내 정보 조회 - 정상응답")
     public void getMyProfileTest() {
         log.info("내 정보 조회 정상 응답 테스트 시작");
@@ -113,7 +115,8 @@ class MyPageServiceTest {
         log.info("내가 작성한 게시글 조회 정상 응답 테스트 종료");
     }
 
-        @Test
+    @Test
+    @Transactional
     @DisplayName("내가 생성한 모임 조회 테스트")
     public void getMyMeetingsTest() {
         log.info("내가 생성한 모임 조회 정상 응답 테스트 시작");
@@ -160,6 +163,7 @@ class MyPageServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내가 좋아요한 게시글 조회 테스트")
     public void getMyHeartPostsTest() {
         log.info("내가 좋아요한 게시글 조회 정상 응답 테스트 시작");

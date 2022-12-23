@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.meeting.domain.Meeting;
@@ -106,6 +107,7 @@ class MyPageControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내 정보 조회 - 정상응답")
     public void getMyProfile() throws Exception {
         log.info("내 정보 조회 시작");
@@ -150,6 +152,7 @@ class MyPageControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내가 작성한 게시글 조회 - 정상응답")
     public void getMyPosts() throws Exception {
         log.info("내가 작성한 게시글 조회 시작");
@@ -217,6 +220,7 @@ class MyPageControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내가 생성한 모임 조회 - 정상응답")
     public void getMyMeetings() throws Exception {
         log.info("내가 생성한 모임 조회 시작");
@@ -301,6 +305,7 @@ class MyPageControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("내가 좋아요한 게시글 조회 - 정상응답")
     public void getMyHeartPosts() throws Exception {
         log.info("내가 좋아요한 게시글 조회 시작");
