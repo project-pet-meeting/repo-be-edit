@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.meeting.domain.Meeting;
@@ -100,6 +101,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 생성 - 정상 응답")
     public void createMeeting() throws Exception {
         // Given
@@ -191,6 +193,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 생성 - data 값이 빈값으로 들어 온 경우 error 발생 (valid 유효성 검사)")
     public void createMeeting_DataEmpty() throws Exception {
 
@@ -221,6 +224,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 전체 조회 - 정상 응답")
     public void getAllMeetings() throws Exception {
         // Given
@@ -307,6 +311,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 단건 조회 - 정상 응답")
     public void getMeeting() throws Exception {
         // Given
@@ -375,6 +380,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 단건 조회 - 모임이 존재하지 않는 경우 Error")
     public void getMeeting_No_Meeting() throws Exception {
         // Given
@@ -405,6 +411,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 수정 - 정상 응답")
     public void putMeeting() throws Exception {
         // Given
@@ -513,6 +520,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 수정 - 권한이 없는 경우 Error")
     public void putMeeting_Not_Authorization() throws Exception {
         // Given
@@ -578,6 +586,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 삭제 - 정상 응답")
     public void deleteMeeting() throws Exception {
         // Given
@@ -628,6 +637,7 @@ class MeetingControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 삭제 - 권한이 없는 경우 Error")
     public void deleteMeeting_Not_Authorization() throws Exception {
         // Given
