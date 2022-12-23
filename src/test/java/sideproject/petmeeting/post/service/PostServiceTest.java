@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.post.domain.Post;
@@ -13,7 +14,6 @@ import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.dto.PostResponseDto;
 import sideproject.petmeeting.post.repository.PostRepository;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -52,6 +52,7 @@ class PostServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 작성 테스트 - 정상 응답")
     public void createPostTest() throws IOException {
         // Given
@@ -79,6 +80,7 @@ class PostServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 전체 조회 테스트 - 정상 응답")
     public void getAllPostsTest() {
         // Given
@@ -113,6 +115,7 @@ class PostServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 단일 조회 테스트 - 정상 응답")
     public void getPostTest() {
         // Given
@@ -138,6 +141,7 @@ class PostServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 수정 테스트 - 정상 응답")
     public void updatePostTest() throws IOException {
         // Given
@@ -175,6 +179,7 @@ class PostServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 삭제 테스트 - 정상 응답")
     public void deletePostTest() throws IOException {
         // Given
