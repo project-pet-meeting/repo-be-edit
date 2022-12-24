@@ -40,6 +40,7 @@ public class MyPageService {
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .location(member.getLocation())
                 .image(member.getImage())
                 .build();
     }

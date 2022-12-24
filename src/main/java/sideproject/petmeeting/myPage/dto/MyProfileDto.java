@@ -9,5 +9,6 @@ public class MyProfileDto {
     private Long id;
     private String nickname;
     private String email;
+    private String location;
     private String image;
 }
