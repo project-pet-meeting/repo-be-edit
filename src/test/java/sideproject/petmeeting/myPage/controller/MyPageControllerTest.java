@@ -100,6 +100,7 @@ class MyPageControllerTest {
                 .nickname(USERNAME)
                 .password(PASSWORD)
                 .email(USERNAME)
+                .location("서울")
                 .image("test-image")
                 .userRole(ROLE_MEMBER)
                 .build();
@@ -133,6 +134,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.id").description("id of member"),
                                         fieldWithPath("data.nickname").description("nickname of member"),
                                         fieldWithPath("data.email").description("email of member"),
+                                        fieldWithPath("data.location").description("location of member"),
                                         fieldWithPath("data.image").description("image of member"),
                                         fieldWithPath("data.links[0].rel").description("relation"),
                                         fieldWithPath("data.links[0].href").description("url of action")

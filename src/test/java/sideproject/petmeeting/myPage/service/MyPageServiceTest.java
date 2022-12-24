@@ -53,6 +53,7 @@ class MyPageServiceTest {
                 .nickname(USERNAME)
                 .password(PASSWORD)
                 .email(USERNAME)
+                .location("서울")
                 .image("test-image")
                 .userRole(ROLE_MEMBER)
                 .build();
@@ -75,6 +76,7 @@ class MyPageServiceTest {
         // Then
         assertThat(myProfileDto.getNickname()).isEqualTo(USERNAME);
         assertThat(myProfileDto.getEmail()).isEqualTo(USERNAME);
+        assertThat(myProfileDto.getLocation()).isEqualTo("서울");
         assertThat(myProfileDto.getImage()).isEqualTo("test-image");
         log.info("내 정보 조회 정상 응답 테스트 종료");
     }
