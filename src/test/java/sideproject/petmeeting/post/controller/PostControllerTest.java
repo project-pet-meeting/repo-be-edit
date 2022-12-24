@@ -52,8 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
+import static sideproject.petmeeting.post.domain.Category.*;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -104,6 +103,7 @@ class PostControllerTest {
                 .nickname(USERNAME)
                 .password(PASSWORD)
                 .email(USERNAME)
+                .location("지역")
                 .image("test-image")
                 .userRole(ROLE_MEMBER)
                 .build();
@@ -170,6 +170,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -233,7 +234,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -269,6 +270,7 @@ class PostControllerTest {
                                         fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
                                         fieldWithPath("data.postList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.postList[].authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.postList[].createdAt").description("createdAt of post"),
                                         fieldWithPath("data.postList[].modifiedAt").description("modifiedAt of post"),
@@ -331,6 +333,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -391,7 +394,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("수정 제목")
                 .content("수정 내용")
                 .build();
@@ -448,6 +451,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -459,7 +463,7 @@ class PostControllerTest {
         ;
 
         // Then
-        assertThat(postRequestDto.getCategory()).isEqualTo(FREEPRESENT);
+        assertThat(postRequestDto.getCategory()).isEqualTo(SHARE);
         assertThat(postRequestDto.getTitle()).isEqualTo("수정 제목");
         assertThat(postRequestDto.getContent()).isEqualTo("수정 내용");
     }
@@ -473,6 +477,7 @@ class PostControllerTest {
                 .password(PASSWORD)
                 .email("notAuthorization")
                 .image("test-image")
+                .location("지역")
                 .userRole(ROLE_MEMBER)
                 .build();
         memberRepository.save(member2);
@@ -488,7 +493,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("수정 제목")
                 .content("수정 내용")
                 .build();
@@ -576,6 +581,7 @@ class PostControllerTest {
                 .password(PASSWORD)
                 .email("notAuthorization2")
                 .image("test-image")
+                .location("지역")
                 .userRole(ROLE_MEMBER)
                 .build();
         memberRepository.save(member2);

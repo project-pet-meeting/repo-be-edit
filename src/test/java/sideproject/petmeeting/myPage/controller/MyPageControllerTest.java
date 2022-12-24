@@ -47,8 +47,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
+import static sideproject.petmeeting.post.domain.Category.*;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -173,7 +172,7 @@ class MyPageControllerTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -329,7 +328,7 @@ class MyPageControllerTest {
 
         log.info("두번째 게시글 작성");
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
