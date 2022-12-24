@@ -80,7 +80,7 @@ public class PostController {
         PostResponseDto postResponseDto = postService.getPost(postId);
 
         ResponseResource responseResource = new ResponseResource(postResponseDto);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash(postId).withSelfRel());
 
         Response response = new Response(StatusEnum.OK, "게시글 조회 성공", responseResource);
 
@@ -100,7 +100,7 @@ public class PostController {
         PostResponseDto postResponseDto = postService.updatePost(postId, postRequestDto, image, userDetails.getMember());
 
         ResponseResource responseResource = new ResponseResource(postResponseDto);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash(postId).withSelfRel());
 
         Response response = new Response(StatusEnum.OK, "게시글 수정 성공", responseResource);
 
@@ -118,7 +118,7 @@ public class PostController {
         postService.postDelete(postId, userDetails.getMember());
 
         ResponseResource responseResource = new ResponseResource(null);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash(postId).withSelfRel());
 
         Response response = new Response(StatusEnum.OK, "게시글 삭제 성공", responseResource);
 
