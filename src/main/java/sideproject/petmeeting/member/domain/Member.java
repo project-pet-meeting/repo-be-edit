@@ -8,6 +8,7 @@ import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.member.dto.request.MemberDetailRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
+import sideproject.petmeeting.pet.domain.Pet;
 import sideproject.petmeeting.post.domain.Post;
 
 import javax.persistence.*;
@@ -37,6 +38,8 @@ public class Member extends Timestamped {
     private List<Post> post = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<ChatMember> chatMembers = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<Pet> pet = new ArrayList<>();
 
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();

@@ -15,7 +15,7 @@ class MemberTest {
         Member member = Member.builder()
                 .nickname("Tommy")
                 .password("test")
-                .email("kbs4520@naver.com")
+                .email("hhhhh823@naver.com")
                 .image("image_url")
                 .build();
         assertThat(member).isNotNull();
