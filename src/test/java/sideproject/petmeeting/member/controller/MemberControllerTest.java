@@ -410,6 +410,7 @@ class MemberControllerTest {
     @DisplayName("Email 검증 로직 ")
     public void EmailConfirm() throws Exception {
         this.mockMvc.perform(post("/api/member/emailConfirm")
+//                        .param("email", "kbs4520@naver.com")
                         .param("email", "hhhhh823@naver.com")
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
