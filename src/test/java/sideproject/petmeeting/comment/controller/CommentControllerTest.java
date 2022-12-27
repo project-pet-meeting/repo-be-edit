@@ -95,7 +95,6 @@ class CommentControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
@@ -155,7 +154,7 @@ class CommentControllerTest {
                 .content("test comment")
                 .build();
 
-        this.mockMvc.perform(post("/api/comment/2")
+        this.mockMvc.perform(post("/api/comment/100")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON)
@@ -240,7 +239,7 @@ class CommentControllerTest {
     public void getComment_No_Post() throws Exception {
         // Given
 
-        this.mockMvc.perform(get("/api/comment/2")
+        this.mockMvc.perform(get("/api/comment/100")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
