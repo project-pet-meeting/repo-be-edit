@@ -24,6 +24,7 @@ import sideproject.petmeeting.follow.repository.FollowRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
+import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
@@ -54,6 +55,8 @@ class FollowControllerTest {
     MemberRepository memberRepository;
     @Autowired
     FollowRepository followRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @BeforeEach
     void setting(WebApplicationContext webApplicationContext,
@@ -215,7 +218,7 @@ class FollowControllerTest {
     @Test
     void follow_NotFound() throws Exception{
         Member lisa = memberRepository.findByEmail("lisa@test.com").get();
-        FollowRequestDto followRequestDto = new FollowRequestDto(3L);
+        FollowRequestDto followRequestDto = new FollowRequestDto(100L);
         this.mockMvc.perform(post("/api/follow")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
@@ -268,7 +271,7 @@ class FollowControllerTest {
                         .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andExpect(status().isOk());
-
+        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
 }

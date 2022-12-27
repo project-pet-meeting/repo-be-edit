@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -35,13 +34,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,6 +47,7 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@Transactional
 class MemberControllerTest {
 
     @Autowired
@@ -68,8 +64,6 @@ class MemberControllerTest {
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext,
                       RestDocumentationContextProvider restDocumentationContextProvider) {
-//        refreshTokenRepository.deleteAll();
-//        memberRepository.deleteAll();
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 //                .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -336,7 +330,6 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
@@ -363,8 +356,7 @@ class MemberControllerTest {
         ;
         assertAll(
                 () -> assertThat(memberRepository.findByEmail("test@naver.com")).isPresent(),
-                () -> assertThat(memberRepository.findByEmail("test@test.com")).isEmpty(),
-                () -> assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1)
+                () -> assertThat(memberRepository.findByEmail("test@test.com")).isEmpty()
         );
     }
 

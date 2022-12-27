@@ -2,6 +2,7 @@ package sideproject.petmeeting.pet.service;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,6 +21,7 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class PetServiceTest {
 

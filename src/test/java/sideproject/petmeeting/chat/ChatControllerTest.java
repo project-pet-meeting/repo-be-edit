@@ -44,6 +44,7 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Slf4j
+@Transactional
 class ChatControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -80,17 +81,8 @@ class ChatControllerTest {
         postRepository.save(post);
     }
 
-    @AfterEach
-    void clear() {
-        chatRoomRepository.deleteAll();
-        postRepository.deleteAll();
-        refreshTokenRepository.deleteAll();
-        memberRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("정상적인 채팅방 생성")
-    @Transactional
     public void createChatRoom() throws Exception {
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto("test room");
 
@@ -105,7 +97,7 @@ class ChatControllerTest {
                 .andExpect(status().isCreated());
 
         Member member = memberRepository.findByEmail("test@test.com").get();
-        ChatRoom chatRoom = chatRoomRepository.findById(post.getId()).get();
+        ChatRoom chatRoom = chatRoomRepository.findByPost(post).get();
         ChatMember chatMember = chatMemberRepository.findById(1L).get();
 
 
