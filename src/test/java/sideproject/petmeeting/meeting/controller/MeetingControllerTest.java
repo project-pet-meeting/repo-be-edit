@@ -23,12 +23,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import sideproject.petmeeting.meeting.domain.Attendance;
 import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.dto.MeetingRequestDto;
+import sideproject.petmeeting.meeting.repository.AttendanceRepository;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
+import sideproject.petmeeting.post.domain.HeartPost;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -68,6 +71,8 @@ class MeetingControllerTest {
     MemberRepository memberRepository;
     @Autowired
     MeetingRepository meetingRepository;
+    @Autowired
+    AttendanceRepository attendanceRepository;
     public static final String USERNAME = "meetingController@Username.com";
     public static final String PASSWORD = "password";
 
@@ -112,7 +117,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -174,6 +179,7 @@ class MeetingControllerTest {
                                         fieldWithPath("data.placeName").description("placeName of meeting"),
                                         fieldWithPath("data.time").description("time of meeting"),
                                         fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.currentNum").description("currentNum of meeting"),
                                         fieldWithPath("data.species").description("species of meeting"),
                                         fieldWithPath("data.authorId").description("authorId of meeting"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
@@ -239,7 +245,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -254,7 +260,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -289,6 +295,7 @@ class MeetingControllerTest {
                                         fieldWithPath("data.meetingList[].placeName").description("placeName of meeting"),
                                         fieldWithPath("data.meetingList[].time").description("time of meeting"),
                                         fieldWithPath("data.meetingList[].recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.meetingList[].currentNum").description("currentNum of meeting"),
                                         fieldWithPath("data.meetingList[].species").description("species of meeting"),
                                         fieldWithPath("data.meetingList[].authorId").description("authorId of meeting"),
                                         fieldWithPath("data.meetingList[].authorNickname").description("authorNickname of meeting"),
@@ -326,7 +333,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -360,6 +367,7 @@ class MeetingControllerTest {
                                         fieldWithPath("data.placeName").description("placeName of meeting"),
                                         fieldWithPath("data.time").description("time of meeting"),
                                         fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.currentNum").description("currentNum of meeting"),
                                         fieldWithPath("data.species").description("species of meeting"),
                                         fieldWithPath("data.authorId").description("authorId of meeting"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
@@ -395,7 +403,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -426,7 +434,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -439,7 +447,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -501,6 +509,7 @@ class MeetingControllerTest {
                                         fieldWithPath("data.placeName").description("placeName of meeting"),
                                         fieldWithPath("data.time").description("time of meeting"),
                                         fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.currentNum").description("currentNum of meeting"),
                                         fieldWithPath("data.species").description("species of meeting"),
                                         fieldWithPath("data.authorId").description("authorId of meeting"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
@@ -542,7 +551,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -555,7 +564,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -601,7 +610,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -659,7 +668,7 @@ class MeetingControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -698,4 +707,201 @@ class MeetingControllerTest {
         });
         return builder;
     }
+
+    @Test
+    @Transactional
+    @DisplayName("모임 참석 - 정상 응답")
+    public void addAttendance() throws Exception {
+        // Given
+        Member meetingAuthor = Member.builder()
+                .nickname("meetingAuthor")
+                .password(PASSWORD)
+                .email("meetingAuthor")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(meetingAuthor);
+
+        Meeting firstMeeting = Meeting.builder()
+                .title("first meeting title")
+                .content("first meeting content")
+                .member(meetingAuthor)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
+                .build();
+        meetingRepository.save(firstMeeting);
+
+        // When
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/meeting/attendance/" + firstMeeting.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of meeting"),
+                                        fieldWithPath("data.title").description("title of meeting"),
+                                        fieldWithPath("data.content").description("content of meeting"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of meeting"),
+                                        fieldWithPath("data.address").description("address of meeting"),
+                                        fieldWithPath("data.coordinateX").description("coordinateX of meeting"),
+                                        fieldWithPath("data.coordinateY").description("coordinateY of meeting"),
+                                        fieldWithPath("data.placeName").description("placeName of meeting"),
+                                        fieldWithPath("data.time").description("time of meeting"),
+                                        fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.currentNum").description("currentNum of meeting"),
+                                        fieldWithPath("data.species").description("species of meeting"),
+                                        fieldWithPath("data.authorId").description("authorId of meeting"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of meeting"),
+                                        fieldWithPath("data.createdAt").description("createdAt of meeting"),
+                                        fieldWithPath("data.modifiedAt").description("modifiedAt of meeting"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        // Then
+        assertThat(firstMeeting.getTitle()).isEqualTo("first meeting title");
+        assertThat(firstMeeting.getContent()).isEqualTo("first meeting content");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("모임 참석 취소 - 정상 응답")
+    public void deleteAttendance() throws Exception {
+        // Given
+        Member meetingAuthor = Member.builder()
+                .nickname("meetingAuthor")
+                .password(PASSWORD)
+                .email("meetingAuthor")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(meetingAuthor);
+
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Meeting firstMeeting = Meeting.builder()
+                .title("first meeting title")
+                .content("first meeting content")
+                .member(meetingAuthor)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
+                .build();
+        meetingRepository.save(firstMeeting);
+
+        Attendance attendance = Attendance.builder()
+                .meeting(firstMeeting)
+                .member(savedMember)
+                .build();
+        attendanceRepository.save(attendance);
+
+        // When
+        this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/meeting/attendance/" + firstMeeting.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk());
+
+        // Then
+        assertThat(firstMeeting.getTitle()).isEqualTo("first meeting title");
+        assertThat(firstMeeting.getContent()).isEqualTo("first meeting content");
+    }
+
+
+    @Test
+    @Transactional
+    @DisplayName("모임 참석자 조회 - 정상 응답")
+    public void getAttendance() throws Exception {
+        // Given
+        Member meetingAuthor = Member.builder()
+                .nickname("meetingAuthor")
+                .password(PASSWORD)
+                .email("meetingAuthor")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(meetingAuthor);
+
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Meeting firstMeeting = Meeting.builder()
+                .title("first meeting title")
+                .content("first meeting content")
+                .member(meetingAuthor)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
+                .build();
+        meetingRepository.save(firstMeeting);
+
+        Attendance attendance = Attendance.builder()
+                .meeting(firstMeeting)
+                .member(savedMember)
+                .build();
+        attendanceRepository.save(attendance);
+
+        // When
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/meeting/attendance/" + firstMeeting.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.attendanceList[].id").description("id of member"),
+                                        fieldWithPath("data.attendanceList[].nickname").description("nickname of member"),
+                                        fieldWithPath("data.attendanceList[].image").description("image of member"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        // Then
+        assertThat(firstMeeting.getTitle()).isEqualTo("first meeting title");
+        assertThat(firstMeeting.getContent()).isEqualTo("first meeting content");
+    }
+
 }

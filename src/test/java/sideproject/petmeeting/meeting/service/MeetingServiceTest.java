@@ -61,7 +61,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -102,7 +102,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -117,7 +117,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -147,7 +147,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -162,6 +162,7 @@ class MeetingServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("모임 수정 테스트 - 정상 응답")
     public void updateMeeting() throws IOException {
         // Given
@@ -176,7 +177,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -189,7 +190,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -228,7 +229,7 @@ class MeetingServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();

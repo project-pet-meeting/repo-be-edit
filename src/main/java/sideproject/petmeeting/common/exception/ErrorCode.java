@@ -33,6 +33,10 @@ public enum ErrorCode {
 
     // == Meeting ==//
     MEETING_NOT_EXIST(404, "MEETING_NOT_EXIST", "모임이 존재하지 않습니다."),
+    ALREADY_ATTENDANCE_MEETING(409, "ALREADY_ATTENDANCE_MEETING", "이미 참여중인 모임입니다."),
+    MEETING_RECRUIT_FULL(400, "MEETING_RECRUIT_FULL", "모집 인원이 마감되었습니다."),
+    ATTENDANCE_NOT_EXIST(404, "ATTENDANCE_NOT_EXIST", "모임 참석 정보가 존재하지 않습니다."),
+    ATTENDANCE_LIST_ACCESS_DENIED(403, "ATTENDANCE_LIST_ACCESS_DENIED", "참석자 리스트 접근 권한이 없습니다."),
 
     // == Token == //
     NEED_LOGIN(401, "NEED_LOGIN", "로그인이 필요합니다."),
