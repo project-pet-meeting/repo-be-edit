@@ -31,7 +31,8 @@ import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
-import sideproject.petmeeting.post.domain.HeartPost;
+import sideproject.petmeeting.post.repository.PostRepository;
+import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -68,11 +69,15 @@ class MeetingControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    MeetingRepository meetingRepository;
+    private MeetingRepository meetingRepository;
     @Autowired
-    AttendanceRepository attendanceRepository;
+    private PostRepository postRepository;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     public static final String USERNAME = "meetingController@Username.com";
     public static final String PASSWORD = "password";
 
@@ -89,12 +94,7 @@ class MeetingControllerTest {
                         .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
-    }
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void memberBuild() {
         Member member = Member.builder()
                 .nickname(USERNAME)
                 .password(PASSWORD)
@@ -104,6 +104,29 @@ class MeetingControllerTest {
                 .build();
         memberRepository.save(member);
     }
+
+    @AfterEach
+    public void after() {
+        attendanceRepository.deleteAllInBatch();
+        meetingRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        refreshTokenRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
+    }
+
+//    @Order(0)
+//    @Test
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void memberBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .image("test-image")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
     @Test
     @Transactional

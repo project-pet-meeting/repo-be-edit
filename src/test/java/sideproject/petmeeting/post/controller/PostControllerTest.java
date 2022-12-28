@@ -32,6 +32,7 @@ import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
+import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
@@ -72,9 +73,12 @@ class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
 
     public static final String USERNAME = "postController@Username.com";
     public static final String PASSWORD = "password";
@@ -93,22 +97,40 @@ class PostControllerTest {
                         .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
+
+            Member member = Member.builder()
+                    .nickname(USERNAME)
+                    .password(PASSWORD)
+                    .email(USERNAME)
+                    .location("지역")
+                    .image("test-image")
+                    .userRole(ROLE_MEMBER)
+                    .build();
+            memberRepository.save(member);
     }
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void memberBuild() {
-        Member member = Member.builder()
-                .nickname(USERNAME)
-                .password(PASSWORD)
-                .email(USERNAME)
-                .location("지역")
-                .image("test-image")
-                .userRole(ROLE_MEMBER)
-                .build();
-        memberRepository.save(member);
+    @AfterEach
+    public void after() {
+        heartPostRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        refreshTokenRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
     }
+
+//    @Order(0)
+//    @Test
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void memberBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .location("지역")
+//                .image("test-image")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
     @Test
     @Transactional
@@ -188,6 +210,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 작성 - data 값이 빈값으로 들어 온 경우 error 발생 (valid 유효성 검사)")
     public void createPost_DataEmpty() throws Exception {
         // Given
@@ -352,6 +375,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 조회 - 게시글이 존재하지 않는 경우 Error")
     public void getPost_No_Post() throws Exception {
         // Given
@@ -469,6 +493,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 수정 - 권한이 없는 경우 Error")
     public void putPost_Not_Authorization() throws Exception {
         // Given

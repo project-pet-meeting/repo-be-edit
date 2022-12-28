@@ -137,7 +137,7 @@ class MyPageServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -152,7 +152,7 @@ class MyPageServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2022-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
