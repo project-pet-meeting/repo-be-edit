@@ -11,22 +11,27 @@ import org.springframework.web.multipart.MultipartFile;
 import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
+import sideproject.petmeeting.meeting.domain.Attendance;
 import sideproject.petmeeting.meeting.domain.Meeting;
+import sideproject.petmeeting.meeting.dto.AttendanceResponseDto;
 import sideproject.petmeeting.meeting.dto.MeetingPageResponseDto;
 import sideproject.petmeeting.meeting.dto.MeetingRequestDto;
 import sideproject.petmeeting.meeting.dto.MeetingResponseDto;
+import sideproject.petmeeting.meeting.repository.AttendanceRepository;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
+    private final AttendanceRepository attendanceRepository;
     private final S3Uploader s3Uploader;
 
     /**
@@ -51,6 +56,15 @@ public class MeetingService {
                 .member(member)
                 .build();
         meetingRepository.save(meeting);
+
+        Attendance attendance = Attendance.builder()
+                .meeting(meeting)
+                .member(member)
+                .build();
+        attendanceRepository.save(attendance);
+
+        Integer count = attendanceRepository.countByMeetingId(meeting.getId());
+        meeting.countNum(count);
 
         return getMeetingResponseDto(meeting);
 
@@ -162,6 +176,103 @@ public class MeetingService {
 
     }
 
+    /**
+     * 모임 참석
+     * @param meetingId: 참석할 모임 id
+     * @param member: 사용자 정보
+     * @return : 참석한 모임 정보
+     */
+    @Transactional
+    public MeetingResponseDto addAttendance(Long meetingId, Member member) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 모임 id 입니다.", ErrorCode.MEETING_NOT_EXIST)
+        );
+
+        if (attendanceRepository.findByMeetingAndMember(meeting, member).isPresent()) {
+            throw new BusinessException("이미 참여중인 모임입니다.", ErrorCode.ALREADY_ATTENDANCE_MEETING);
+        }
+
+        if (attendanceRepository.countByMeetingId(meetingId) >= meeting.getRecruitNum()) {
+            throw new BusinessException("모집 인원이 마감되었습니다.", ErrorCode.MEETING_RECRUIT_FULL);
+        }
+
+        Attendance attendance = Attendance.builder()
+                .meeting(meeting)
+                .member(member)
+                .build();
+        attendanceRepository.save(attendance);
+
+        Integer count = attendanceRepository.countByMeetingId(meetingId);
+        meeting.countNum(count);
+
+        return getMeetingResponseDto(meeting);
+    }
+
+
+    /**
+     * 모임 참석 취소
+     * @param meetingId: 취소할 모임 id
+     * @param member: 사용자 정보
+     */
+    @Transactional
+    public void deleteAttendance(Long meetingId, Member member) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 모임 id 입니다.", ErrorCode.MEETING_NOT_EXIST)
+        );
+
+        Optional<Attendance> attendanceOptional = attendanceRepository.findByMeetingAndMember(meeting, member);
+        if (attendanceOptional.isEmpty()) {
+            throw new BusinessException("참석 중인 모임이 아닙니다.", ErrorCode.ATTENDANCE_NOT_EXIST);
+        }
+
+        attendanceRepository.delete(attendanceOptional.get());
+
+        Integer count = attendanceRepository.countByMeetingId(meetingId);
+        meeting.countNum(count);
+
+//        if (meeting.getMember().getId().equals(member.getId())) {
+//            meetingDelete(meetingId, member);
+//        }
+
+    }
+
+
+    /**
+     * 모임 참석자 조회
+     * @param meetingId: 참석자 조회할 모임 id
+     * @param member:
+     * @return : 모임 참석자
+     */
+    public AttendanceResponseDto getAttendance(Long meetingId, Member member) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 모임 id 입니다.", ErrorCode.MEETING_NOT_EXIST)
+        );
+
+        Optional<Attendance> attendanceOptional = attendanceRepository.findByMeetingAndMember(meeting, member);
+        if (attendanceOptional.isEmpty()) {
+            throw new BusinessException("참석하지 않은 모임의 참석 리스트 조회 불가.", ErrorCode.ATTENDANCE_LIST_ACCESS_DENIED);
+        }
+
+        // 어텐던스 리포지토리에서 미팅 아이디로 검색한 멤버 list 가져오기
+        List<Attendance> memberList = attendanceRepository.findMemberFetchJoin(meetingId);
+
+        List<AttendanceResponseDto> attendanceListDto = new ArrayList<>();
+        for(Attendance attendance : memberList) {
+            attendanceListDto.add(
+                    AttendanceResponseDto.builder()
+                            .id(attendance.getId())
+                            .nickname(attendance.getMember().getNickname())
+                            .image(attendance.getMember().getImage())
+                            .location(attendance.getMember().getLocation())
+                            .build()
+            );
+        }
+
+        return AttendanceResponseDto.builder()
+                .attendanceList(attendanceListDto)
+                .build();
+    }
+
 
     /**
      * meeting 데이터를 meetingResponseDto 로 build
@@ -181,6 +292,7 @@ public class MeetingService {
                 .placeName(meeting.getPlaceName())
                 .time(meeting.getTime())
                 .recruitNum(meeting.getRecruitNum())
+                .currentNum(meeting.getCurrentNum())
                 .species(meeting.getSpecies())
                 .authorId(meeting.getMember().getId())
                 .authorNickname(meeting.getMember().getNickname())

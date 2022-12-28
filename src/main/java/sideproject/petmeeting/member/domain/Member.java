@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.common.Timestamped;
+import sideproject.petmeeting.meeting.domain.Attendance;
 import sideproject.petmeeting.member.dto.request.MemberDetailRequestDto;
 import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
 import sideproject.petmeeting.pet.domain.Pet;
@@ -40,6 +41,8 @@ public class Member extends Timestamped {
     private List<ChatMember> chatMembers = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<Pet> pet = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<Attendance> attendance = new ArrayList<>();
 
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();
