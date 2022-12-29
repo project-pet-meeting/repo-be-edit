@@ -29,6 +29,7 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.pet.domain.Pet;
 import sideproject.petmeeting.pet.dto.PetRequestDto;
 import sideproject.petmeeting.pet.repository.PetRepository;
+import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
@@ -69,6 +70,8 @@ class PetControllerTest {
     private PetRepository petRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
 
     public static final String USERNAME = "petController@Username.com";
@@ -87,12 +90,7 @@ class PetControllerTest {
                         .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
-    }
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void memberBuild() {
         Member member = Member.builder()
                 .nickname(USERNAME)
                 .password(PASSWORD)
@@ -103,6 +101,28 @@ class PetControllerTest {
                 .build();
         memberRepository.save(member);
     }
+
+    @AfterEach
+    public void after() {
+        petRepository.deleteAllInBatch();
+        refreshTokenRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
+    }
+
+//    @Order(0)
+//    @Test
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void memberBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .image("test-image")
+//                .location("지역")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
 
     @Test

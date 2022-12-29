@@ -32,6 +32,7 @@ import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostRequestDto;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
+import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
@@ -52,8 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
+import static sideproject.petmeeting.post.domain.Category.*;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -73,9 +73,12 @@ class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
 
     public static final String USERNAME = "postController@Username.com";
     public static final String PASSWORD = "password";
@@ -94,21 +97,40 @@ class PostControllerTest {
                         .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
+
+            Member member = Member.builder()
+                    .nickname(USERNAME)
+                    .password(PASSWORD)
+                    .email(USERNAME)
+                    .location("지역")
+                    .image("test-image")
+                    .userRole(ROLE_MEMBER)
+                    .build();
+            memberRepository.save(member);
     }
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void memberBuild() {
-        Member member = Member.builder()
-                .nickname(USERNAME)
-                .password(PASSWORD)
-                .email(USERNAME)
-                .image("test-image")
-                .userRole(ROLE_MEMBER)
-                .build();
-        memberRepository.save(member);
+    @AfterEach
+    public void after() {
+        heartPostRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        refreshTokenRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
     }
+
+//    @Order(0)
+//    @Test
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void memberBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .location("지역")
+//                .image("test-image")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
     @Test
     @Transactional
@@ -170,6 +192,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -187,6 +210,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 작성 - data 값이 빈값으로 들어 온 경우 error 발생 (valid 유효성 검사)")
     public void createPost_DataEmpty() throws Exception {
         // Given
@@ -233,7 +257,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -269,6 +293,7 @@ class PostControllerTest {
                                         fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
                                         fieldWithPath("data.postList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.postList[].authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.postList[].createdAt").description("createdAt of post"),
                                         fieldWithPath("data.postList[].modifiedAt").description("modifiedAt of post"),
@@ -331,6 +356,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -349,6 +375,7 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 조회 - 게시글이 존재하지 않는 경우 Error")
     public void getPost_No_Post() throws Exception {
         // Given
@@ -391,7 +418,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("수정 제목")
                 .content("수정 내용")
                 .build();
@@ -448,6 +475,7 @@ class PostControllerTest {
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.createdAt").description("createdAt of post"),
                                         fieldWithPath("data..modifiedAt").description("modifiedAt of post"),
@@ -459,12 +487,13 @@ class PostControllerTest {
         ;
 
         // Then
-        assertThat(postRequestDto.getCategory()).isEqualTo(FREEPRESENT);
+        assertThat(postRequestDto.getCategory()).isEqualTo(SHARE);
         assertThat(postRequestDto.getTitle()).isEqualTo("수정 제목");
         assertThat(postRequestDto.getContent()).isEqualTo("수정 내용");
     }
 
     @Test
+    @Transactional
     @DisplayName("게시글 수정 - 권한이 없는 경우 Error")
     public void putPost_Not_Authorization() throws Exception {
         // Given
@@ -473,6 +502,7 @@ class PostControllerTest {
                 .password(PASSWORD)
                 .email("notAuthorization")
                 .image("test-image")
+                .location("지역")
                 .userRole(ROLE_MEMBER)
                 .build();
         memberRepository.save(member2);
@@ -488,7 +518,7 @@ class PostControllerTest {
         postRepository.save(firstPost);
 
         PostRequestDto postRequestDto = PostRequestDto.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("수정 제목")
                 .content("수정 내용")
                 .build();
@@ -576,6 +606,7 @@ class PostControllerTest {
                 .password(PASSWORD)
                 .email("notAuthorization2")
                 .image("test-image")
+                .location("지역")
                 .userRole(ROLE_MEMBER)
                 .build();
         memberRepository.save(member2);

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.meeting.domain.Meeting;
+import sideproject.petmeeting.meeting.repository.AttendanceRepository;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
@@ -49,8 +50,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.FREEPRESENT;
-import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
+import static sideproject.petmeeting.post.domain.Category.*;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -69,15 +69,18 @@ class MyPageControllerTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    MeetingRepository meetingRepository;
+    private MeetingRepository meetingRepository;
     @Autowired
-    PetRepository petRepository;
+    private PetRepository petRepository;
     @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
     public static final String USERNAME = "mypageController@Username.com";
     public static final String PASSWORD = "password";
 
@@ -94,12 +97,7 @@ class MyPageControllerTest {
                         .withResponseDefaults(modifyUris().host("localhost").removePort(), prettyPrint()))
                 .alwaysDo(print())
                 .build();
-    }
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void entityBuild() {
         Member member = Member.builder()
                 .nickname(USERNAME)
                 .password(PASSWORD)
@@ -110,6 +108,31 @@ class MyPageControllerTest {
                 .build();
         memberRepository.save(member);
     }
+
+    @AfterEach
+    public void after() {
+        attendanceRepository.deleteAllInBatch();
+        meetingRepository.deleteAllInBatch();
+        heartPostRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        refreshTokenRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
+    }
+
+//    @Order(0)
+//    @Test
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void entityBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .location("서울")
+//                .image("test-image")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
     @Test
     @Transactional
@@ -257,7 +280,7 @@ class MyPageControllerTest {
         postRepository.save(firstPost);
 
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -293,6 +316,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.myPostList[].numHeart").description("numHeart of post"),
                                         fieldWithPath("data.myPostList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.myPostList[].authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.myPostList[].authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.myPostList[].authorImageUrl").description("authorImageUrl of post"),
                                         fieldWithPath("data.myPostList[].createdAt").description("createdAt of post"),
                                         fieldWithPath("data.myPostList[].modifiedAt").description("modifiedAt of post"),
@@ -323,7 +347,7 @@ class MyPageControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -338,7 +362,7 @@ class MyPageControllerTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2052-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -373,6 +397,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.myMeetingList[].placeName").description("placeName of meeting"),
                                         fieldWithPath("data.myMeetingList[].time").description("time of meeting"),
                                         fieldWithPath("data.myMeetingList[].recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.myMeetingList[].currentNum").description("currentNum of meeting"),
                                         fieldWithPath("data.myMeetingList[].species").description("species of meeting"),
                                         fieldWithPath("data.myMeetingList[].authorId").description("authorId of meeting"),
                                         fieldWithPath("data.myMeetingList[].authorNickname").description("authorNickname of meeting"),
@@ -413,7 +438,7 @@ class MyPageControllerTest {
 
         log.info("두번째 게시글 작성");
         Post secondPost = Post.builder()
-                .category(FREEPRESENT)
+                .category(SHARE)
                 .title("second post title")
                 .content("second post content")
                 .member(savedMember)
@@ -457,6 +482,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.myHeartPostList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.myHeartPostList[].authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.myHeartPostList[].authorImageUrl").description("authorImageUrl of post"),
+                                        fieldWithPath("data.myHeartPostList[].authorLocation").description("authorLocation of post"),
                                         fieldWithPath("data.myHeartPostList[].createdAt").description("createdAt of post"),
                                         fieldWithPath("data.myHeartPostList[].modifiedAt").description("modifiedAt of post"),
                                         fieldWithPath("data.links[0].rel").description("relation"),

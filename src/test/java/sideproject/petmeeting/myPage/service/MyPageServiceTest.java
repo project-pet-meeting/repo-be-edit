@@ -3,6 +3,7 @@ package sideproject.petmeeting.myPage.service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
+@AutoConfigureMockMvc
 @Slf4j
 class MyPageServiceTest {
     @Autowired
@@ -180,7 +182,7 @@ class MyPageServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2050-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();
@@ -195,7 +197,7 @@ class MyPageServiceTest {
                 .coordinateX("coordinateX")
                 .coordinateY("coordinateY")
                 .placeName("placeName")
-                .time(LocalDateTime.parse("2050-12-25T18:00:00"))
+                .time(LocalDateTime.now().plusDays((1)))
                 .recruitNum(5)
                 .species("species")
                 .build();

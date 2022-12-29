@@ -3,11 +3,13 @@ package sideproject.petmeeting.comment.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.post.domain.Post;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ActiveProfiles("test")
+@Transactional
 class CommentTest {
 
     @Test
