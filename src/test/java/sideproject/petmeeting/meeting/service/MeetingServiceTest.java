@@ -11,6 +11,7 @@ import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.dto.MeetingPageResponseDto;
 import sideproject.petmeeting.meeting.dto.MeetingRequestDto;
 import sideproject.petmeeting.meeting.dto.MeetingResponseDto;
+import sideproject.petmeeting.meeting.repository.AttendanceRepository;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.repository.MemberRepository;
@@ -29,18 +30,19 @@ import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 class MeetingServiceTest {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    MeetingRepository meetingRepository;
+    private MeetingRepository meetingRepository;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
     @Autowired
     MeetingService meetingService;
     public static final String USERNAME = "meetingService@Username.com";
     public static final String PASSWORD = "password";
 
-    @Test
-    @Order(0)
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void entityBuild() {
+
+    @BeforeEach
+    public void setup() {
         Member member = Member.builder()
                 .nickname(USERNAME)
                 .password(PASSWORD)
@@ -50,6 +52,27 @@ class MeetingServiceTest {
                 .build();
         memberRepository.save(member);
     }
+
+    @AfterEach
+    public void after() {
+        attendanceRepository.deleteAllInBatch();
+        meetingRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
+    }
+
+//    @Test
+//    @Order(0)
+//    @DisplayName("공통으로 사용하는 ENTITY 생성")
+//    public void entityBuild() {
+//        Member member = Member.builder()
+//                .nickname(USERNAME)
+//                .password(PASSWORD)
+//                .email(USERNAME)
+//                .image("test-image")
+//                .userRole(ROLE_MEMBER)
+//                .build();
+//        memberRepository.save(member);
+//    }
 
     @Test
     @Transactional

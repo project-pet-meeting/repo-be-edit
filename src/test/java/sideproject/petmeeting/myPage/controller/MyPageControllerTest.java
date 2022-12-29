@@ -111,6 +111,7 @@ class MyPageControllerTest {
 
     @AfterEach
     public void after() {
+        petRepository.deleteAllInBatch();
         attendanceRepository.deleteAllInBatch();
         meetingRepository.deleteAllInBatch();
         heartPostRepository.deleteAllInBatch();
@@ -163,6 +164,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.email").description("email of member"),
                                         fieldWithPath("data.location").description("location of member"),
                                         fieldWithPath("data.image").description("image of member"),
+                                        fieldWithPath("data.pet[]").description("image of member"),
                                         fieldWithPath("data.links[0].rel").description("relation"),
                                         fieldWithPath("data.links[0].href").description("url of action")
                                 )

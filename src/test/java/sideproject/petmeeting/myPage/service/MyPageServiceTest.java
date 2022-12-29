@@ -5,8 +5,11 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
@@ -26,6 +29,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
 
@@ -38,18 +46,40 @@ class MyPageServiceTest {
     @Autowired
     MyPageService myPageService;
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    MeetingRepository meetingRepository;
+    private MeetingRepository meetingRepository;
     @Autowired
-    HeartPostRepository heartPostRepository;
+    private HeartPostRepository heartPostRepository;
     @Autowired
-    PetRepository petRepository;
+    private PetRepository petRepository;
 
     public static final String USERNAME = "mypageService@Username.com";
     public static final String PASSWORD = "password";
+
+    @BeforeEach
+    public void setup() {
+        Member member = Member.builder()
+                .nickname(USERNAME)
+                .password(PASSWORD)
+                .email(USERNAME)
+                .location("서울")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(member);
+    }
+
+    @AfterEach
+    public void after() {
+        petRepository.deleteAllInBatch();
+        meetingRepository.deleteAllInBatch();
+        heartPostRepository.deleteAllInBatch();
+        postRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
+    }
 
 
     @Test

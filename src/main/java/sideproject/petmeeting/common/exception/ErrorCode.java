@@ -46,7 +46,6 @@ public enum ErrorCode {
     MY_POST_NOT_EXIST(404, "MY_POST_NOT_EXIST", "내가 작성한 게시글이 존재하지 않습니다."),
     MY_MEETING_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 만든 모임이 존재하지 않습니다."),
     MY_HEART_POST_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 '좋아요'한 게시글이 존재하지 않습니다."),
-    MEMBER_NOT_EXIST(404, "MEMBER_NOT_EXIST", "회원 정보가 존재하지 않습니다."),
 
     //== Member ==//
     MEMBER_NOT_EXIST(404, "MEMBER_NOT_EXIST", "회원이 존재 하지 않습니다."),
