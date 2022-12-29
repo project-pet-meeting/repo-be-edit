@@ -41,7 +41,6 @@ class PostTest {
     @Transactional
     public void checkCascade() {
         Member member = Member.builder()
-//                .id(1L)
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")

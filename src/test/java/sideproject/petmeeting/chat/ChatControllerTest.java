@@ -2,7 +2,6 @@ package sideproject.petmeeting.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +63,6 @@ class ChatControllerTest {
     @BeforeEach
     void init() {
         Member member = Member.builder()
-                .id(1L)
                 .nickname("Tommy")
                 .password("test")
                 .email("test@test.com")
@@ -99,12 +97,12 @@ class ChatControllerTest {
         Member member = memberRepository.findByEmail("test@test.com").get();
         ChatRoom chatRoom = chatRoomRepository.findByPost(post).get();
         ChatMember chatMember = chatMemberRepository.findById(1L).get();
-
+        Long memberId = member.getId();
 
         assertAll(
                 () -> assertThat(chatRoomRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatRoom.getRoomName()).isEqualTo("test room"),
-                () -> assertThat(chatRoom.getPost().getMember().getId()).isEqualTo(1L),
+                () -> assertThat(chatRoom.getPost().getMember().getId()).isEqualTo(memberId),
                 () -> assertThat(chatMemberRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatMember.getMember()).isEqualTo(member),
                 () -> assertThat(chatMember.getChatRoom()).isEqualTo(chatRoom),
