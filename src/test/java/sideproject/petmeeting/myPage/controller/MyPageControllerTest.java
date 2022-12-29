@@ -25,6 +25,8 @@ import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
+import sideproject.petmeeting.pet.domain.Pet;
+import sideproject.petmeeting.pet.repository.PetRepository;
 import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
@@ -73,9 +75,12 @@ class MyPageControllerTest {
     @Autowired
     private MeetingRepository meetingRepository;
     @Autowired
+    private PetRepository petRepository;
+    @Autowired
     private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private AttendanceRepository attendanceRepository;
+
     public static final String USERNAME = "mypageController@Username.com";
     public static final String PASSWORD = "password";
 
@@ -172,6 +177,86 @@ class MyPageControllerTest {
         assertThat(assertMember.getEmail()).isEqualTo(USERNAME);
         assertThat(assertMember.getImage()).isEqualTo("test-image");
         log.info("내 정보 조회 종료");
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("타유저 정보 조회 - 정상응답")
+    public void getMemberProfile() throws Exception {
+        log.info("타유저 정보 조회 시작");
+        // Given
+        Member member2 = Member.builder()
+                .nickname("memberProfile")
+                .password(PASSWORD)
+                .email("memberProfile")
+                .location("서울")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(member2);
+
+        Pet pet = Pet.builder()
+                .name("멍멍이")
+                .age(2)
+                .weight(2.5)
+                .species("강아지")
+                .gender("남")
+                .imageUrl("test-image")
+                .member(member2)
+                .build();
+        petRepository.save(pet);
+
+        // When
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/mypage/" + member2.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of member"),
+                                        fieldWithPath("data.nickname").description("nickname of member"),
+                                        fieldWithPath("data.location").description("location of member"),
+                                        fieldWithPath("data.image").description("image of member"),
+                                        fieldWithPath("data.pet[]").description("id of pet"),
+                                        fieldWithPath("data.pet[].id").description("id of pet"),
+                                        fieldWithPath("data.pet[].name").description("name of pet"),
+                                        fieldWithPath("data.pet[].age").description("age of pet"),
+                                        fieldWithPath("data.pet[].weight").description("weight of pet"),
+                                        fieldWithPath("data.pet[].species").description("species of pet"),
+                                        fieldWithPath("data.pet[].gender").description("gender of pet"),
+                                        fieldWithPath("data.pet[].imageUrl").description("imageUrl of pet"),
+                                        fieldWithPath("data.pet[].createdAt").description("createdAt of pet"),
+                                        fieldWithPath("data.pet[].modifiedAt").description("modifiedAt of pet"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        // Then
+        Member assertMember = memberRepository.findById(member2.getId()).orElseThrow();
+        Pet assertPet = petRepository.findById(pet.getId()).orElseThrow();
+
+        assertThat(assertMember.getNickname()).isEqualTo("memberProfile");
+        assertThat(assertMember.getEmail()).isEqualTo("memberProfile");
+        assertThat(assertMember.getImage()).isEqualTo("test-image");
+        assertThat(assertPet.getName()).isEqualTo("멍멍이");
+        assertThat(assertPet.getSpecies()).isEqualTo("강아지");
+
+        log.info("타유저 정보 조회 종료");
 
     }
 

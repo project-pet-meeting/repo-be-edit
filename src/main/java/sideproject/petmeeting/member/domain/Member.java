@@ -44,6 +44,7 @@ public class Member extends Timestamped {
     @OneToMany(mappedBy = "member")
     private List<Attendance> attendance = new ArrayList<>();
 
+
     public Member update(MemberUpdateRequest memberUpdateRequest) {
         this.nickname = memberUpdateRequest.getEmail();
         this.password = memberUpdateRequest.getPassword();

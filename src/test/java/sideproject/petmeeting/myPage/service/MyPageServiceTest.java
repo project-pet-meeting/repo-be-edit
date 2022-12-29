@@ -14,13 +14,16 @@ import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.myPage.dto.MyHeartPostDto;
 import sideproject.petmeeting.myPage.dto.MyMeetingDto;
 import sideproject.petmeeting.myPage.dto.MyPostDto;
-import sideproject.petmeeting.myPage.dto.MyProfileDto;
+import sideproject.petmeeting.myPage.dto.ProfileDto;
+import sideproject.petmeeting.pet.domain.Pet;
+import sideproject.petmeeting.pet.repository.PetRepository;
 import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.repository.HeartPostRepository;
 import sideproject.petmeeting.post.repository.PostRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
@@ -42,6 +45,8 @@ class MyPageServiceTest {
     MeetingRepository meetingRepository;
     @Autowired
     HeartPostRepository heartPostRepository;
+    @Autowired
+    PetRepository petRepository;
 
     public static final String USERNAME = "mypageService@Username.com";
     public static final String PASSWORD = "password";
@@ -73,14 +78,54 @@ class MyPageServiceTest {
 
         // When
         log.info("내 정보 조회 서비스 로직");
-        MyProfileDto myProfileDto = myPageService.getProfile(savedMember);
+        ProfileDto profileDto = myPageService.getProfile(savedMember);
 
         // Then
-        assertThat(myProfileDto.getNickname()).isEqualTo(USERNAME);
-        assertThat(myProfileDto.getEmail()).isEqualTo(USERNAME);
-        assertThat(myProfileDto.getLocation()).isEqualTo("서울");
-        assertThat(myProfileDto.getImage()).isEqualTo("test-image");
+        assertThat(profileDto.getNickname()).isEqualTo(USERNAME);
+        assertThat(profileDto.getEmail()).isEqualTo(USERNAME);
+        assertThat(profileDto.getLocation()).isEqualTo("서울");
+        assertThat(profileDto.getImage()).isEqualTo("test-image");
         log.info("내 정보 조회 정상 응답 테스트 종료");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("타유저 정보 조회 - 정상응답")
+    public void getMemberProfileTest() {
+        log.info("타유저 정보 조회 정상 응답 테스트 시작");
+        // Given
+        Member member2 = Member.builder()
+                .nickname("memberProfile")
+                .password(PASSWORD)
+                .email("memberProfile")
+                .location("서울")
+                .image("test-image")
+                .userRole(ROLE_MEMBER)
+                .build();
+        memberRepository.save(member2);
+
+        Pet pet = Pet.builder()
+                .name("멍멍이")
+                .age(2)
+                .weight(2.5)
+                .species("강아지")
+                .gender("남")
+                .imageUrl("test-image")
+                .member(member2)
+                .build();
+        petRepository.save(pet);
+
+
+
+        // When
+        log.info("타유저 정보 조회 서비스 로직");
+        ProfileDto profileDto = myPageService.getMemberProfile(member2.getId());
+
+        // Then
+        assertThat(profileDto.getNickname()).isEqualTo("memberProfile");
+        assertThat(profileDto.getLocation()).isEqualTo("서울");
+        assertThat(profileDto.getImage()).isEqualTo("test-image");
+        log.info("타유저 정보 조회 정상 응답 테스트 종료");
     }
 
     @Test
