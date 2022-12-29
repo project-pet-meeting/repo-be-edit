@@ -6,10 +6,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Category {
-    RECOMMAND("추천"),
-    FREEPRESENT("무료나눔"),
-    FRIEND("친구맺기"),
-    ETC("기타");
+    SHARE("공유"),
+    HELP("도움"),
+    RECOMMEND("추천"),
+
+    TALK("잡담");
 
     final String value;
 }

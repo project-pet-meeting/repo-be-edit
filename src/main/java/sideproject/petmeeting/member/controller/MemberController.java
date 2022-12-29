@@ -14,17 +14,14 @@ import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.member.dto.request.LoginRequestDto;
-import sideproject.petmeeting.member.dto.request.MemberDto;
-import sideproject.petmeeting.member.dto.request.MemberUpdateRequest;
-import sideproject.petmeeting.member.dto.request.NicknameRequestDto;
+import sideproject.petmeeting.member.dto.request.*;
+import sideproject.petmeeting.member.dto.response.MemberDetailResponseDto;
 import sideproject.petmeeting.member.dto.response.NicknameResponseDto;
 import sideproject.petmeeting.member.dto.response.SignupResponseDto;
 import sideproject.petmeeting.member.emailvalidation.EmailServiceImpl;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.member.service.MemberService;
 import sideproject.petmeeting.member.validator.MemberValidator;
-import sideproject.petmeeting.post.dto.PostRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -115,6 +112,30 @@ public class MemberController {
         message.setData(responseResource);
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
+
+    @PutMapping("/detail")
+    public ResponseEntity<Object> detailMember(@RequestBody @Valid MemberDetailRequestDto memberDetailRequestDto, HttpServletRequest httpServletRequest, Errors errors, HttpServletResponse httpServletResponse) {
+        Response response = new Response();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        if (errors.hasErrors()) {
+            response.setStatus(StatusEnum.BAD_REQUEST);
+            response.setMessage("다시 시도해 주세요");
+            response.setData(errors);
+            return new ResponseEntity<>(response, headers, BAD_REQUEST);
+        }
+
+        Member detailMember = memberService.detailMember(memberDetailRequestDto, httpServletRequest, httpServletResponse);
+        ResponseResource responseResource = new ResponseResource(detailMember.getNickname());
+        responseResource.add(linkTo(MemberController.class).slash("detail").withSelfRel());
+        responseResource.add(linkTo(MemberController.class).slash("logout").withRel("logout"));
+        response.setStatus(StatusEnum.OK);
+        response.setMessage("회원 상세 정보 저장이 완료되었습니다.");
+        response.setData(responseResource);
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, Errors errors, HttpServletResponse httpServletResponse) {

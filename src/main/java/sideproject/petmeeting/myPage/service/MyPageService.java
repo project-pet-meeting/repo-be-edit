@@ -1,6 +1,7 @@
 package sideproject.petmeeting.myPage.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sideproject.petmeeting.common.exception.BusinessException;
@@ -9,10 +10,13 @@ import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.dto.MeetingResponseDto;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.myPage.dto.MyHeartPostDto;
 import sideproject.petmeeting.myPage.dto.MyMeetingDto;
 import sideproject.petmeeting.myPage.dto.MyPostDto;
-import sideproject.petmeeting.myPage.dto.MyProfileDto;
+import sideproject.petmeeting.myPage.dto.ProfileDto;
+import sideproject.petmeeting.pet.domain.Pet;
+import sideproject.petmeeting.pet.repository.PetRepository;
 import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostResponseDto;
@@ -24,23 +28,56 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class MyPageService {
     private final PostRepository postRepository;
     private final MeetingRepository meetingRepository;
     private final HeartPostRepository heartPostRepository;
+    private final MemberRepository memberRepository;
+    private final PetRepository petRepository;
 
     /**
      * 마이페이지 - 내 정보 조회
      * @param member : 사용자
      * @return : 사용자 정보
      */
-    public MyProfileDto getProfile(Member member) {
+    public ProfileDto getProfile(Member member) {
+        List<Pet> petList = petRepository.findPetFetchJoinMemberId(member.getId());
+        if (null == petList) {
+            throw new BusinessException("반려동물 정보가 존재하지 않습니다.", ErrorCode.PET_NOT_EXIST);
+        }
 
-        return MyProfileDto.builder()
+        return ProfileDto.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .location(member.getLocation())
                 .image(member.getImage())
+                .pet(petList)
+                .build();
+    }
+
+    /**
+     * 타유저 프로필 조회
+     * @param memberId : 조회할 회원 id
+     * @return : 타회원 정보
+     */
+    public ProfileDto getMemberProfile(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new BusinessException("회원 정보가 존재하지 않습니다.", ErrorCode.MEMBER_NOT_EXIST)
+        );
+
+        List<Pet> petList = petRepository.findPetFetchJoinMemberId(memberId);
+        if (null == petList) {
+            throw new BusinessException("반려동물 정보가 존재하지 않습니다.", ErrorCode.PET_NOT_EXIST);
+        }
+
+        return ProfileDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .location(member.getLocation())
+                .image(member.getImage())
+                .pet(petList)
                 .build();
     }
 

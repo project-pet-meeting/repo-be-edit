@@ -23,6 +23,7 @@ public class PostResponseDto {
     private Integer numHeart;
     private Long authorId;
     private String authorNickname;
+    private String authorLocation;
     private String authorImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

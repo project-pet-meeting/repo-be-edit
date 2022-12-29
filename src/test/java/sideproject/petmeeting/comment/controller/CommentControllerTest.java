@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import sideproject.petmeeting.comment.domain.Comment;
 import sideproject.petmeeting.comment.dto.request.CommentRequestDto;
@@ -42,11 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 
 
+@Transactional
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class CommentControllerTest {
 
     @Autowired
@@ -62,22 +63,14 @@ class CommentControllerTest {
     @Autowired
     CommentRepository commentRepository;
 
-    @Order(0)
-    @Test
-    @DisplayName("공통으로 사용하는 ENTITY 생성")
-    public void entityBuild() {
+    @BeforeEach
+    public void setup(WebApplicationContext webApplicationContext,
+                      RestDocumentationContextProvider restDocumentationContextProvider) {
         Member member = buildMember();
         memberRepository.save(member);
 
         Post post = buildPost();
         postRepository.save(post);
-    }
-
-    @BeforeEach
-    public void setup(WebApplicationContext webApplicationContext,
-                      RestDocumentationContextProvider restDocumentationContextProvider) {
-
-        commentRepository.deleteAll();
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 //                .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -102,7 +95,6 @@ class CommentControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andDo(print())
                 .andExpect(status().isOk());
-        assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
 
         return perform.andReturn().getResponse().getHeader("Authorization");
     }
@@ -116,7 +108,7 @@ class CommentControllerTest {
                 .content("test comment")
                 .build();
 
-        Post savedPost = postRepository.findById(1L).get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         // When
 
@@ -162,7 +154,7 @@ class CommentControllerTest {
                 .content("test comment")
                 .build();
 
-        this.mockMvc.perform(post("/api/comment/2")
+        this.mockMvc.perform(post("/api/comment/100")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON)
@@ -178,7 +170,7 @@ class CommentControllerTest {
         CommentRequestDto commentRequestDto = CommentRequestDto.builder()
                 .build();
 
-        Post savedPost = postRepository.findById(1L).get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         this.mockMvc.perform(post("/api/comment/" + savedPost.getId())
                         .header("Authorization", getAccessToken())
@@ -194,8 +186,8 @@ class CommentControllerTest {
     public void getCommentList() throws Exception {
         // Given
 
-        Member savedMember = memberRepository.findById(1L).get();
-        Post savedPost = postRepository.findById(1L).get();
+        Member savedMember = memberRepository.findByEmail("test@test.com").get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         Comment firstComment = Comment.builder()
                 .content("first comment")
@@ -211,7 +203,7 @@ class CommentControllerTest {
         commentRepository.save(firstComment);
         commentRepository.save(secondComment);
 
-        this.mockMvc.perform(get("/api/comment/1")
+        this.mockMvc.perform(get("/api/comment/" + savedPost.getId())
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON)
@@ -247,7 +239,7 @@ class CommentControllerTest {
     public void getComment_No_Post() throws Exception {
         // Given
 
-        this.mockMvc.perform(get("/api/comment/2")
+        this.mockMvc.perform(get("/api/comment/100")
                         .header("Authorization", getAccessToken())
                         .contentType(APPLICATION_JSON)
                         .accept(HAL_JSON))
@@ -258,8 +250,8 @@ class CommentControllerTest {
     @Test
     @DisplayName("정상적인 요청 시 댓글 업데이트")
     public void updateComment() throws Exception {
-        Member savedMember = memberRepository.findById(1L).get();
-        Post savedPost = postRepository.findById(1L).get();
+        Member savedMember = memberRepository.findByEmail("test@test.com").get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         Comment comment = Comment.builder()
                 .content("first comment")
@@ -307,8 +299,8 @@ class CommentControllerTest {
     @Test
     @DisplayName("비정상적인 요청시 에러 발생")
     public void updateComment_BAD_REQUEST() throws Exception {
-        Member savedMember = memberRepository.findById(1L).get();
-        Post savedPost = postRepository.findById(1L).get();
+        Member savedMember = memberRepository.findByEmail("test@test.com").get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         Comment comment = Comment.builder()
                 .content("first comment")
@@ -333,8 +325,8 @@ class CommentControllerTest {
     @Test
     @DisplayName("정상적인 요청시 댓글 삭제")
     public void deleteComment() throws Exception {
-        Member savedMember = memberRepository.findById(1L).get();
-        Post savedPost = postRepository.findById(1L).get();
+        Member savedMember = memberRepository.findByEmail("test@test.com").get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         Comment comment = Comment.builder()
                 .content("first comment")
@@ -373,8 +365,8 @@ class CommentControllerTest {
     @Test
     @DisplayName("비정상적인 요청시 오류 발생")
     public void deleteComment_BAD_REQUEST() throws Exception {
-        Member savedMember = memberRepository.findById(1L).get();
-        Post savedPost = postRepository.findById(1L).get();
+        Member savedMember = memberRepository.findByEmail("test@test.com").get();
+        Post savedPost = postRepository.findByTitle("post").get();
 
         Comment comment = Comment.builder()
                 .content("first comment")
@@ -409,7 +401,7 @@ class CommentControllerTest {
                 .title("post")
                 .content("content")
                 .imageUrl("test-test.com")
-                .member(memberRepository.findById(1L).get())
+                .member(memberRepository.findByEmail("test@test.com").get())
                 .build();
         return post;
     }

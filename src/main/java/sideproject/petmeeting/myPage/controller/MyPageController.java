@@ -13,7 +13,7 @@ import sideproject.petmeeting.myPage.service.MyPageService;
 import sideproject.petmeeting.myPage.dto.MyHeartPostDto;
 import sideproject.petmeeting.myPage.dto.MyMeetingDto;
 import sideproject.petmeeting.myPage.dto.MyPostDto;
-import sideproject.petmeeting.myPage.dto.MyProfileDto;
+import sideproject.petmeeting.myPage.dto.ProfileDto;
 import sideproject.petmeeting.security.UserDetailsImpl;
 
 
@@ -35,13 +35,31 @@ public class MyPageController {
     @GetMapping
     public ResponseEntity<Object> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        MyProfileDto myProfileDto = myPageService.getProfile(userDetails.getMember());
+        ProfileDto profileDto = myPageService.getProfile(userDetails.getMember());
 
-        ResponseResource responseResource = new ResponseResource(myProfileDto);
+        ResponseResource responseResource = new ResponseResource(profileDto);
         responseResource.add(linkTo(MyPageController.class).withSelfRel());
         responseResource.add(linkTo(MemberController.class).withRel("member-edit"));
 
         Response response = new Response(StatusEnum.OK, "내 프로필 조회 성공", responseResource);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * 타유저 프로필 조회
+     * @param memberId : 조회할 회원 Id
+     * @return : 타회원 정보
+     */
+    @GetMapping("/{memberId}")
+    public ResponseEntity<Object> getMemberProfile(@PathVariable Long memberId) {
+
+        ProfileDto profileDto = myPageService.getMemberProfile(memberId);
+
+        ResponseResource responseResource = new ResponseResource(profileDto);
+        responseResource.add(linkTo(MyPageController.class).slash(memberId).withSelfRel());
+
+        Response response = new Response(StatusEnum.OK, "회원 프로필 조회 성공", responseResource);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

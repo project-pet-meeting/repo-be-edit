@@ -23,6 +23,9 @@ public enum ErrorCode {
     INVALID_FILE_TYPE(415, "INVALID_FILE_TYPE", "업로드 할 수 있는 파일 형식은 jpg, jpeg, png 입니다."),
     FILE_CONVERT_FAIL(400, "FILE_CONVERT_FAIL","MultipartFile -> File 변환 실패" ),
 
+    // == Pet ==//
+    PET_NOT_EXIST(404, "PET_NOT_EXIST", "반려동물 정보가 존재하지 않습니다."),
+
     // == Post ==//
     POST_NOT_EXIST(404, "POST_NOT_EXIST", "게시글이 존재하지 않습니다."),
     ALREADY_HEARTED(409, "ALREADY_HEARTED", "이미 좋아요를 누른 게시글 입니다."),
@@ -30,6 +33,10 @@ public enum ErrorCode {
 
     // == Meeting ==//
     MEETING_NOT_EXIST(404, "MEETING_NOT_EXIST", "모임이 존재하지 않습니다."),
+    ALREADY_ATTENDANCE_MEETING(409, "ALREADY_ATTENDANCE_MEETING", "이미 참여중인 모임입니다."),
+    MEETING_RECRUIT_FULL(400, "MEETING_RECRUIT_FULL", "모집 인원이 마감되었습니다."),
+    ATTENDANCE_NOT_EXIST(404, "ATTENDANCE_NOT_EXIST", "모임 참석 정보가 존재하지 않습니다."),
+    ATTENDANCE_LIST_ACCESS_DENIED(403, "ATTENDANCE_LIST_ACCESS_DENIED", "참석자 리스트 접근 권한이 없습니다."),
 
     // == Token == //
     NEED_LOGIN(401, "NEED_LOGIN", "로그인이 필요합니다."),
@@ -39,6 +46,12 @@ public enum ErrorCode {
     MY_POST_NOT_EXIST(404, "MY_POST_NOT_EXIST", "내가 작성한 게시글이 존재하지 않습니다."),
     MY_MEETING_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 만든 모임이 존재하지 않습니다."),
     MY_HEART_POST_NOT_EXIST(404, "MY_MEETING_NOT_EXIST", "내가 '좋아요'한 게시글이 존재하지 않습니다."),
+
+    //== Member ==//
+    MEMBER_NOT_EXIST(404, "MEMBER_NOT_EXIST", "회원이 존재 하지 않습니다."),
+
+    //== Follow ==//
+    FOLLOW_NOT_EXIST(404, "FOLLOW_NOT_EXIST", "팔로우 내역이 없습니다."),
 
     ;
 
