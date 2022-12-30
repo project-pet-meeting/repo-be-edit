@@ -2,6 +2,7 @@ package sideproject.petmeeting.chat.domain;
 
 import lombok.*;
 import sideproject.petmeeting.common.Timestamped;
+import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.post.domain.Post;
 
 import javax.persistence.*;
@@ -23,8 +24,8 @@ public class ChatRoom extends Timestamped {
     private Long id;
     private String roomId;
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "postId")
-    private Post post;
+    @JoinColumn(name = "meetingId")
+    private Meeting meeting;
     @OneToMany
     private List<ChatMember> chatMembers = new ArrayList<>();
     private String roomName;
