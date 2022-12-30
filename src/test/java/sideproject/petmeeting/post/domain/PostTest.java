@@ -57,7 +57,7 @@ class PostTest {
                 .content("content")
                 .imageUrl("test-test.com")
                 .member(savedMember)
-                .chatRoom(chatRoom)
+//                .chatRoom(chatRoom)
                 .build();
         Post savedPost = postRepository.save(post);
         ChatMember chatMember = ChatMember.builder()
@@ -70,8 +70,8 @@ class PostTest {
                 () -> assertThat(memberRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(postRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatRoomRepository.findAll().size()).isEqualTo(1),
-                () -> assertThat(chatMemberRepository.findAll().size()).isEqualTo(1),
-                () -> assertThat(savedPost.getChatRoom()).isEqualTo(savedChatRoom)
+                () -> assertThat(chatMemberRepository.findAll().size()).isEqualTo(1)
+//                () -> assertThat(savedPost.getChatRoom()).isEqualTo(savedChatRoom)
         );
         chatMemberRepository.deleteAllByChatRoom(chatRoom);
         postRepository.delete(savedPost);

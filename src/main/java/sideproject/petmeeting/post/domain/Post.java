@@ -58,8 +58,7 @@ public class Post extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<HeartPost> heartPost;
 
-    @OneToOne(fetch = LAZY, mappedBy = "post", cascade = CascadeType.ALL)
-    private ChatRoom chatRoom;
+
 
 
     /**

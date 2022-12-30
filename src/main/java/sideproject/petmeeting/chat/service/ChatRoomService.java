@@ -13,9 +13,9 @@ import sideproject.petmeeting.chat.repository.ChatRoomRepository;
 import sideproject.petmeeting.chat.repository.RedisChatRoomRepository;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
+import sideproject.petmeeting.meeting.domain.Meeting;
+import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
-import sideproject.petmeeting.post.domain.Post;
-import sideproject.petmeeting.post.repository.PostRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +24,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final PostRepository postRepository;
+    private final MeetingRepository meetingRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
     private final RedisChatRoomRepository redisChatRoomRepository;
 
     @Transactional
-    public ChatRoom createChatRoom(Member member, Long postId, ChatRoomRequestDto chatRoomRequestDto) {
-        Post post = postRepository.findById(postId).orElseThrow(()
-                -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST));
+    public ChatRoom createChatRoom(Member member, Long meetingId, ChatRoomRequestDto chatRoomRequestDto) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(
+                () -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST)
+        );
+
         // pub/sub 을 위한 redis 채팅방 생성
-        RedisChatRoom redisChatRoom = redisChatRoomRepository.createChatRoom(chatRoomRequestDto.getName(), String.valueOf(postId));
+        RedisChatRoom redisChatRoom = redisChatRoomRepository.createChatRoom(chatRoomRequestDto.getName(), String.valueOf(meetingId));
         ChatRoom chatRoom = ChatRoom.builder()
-                .post(post)
+                .meeting(meeting)
                 .roomId(redisChatRoom.getRoomId())
                 .roomName(redisChatRoom.getName())
                 .build();
@@ -58,7 +60,7 @@ public class ChatRoomService {
             chatRoomResponseDtoList.add(
                     ChatRoomResponseDto.builder()
                             .id(chatRoom.getId())
-                            .postId(chatRoom.getPost().getId())
+                            .meetingId(chatRoom.getMeeting().getId())
                             .roomName(chatRoom.getRoomName())
                             .build()
             );
