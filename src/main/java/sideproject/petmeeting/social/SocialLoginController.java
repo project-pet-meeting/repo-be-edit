@@ -38,7 +38,6 @@ public class SocialLoginController {
 
         Member member = kakaoLoginService.login(code, httpServletResponse);
         SocialLoginResponse kakaoMember = getSocialLoginResponse(member);
-
         ResponseResource responseResource = new ResponseResource(kakaoMember);
         responseResource.add(linkTo(SocialLoginController.class).slash("user/kakao/callback").withSelfRel());
         response.setStatus(StatusEnum.OK);
@@ -67,11 +66,9 @@ public class SocialLoginController {
 
     private static SocialLoginResponse getSocialLoginResponse(Member member) {
 
-        SocialLoginResponse kakaoMember = SocialLoginResponse.builder()
-                .email(member.getEmail())
+        return SocialLoginResponse.builder()
                 .nickname(member.getNickname())
                 .build();
-        return kakaoMember;
     }
 
 }
