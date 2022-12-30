@@ -130,7 +130,7 @@ public class NaverLoginService {
         if (member == null) {
             member = Member.builder()
                     .email(memberInfo.getEmail())
-                    .nickname(memberInfo.getNickname())
+//                    .nickname(memberInfo.getNickname())       // nickname 은 서비스에서 따로 받기로 설정
                     .image(memberInfo.getImageUrl())
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .userRole(ROLE_MEMBER)

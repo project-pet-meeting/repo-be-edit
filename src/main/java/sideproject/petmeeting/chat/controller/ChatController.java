@@ -39,8 +39,8 @@ public class ChatController {
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
 
-    @PostMapping("/{postId}")
-    public ResponseEntity createChatRoom(@PathVariable Long postId,
+    @PostMapping("/{meetingId}")
+    public ResponseEntity createChatRoom(@PathVariable Long meetingId,
                                          @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto,
                                          HttpServletRequest httpServletRequest,
                                          Errors errors) {
@@ -56,7 +56,7 @@ public class ChatController {
         }
         // Token 검증
         Member member = checkAuthentication(httpServletRequest);
-        ChatRoom chatRoom = chatRoomService.createChatRoom(member, postId, chatRoomRequestDto);
+        ChatRoom chatRoom = chatRoomService.createChatRoom(member, meetingId, chatRoomRequestDto);
 
         ResponseResource responseResource = new ResponseResource(chatRoom);
         responseResource.add(linkTo(ChatController.class).withSelfRel());

@@ -85,7 +85,7 @@ public class MemberService {
 
 
     @Transactional
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse) {
+    public Member login(LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse) {
         Optional<Member> optionalMember = memberRepository.findByEmail(loginRequestDto.getEmail());
         if (optionalMember.isEmpty()) {
             throw new IllegalStateException("잘못된 아이디 입니다.");
@@ -93,6 +93,7 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(optionalMember.get());
         httpServletResponse.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
         httpServletResponse.addHeader("RefreshToken", tokenDto.getRefreshToken());
+        return optionalMember.get();
     }
 
     @Transactional

@@ -21,12 +21,14 @@ import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.chat.dto.request.ChatRoomRequestDto;
 import sideproject.petmeeting.chat.repository.ChatMemberRepository;
 import sideproject.petmeeting.chat.repository.ChatRoomRepository;
+import sideproject.petmeeting.meeting.domain.Meeting;
+import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.dto.request.LoginRequestDto;
 import sideproject.petmeeting.member.repository.MemberRepository;
-import sideproject.petmeeting.post.domain.Post;
-import sideproject.petmeeting.post.repository.PostRepository;
 import sideproject.petmeeting.token.repository.RefreshTokenRepository;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -54,7 +56,7 @@ class ChatControllerTest {
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired
-    PostRepository postRepository;
+    MeetingRepository meetingRepository;
     @Autowired
     ChatRoomRepository chatRoomRepository;
     @Autowired
@@ -70,23 +72,29 @@ class ChatControllerTest {
                 .userRole(ROLE_MEMBER)
                 .build();
         Member savedMember = memberRepository.save(member);
-        Post post = Post.builder()
-                .title("post")
-                .content("content")
-                .imageUrl("test-test.com")
-                .member(savedMember)
+        Meeting meeting = Meeting.builder()
+                .title("first meeting title")
+                .content("first meeting content")
+                .member(member)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
                 .build();
-        postRepository.save(post);
+        meetingRepository.save(meeting);
     }
 
     @Test
     @DisplayName("정상적인 채팅방 생성")
     public void createChatRoom() throws Exception {
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto("test room");
+        Meeting meeting = meetingRepository.findByTitle("first meeting title").get();
 
-        Post post = postRepository.findByTitle("post").get();
-
-        this.mockMvc.perform(post("/api/chat/" + post.getId())
+        this.mockMvc.perform(post("/api/chat/" + meeting.getId())
                         .header("Authorization", getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(HAL_JSON)
@@ -95,23 +103,23 @@ class ChatControllerTest {
                 .andExpect(status().isCreated());
 
         Member member = memberRepository.findByEmail("test@test.com").get();
-        ChatRoom chatRoom = chatRoomRepository.findByPost(post).get();
+        ChatRoom chatRoom = chatRoomRepository.findByMeeting(meeting).get();
         ChatMember chatMember = chatMemberRepository.findById(1L).get();
         Long memberId = member.getId();
 
         assertAll(
                 () -> assertThat(chatRoomRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatRoom.getRoomName()).isEqualTo("test room"),
-                () -> assertThat(chatRoom.getPost().getMember().getId()).isEqualTo(memberId),
+                () -> assertThat(chatRoom.getMeeting().getMember().getId()).isEqualTo(memberId),
                 () -> assertThat(chatMemberRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatMember.getMember()).isEqualTo(member),
                 () -> assertThat(chatMember.getChatRoom()).isEqualTo(chatRoom),
-                ()-> assertThat(chatMember.getMember()).isEqualTo(post.getMember())
+                ()-> assertThat(chatMember.getMember()).isEqualTo(meeting.getMember())
         );
     }
 
     @Test
-    @DisplayName("게시글이 없을 경우 Error 처리")
+    @DisplayName("Meeting 이 없을 경우 Error 처리")
     public void createChatRoom_BadRequest() throws Exception {
         ChatRoomRequestDto chatRoomRequestDto = new ChatRoomRequestDto("test room");
             this.mockMvc.perform(post("/api/chat/10")
@@ -129,20 +137,30 @@ class ChatControllerTest {
     public void getChatRoomList() throws Exception {
 
         // Given
-        Post post = Post.builder()
-                .title("post2")
-                .content("content")
-                .imageUrl("test-test.com")
-                .member(memberRepository.findByEmail("test@test.com").get())
+        Member member = memberRepository.findByEmail("test@test.com").get();
+        Meeting meeting = meetingRepository.findByTitle("first meeting title").get();
+        Meeting meeting2 = Meeting.builder()
+                .title("second meeting title")
+                .content("first meeting content")
+                .member(member)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
                 .build();
-        Post savedPost = postRepository.save(post);
-        Post findPost = postRepository.findByTitle("post").get();
+        meetingRepository.save(meeting);
+        meetingRepository.save(meeting2);
+
         ChatRoom chatRoom1 = ChatRoom.builder()
-                .post(findPost)
+                .meeting(meeting)
                 .roomName("first chat room")
                 .build();
         ChatRoom chatRoom2 = ChatRoom.builder()
-                .post(savedPost)
+                .meeting(meeting2)
                 .roomName("second chat room")
                 .build();
         chatRoomRepository.save(chatRoom1);

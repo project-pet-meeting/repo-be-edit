@@ -14,6 +14,7 @@ import sideproject.petmeeting.common.Response;
 import sideproject.petmeeting.common.ResponseResource;
 import sideproject.petmeeting.common.StatusEnum;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.member.domain.dto.LoginResponseDto;
 import sideproject.petmeeting.member.dto.request.*;
 import sideproject.petmeeting.member.dto.response.MemberDetailResponseDto;
 import sideproject.petmeeting.member.dto.response.NicknameResponseDto;
@@ -150,8 +151,9 @@ public class MemberController {
                 response.setData(errors);
                 return new ResponseEntity<>(response, headers, BAD_REQUEST);
             }
-            memberService.login(loginRequestDto, httpServletResponse);
-            ResponseResource responseResource = new ResponseResource(loginRequestDto.getEmail());
+            Member member = memberService.login(loginRequestDto, httpServletResponse);
+            String nickname = member.getNickname()==null ? "null" : member.getNickname();
+            ResponseResource responseResource = new ResponseResource(new LoginResponseDto(nickname));
             responseResource.add(linkTo(MemberController.class).withSelfRel());
             response.setStatus(StatusEnum.OK);
             response.setMessage("로그인에 성공하였습니다.");

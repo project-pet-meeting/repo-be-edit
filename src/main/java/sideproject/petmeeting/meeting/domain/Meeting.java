@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import sideproject.petmeeting.chat.domain.ChatRoom;
 import sideproject.petmeeting.common.Timestamped;
 import sideproject.petmeeting.meeting.dto.MeetingRequestDto;
 import sideproject.petmeeting.member.domain.Member;
@@ -78,6 +79,9 @@ public class Meeting extends Timestamped {
     @JoinColumn(name = "meeting_id")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attendance> attendance = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY, mappedBy = "meeting", cascade = CascadeType.ALL)
+    private ChatRoom chatRoom;
 
 //    @OneToMany(mappedBy = "meeting")
 //    private List<Attendance> attendance = new ArrayList<>();

@@ -128,7 +128,7 @@ public class KakaoLoginService {
                 nickname = "kakao" + UUID.randomUUID();
             }
             Member kakaoMember = Member.builder()
-                    .nickname(nickname)
+//                    .nickname(nickname)       // nickname 은 서비스에서 따로 받기로 설정
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .email(userInfo.getEmail())
                     .image(userInfo.getImgUrl())

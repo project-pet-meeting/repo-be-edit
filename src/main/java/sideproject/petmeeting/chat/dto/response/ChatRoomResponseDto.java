@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class ChatRoomResponseDto {
     private Long id;
-    private Long postId;
+    private Long meetingId;
     private String roomName;
 }
