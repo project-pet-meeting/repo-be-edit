@@ -65,9 +65,9 @@ public class FollowService {
         List<FollowingMemberListDto> memberList = new ArrayList<>();
         for (Follow follow : followerList) {
             memberList.add(FollowingMemberListDto.builder()
-                    .memberId(follow.getFollowing().getId())
-                    .memberNickname(follow.getFollowing().getNickname())
-                    .memberImage(follow.getFollowing().getImage())
+                    .memberId(follow.getFollower().getId())
+                    .memberNickname(follow.getFollower().getNickname())
+                    .memberImage(follow.getFollower().getImage())
                     .build());
         }
         return memberList;
