@@ -130,6 +130,7 @@ class PostServiceTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(firstPost);
 

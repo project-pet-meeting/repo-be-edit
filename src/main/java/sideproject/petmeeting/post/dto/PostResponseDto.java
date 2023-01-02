@@ -21,6 +21,7 @@ public class PostResponseDto {
     private String imageUrl;
     @ColumnDefault("0")
     private Integer numHeart;
+    private Integer viewCnt;
     private Long authorId;
     private String authorNickname;
     private String authorLocation;

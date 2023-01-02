@@ -58,7 +58,8 @@ public class Post extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<HeartPost> heartPost;
 
-
+    @ColumnDefault("0")
+    private Integer viewCnt;
 
 
     /**
@@ -79,6 +80,10 @@ public class Post extends Timestamped {
      */
     public void addCountHeart(Integer numHeart) {
         this.numHeart = numHeart;
+    }
+
+    public void viewCnt() {
+        this.viewCnt++;
     }
 
 

@@ -189,6 +189,7 @@ class PostControllerTest {
                                         fieldWithPath("data.title").description("title of post"),
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
@@ -291,6 +292,7 @@ class PostControllerTest {
                                         fieldWithPath("data.postList[].content").description("content of post"),
                                         fieldWithPath("data.postList[].imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.postList[].viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.postList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
@@ -327,6 +329,7 @@ class PostControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(firstPost);
 
@@ -353,6 +356,7 @@ class PostControllerTest {
                                         fieldWithPath("data.title").description("title of post"),
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
@@ -398,6 +402,42 @@ class PostControllerTest {
                         .accept(HAL_JSON))
                 .andExpect(status().is4xxClientError())
         ;
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("게시글 조회수 테스트")
+    public void getPostView() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Post firstPost = Post.builder()
+                .category(RECOMMEND)
+                .title("first post title")
+                .content("first post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(firstPost);
+
+        // When & Then
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/" + firstPost.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/" + firstPost.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+
+        // Then
+        assertThat(firstPost.getViewCnt()).isEqualTo(2);
     }
 
     @Test
@@ -473,6 +513,7 @@ class PostControllerTest {
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.authorLocation").description("authorLocation of post"),
