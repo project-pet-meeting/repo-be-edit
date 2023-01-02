@@ -80,6 +80,7 @@ public class PostService {
                             .content(post.getContent())
                             .imageUrl(post.getImageUrl())
                             .numHeart(post.getNumHeart())
+                            .viewCnt(post.getViewCnt())
                             .authorId(post.getMember().getId())
                             .authorNickname(post.getMember().getNickname())
                             .authorLocation(post.getMember().getLocation())
@@ -115,6 +116,7 @@ public class PostService {
                 () -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST)
         );
 
+        post.viewCnt();
         return getPostResponseDto(post);
     }
 
@@ -242,6 +244,7 @@ public class PostService {
                 .content(post.getContent())
                 .imageUrl(post.getImageUrl())
                 .numHeart(post.getNumHeart())
+                .viewCnt(post.getViewCnt())
                 .authorId(post.getMember().getId())
                 .authorNickname(post.getMember().getNickname())
                 .authorLocation(post.getMember().getLocation())
