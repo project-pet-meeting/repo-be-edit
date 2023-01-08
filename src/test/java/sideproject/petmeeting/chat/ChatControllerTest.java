@@ -9,18 +9,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.chat.domain.ChatMember;
 import sideproject.petmeeting.chat.domain.ChatRoom;
+import sideproject.petmeeting.chat.domain.RedisChatRoom;
 import sideproject.petmeeting.chat.dto.request.ChatRoomRequestDto;
 import sideproject.petmeeting.chat.repository.ChatMemberRepository;
 import sideproject.petmeeting.chat.repository.ChatRoomRepository;
+import sideproject.petmeeting.chat.repository.RedisChatRoomRepository;
 import sideproject.petmeeting.meeting.domain.Meeting;
 import sideproject.petmeeting.meeting.repository.MeetingRepository;
 import sideproject.petmeeting.member.domain.Member;
@@ -34,6 +41,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,9 +76,12 @@ class ChatControllerTest {
     ChatRoomRepository chatRoomRepository;
     @Autowired
     ChatMemberRepository chatMemberRepository;
+    @Autowired
+    RedisChatRoomRepository redisChatRoomRepository;
 
     @BeforeEach
-    void init() {
+    void init(WebApplicationContext webApplicationContext,
+              RestDocumentationContextProvider restDocumentationContextProvider) {
         Member member = Member.builder()
                 .nickname("Tommy")
                 .password("test")
@@ -86,6 +104,14 @@ class ChatControllerTest {
                 .species("species")
                 .build();
         meetingRepository.save(meeting);
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .apply(documentationConfiguration(restDocumentationContextProvider)
+                        .operationPreprocessors()
+                        .withRequestDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint())
+                        .withResponseDefaults(modifyUris().host("tommy.me").removePort(), prettyPrint()))
+                .alwaysDo(print())
+                .build();
     }
 
     @Test
@@ -100,13 +126,35 @@ class ChatControllerTest {
                         .accept(HAL_JSON)
                         .content(objectMapper.writeValueAsString(chatRoomRequestDto))
                 )
-                .andExpect(status().isCreated());
-
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("create chatRoom",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("name of ChatRoom")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("status of action"),
+                                fieldWithPath("message").description("message of action"),
+                                fieldWithPath("data.id").description("id of created chatRoom"),
+                                fieldWithPath("data.meetingId").description("id of meetingRoom"),
+                                fieldWithPath("data.roomName").description("name of chatRoom"),
+                                fieldWithPath("data.links[0].rel").description("relation"),
+                                fieldWithPath("data.links[0].href").description("url of action")
+                        )
+                ));
         Member member = memberRepository.findByEmail("test@test.com").get();
         ChatRoom chatRoom = chatRoomRepository.findByMeeting(meeting).get();
-        ChatMember chatMember = chatMemberRepository.findById(1L).get();
+        ChatMember chatMember = chatMemberRepository.findByMember(member).get();
         Long memberId = member.getId();
-
+        RedisChatRoom redisChatRoom = redisChatRoomRepository.findRoomById(String.valueOf(meeting.getId()));
         assertAll(
                 () -> assertThat(chatRoomRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatRoom.getRoomName()).isEqualTo("test room"),
@@ -114,7 +162,8 @@ class ChatControllerTest {
                 () -> assertThat(chatMemberRepository.findAll().size()).isEqualTo(1),
                 () -> assertThat(chatMember.getMember()).isEqualTo(member),
                 () -> assertThat(chatMember.getChatRoom()).isEqualTo(chatRoom),
-                ()-> assertThat(chatMember.getMember()).isEqualTo(meeting.getMember())
+                () -> assertThat(chatMember.getMember()).isEqualTo(meeting.getMember()),
+                () -> assertThat(chatRoom.getRoomId()).isEqualTo(redisChatRoom.getRoomId())
         );
     }
 
@@ -171,7 +220,26 @@ class ChatControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(HAL_JSON))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andDo(print())
+                .andDo(document("get chatRoomList",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("status of action"),
+                                fieldWithPath("message").description("message of action"),
+                                fieldWithPath("data.object[0].id").description("id of chatRoom"),
+                                fieldWithPath("data.object[0].meetingId").description("id of meetingRoom"),
+                                fieldWithPath("data.object[0].roomName").description("name of chatRoom"),
+                                fieldWithPath("data.links[0].rel").description("relation"),
+                                fieldWithPath("data.links[0].href").description("url of action")
+                        )
+                ));
     }
 
     @Test

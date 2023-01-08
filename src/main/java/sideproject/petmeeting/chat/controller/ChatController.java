@@ -58,7 +58,13 @@ public class ChatController {
         Member member = checkAuthentication(httpServletRequest);
         ChatRoom chatRoom = chatRoomService.createChatRoom(member, meetingId, chatRoomRequestDto);
 
-        ResponseResource responseResource = new ResponseResource(chatRoom);
+        ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto.builder()
+                .id(chatRoom.getId())
+                .meetingId(chatRoom.getMeeting().getId())
+                .roomName(chatRoom.getRoomName())
+                .build();
+
+        ResponseResource responseResource = new ResponseResource(chatRoomResponseDto);
         responseResource.add(linkTo(ChatController.class).withSelfRel());
 
         message.setStatus(CREATED);
