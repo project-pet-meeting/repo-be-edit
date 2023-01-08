@@ -36,12 +36,16 @@ public class Member extends Timestamped {
     @Enumerated(value = STRING)
     private UserRole userRole;
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Post> post = new ArrayList<>();
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<ChatMember> chatMembers = new ArrayList<>();
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Pet> pet = new ArrayList<>();
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<Attendance> attendance = new ArrayList<>();
 
 
