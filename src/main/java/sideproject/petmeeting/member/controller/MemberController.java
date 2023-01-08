@@ -165,7 +165,10 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest, HttpServletRequest httpServletRequest, Errors errors, HttpServletResponse httpServletResponse) {
+    public ResponseEntity updateMember(@RequestBody MemberUpdateRequest memberUpdateRequest,
+                                       HttpServletRequest httpServletRequest,
+                                       Errors errors,
+                                       HttpServletResponse httpServletResponse) {
         Response response = new Response();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
