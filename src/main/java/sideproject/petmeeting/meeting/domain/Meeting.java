@@ -78,6 +78,7 @@ public class Meeting extends Timestamped {
     @JsonIgnore
     @JoinColumn(name = "meeting_id")
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
     private List<Attendance> attendance = new ArrayList<>();
 
     @OneToOne(fetch = LAZY, mappedBy = "meeting", cascade = CascadeType.ALL)

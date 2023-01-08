@@ -27,6 +27,7 @@ public class ChatRoom extends Timestamped {
     @JoinColumn(name = "meetingId")
     private Meeting meeting;
     @OneToMany
+    @Builder.Default
     private List<ChatMember> chatMembers = new ArrayList<>();
     private String roomName;
 }
