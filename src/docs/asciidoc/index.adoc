@@ -114,27 +114,27 @@ operation::member-signup[snippets='response-fields,curl-request,http-response']
 === 게시글 작성
 `POST` 요청을 사용해 게시글 작성을 진행할 수 있다.
 
-operation::post-controller-test/create-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/create-post[snippets='request-fields,http-request,response-fields,http-response']
 
 === 게시글 전체 조회
 `GET` 요청을 사용해 게시글 목록을 확인할 수 있다.
 
-operation::post-controller-test/get-all-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/get-all-posts[snippets='request-fields,http-request,response-fields,http-response']
 
 === 게시글 단건 조회
 `GET` 요청을 사용해 게시글을 확인할 수 있다.
 
-operation::post-controller-test/get-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/get-post[snippets='request-fields,http-request,response-fields,http-response']
 
 === 게시글 수정
 `PUT` 요청을 사용해 게시글을 수정할 수 있다.
 
-operation::post-controller-test/put-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/put-post[snippets='request-fields,http-request,response-fields,http-response']
 
 === 게시글 삭제
 `DELETE` 요청을 사용해 게시글을 삭제 할 수 있다.
 
-operation::post-controller-test/delete-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/delete-post[snippets='request-fields,http-request,response-fields,http-response']
 
 
 [[resources-events]]
@@ -146,22 +146,22 @@ operation::post-controller-test/delete-post['snippets=request-fields,http-reques
 === 댓글 작성
 `POST` 요청을 사용해 댓글 작성을 진행 할 수 있다.
 
-operation::create-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::create-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 === 댓글 조회
 `GET` 요청을 사용해 댓글 목록을 확인 할 수 있다.
 
-operation::get-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::get-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 === 댓글 수정
 `PUT` 요청을 사용해 댓글을 수정 할 수 있다.
 
-operation::update-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::update-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 === 댓글 삭제
 `DELETE` 요청을 사용해 댓글을 삭제 할 수 있다.
 
-operation::delete-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::delete-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 
 [[resources-events]]
@@ -173,27 +173,27 @@ operation::delete-comment['snippets=request-fields,http-request,response-fields,
 === 모임 생성
 `POST` 요청을 사용해 모임 생성을 진행 할 수 있다.
 
-operation::meeting-controller-test/create-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/create-meeting[snippets='request-fields,http-request,response-fields,http-response']
 
 === 모임 전체 조회
 `GET` 요청을 사용해 모임 목록을 확인 할 수 있다.
 
-operation::meeting-controller-test/get-all-meetings['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/get-all-meetings[snippets='request-fields,http-request,response-fields,http-response']
 
 === 모임 단건 조회
 `GET` 요청을 사용해 모임을 확인 할 수 있다.
 
-operation::meeting-controller-test/get-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/get-meeting[snippets='request-fields,http-request,response-fields,http-response']
 
 === 모임 수정
 `PUT` 요청을 사용해 모임을 수정 할 수 있다.
 
-operation::meeting-controller-test/put-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/put-meeting[snippets='request-fields,http-request,response-fields,http-response']
 
 === 모임 삭제
 `DELETE` 요청을 사용해 모임을 삭제 할 수 있다.
 
-operation::meeting-controller-test/delete-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/delete-meeting[snippets='request-fields,http-request,response-fields,http-response']
 
 
 
@@ -206,19 +206,19 @@ operation::meeting-controller-test/delete-meeting['snippets=request-fields,http-
 === 내 정보 조회
 `GET` 요청을 사용해 내 정보를 확인 할 수 있다.
 
-operation::my-page-controller-test/get-my-profile['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-profile[snippets='request-fields,http-request,response-fields,http-response']
 
 === 내가 작성한 게시글 조회
 `GET` 요청을 사용해 내가 작성한 게시글 목록을 확인 할 수 있다.
 
-operation::my-page-controller-test/get-my-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-posts[snippets='request-fields,http-request,response-fields,http-response']
 
 === 내가 생성한 모임 조회
 `GET` 요청을 사용해 내가 생성한 모임 목록을 확인 할 수 있다.
 
-operation::my-page-controller-test/get-my-meetings['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-meetings[snippets='request-fields,http-request,response-fields,http-response']
 
 === 내가 '좋아요'한 게시글 조회
 `GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인 할 수 있다.
 
-operation::my-page-controller-test/get-my-heart-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-heart-posts[snippets='request-fields,http-request,response-fields,http-response']
