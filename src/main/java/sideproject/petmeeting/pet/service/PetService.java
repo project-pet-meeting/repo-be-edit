@@ -64,7 +64,7 @@ public class PetService {
 
         // 이미지 존재 시 삭제 후 업로드
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "pet/image");
         }
 
         imageUrl = s3Uploader.upload(image, "pet/image");
@@ -86,7 +86,7 @@ public class PetService {
         String imageUrl = pet.getImageUrl();
 
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "pet/image");
         }
 
         petRepository.deleteById(petId);

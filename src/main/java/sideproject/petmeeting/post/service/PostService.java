@@ -42,7 +42,7 @@ public class PostService {
      */
     @Transactional
     public PostResponseDto createPost(PostRequestDto postRequestDto, MultipartFile image, Member member) throws IOException {
-        String imageUrl = s3Uploader.upload(image, "/post/image");
+        String imageUrl = s3Uploader.upload(image, "post/image");
 
         Post post = Post.builder()
                 .category(postRequestDto.getCategory())
@@ -143,10 +143,10 @@ public class PostService {
 
         // 이미지 존재 시 삭제 후 업로드
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "post/image");
         }
 
-        imageUrl = s3Uploader.upload(image, "/post/image");
+        imageUrl = s3Uploader.upload(image, "post/image");
         post.update(postRequestDto, imageUrl);
 
         return getPostResponseDto(post);
@@ -172,7 +172,7 @@ public class PostService {
         String imageUrl = post.getImageUrl();
 
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "post/image");
         }
 
         postRepository.deleteById(postId);

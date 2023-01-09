@@ -141,10 +141,10 @@ public class MeetingService {
 
         // 이미지 존재 시 삭제 후 업로드
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "meeting/image");
         }
 
-        imageUrl = s3Uploader.upload(image, "/meeting/image");
+        imageUrl = s3Uploader.upload(image, "meeting/image");
         meeting.update(meetingRequestDto, imageUrl);
 
         return getMeetingResponseDto(meeting);
@@ -169,7 +169,7 @@ public class MeetingService {
         String imageUrl = meeting.getImageUrl();
 
         if (imageUrl != null) {
-            s3Uploader.deleteImage(imageUrl);
+            s3Uploader.deleteImage(imageUrl, "meeting/image");
         }
 
         meetingRepository.deleteById(meetingId);
@@ -302,4 +302,3 @@ public class MeetingService {
                 .build();
     }
 }
-
