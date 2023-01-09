@@ -124,10 +124,38 @@ operation::logout[snippets='response-fields,curl-request,http-response']
 
 operation::email-validation[snippets='response-fields,curl-request,http-response']
 
+
+[[resources-events-pet]]
+== 반려동물
+
+반려동물 리소스는 반려동물 정보 생성, 조회, 수정 및 삭제할 때 사용한다.
+
+[[resource-events-pet-list]]
+=== 반려동물 정보 생성
+`POST` 요청을 사용해 반려동물 정보 생성을 진행할 수 있다.
+
+operation::pet-controller-test/create-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 조회
+`GET` 요청을 사용해 반려동물 정보를 조회할 수 있다.
+
+operation::pet-controller-test/get-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 수정
+`PUT` 요청을 사용해 반려동물 정보를 수정할 수 있다.
+
+operation::pet-controller-test/put-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 삭제
+`DELETE` 요청을 사용해 반려동물 정보를 삭제할 수 있다.
+
+operation::pet-controller-test/delete-pet[snippets='http-request,response-fields,http-response']
+
+
 [[resources-events-post]]
 == 게시글
 
-게시글 리소스는 게시글 작성, 조회, 수정 및 삭제 할 때 사용한다.
+게시글 리소스는 게시글 작성, 조회, 수정 및 삭제할 때 사용한다.
 
 [[resource-events-post-list]]
 === 게시글 작성
@@ -151,7 +179,7 @@ operation::post-controller-test/get-post[snippets='http-request,response-fields,
 operation::post-controller-test/put-post[snippets='http-request,response-fields,http-response']
 
 === 게시글 삭제
-`DELETE` 요청을 사용해 게시글을 삭제 할 수 있다.
+`DELETE` 요청을 사용해 게시글을 삭제할 수 있다.
 
 operation::post-controller-test/delete-post[snippets='http-request,response-fields,http-response']
 
@@ -190,27 +218,27 @@ operation::delete-comment[snippets='http-request,response-fields,http-response']
 
 [[resource-events-meeting-list]]
 === 모임 생성
-`POST` 요청을 사용해 모임 생성을 진행 할 수 있다.
+`POST` 요청을 사용해 모임 생성을 진행할 수 있다.
 
 operation::meeting-controller-test/create-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 전체 조회
-`GET` 요청을 사용해 모임 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 모임 목록을 확인할 수 있다.
 
 operation::meeting-controller-test/get-all-meetings[snippets='http-request,response-fields,http-response']
 
 === 모임 단건 조회
-`GET` 요청을 사용해 모임을 확인 할 수 있다.
+`GET` 요청을 사용해 모임을 확인할 수 있다.
 
 operation::meeting-controller-test/get-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 수정
-`PUT` 요청을 사용해 모임을 수정 할 수 있다.
+`PUT` 요청을 사용해 모임을 수정할 수 있다.
 
 operation::meeting-controller-test/put-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 삭제
-`DELETE` 요청을 사용해 모임을 삭제 할 수 있다.
+`DELETE` 요청을 사용해 모임을 삭제할 수 있다.
 
 operation::meeting-controller-test/delete-meeting[snippets='http-request,response-fields,http-response']
 
@@ -219,26 +247,26 @@ operation::meeting-controller-test/delete-meeting[snippets='http-request,respons
 [[resources-events-mypage]]
 == 마이페이지
 
-마이페이지 리소스는 내 정보 조회, 내가 작성한 게시글 조회, 내가 생성한 모임 조회, 내가 '좋아요한' 게시글 조회를 할 때 사용한다.
+마이페이지 리소스는 내 정보 조회, 내가 작성한 게시글 조회, 내가 생성한 모임 조회, 내가 '좋아요'한 게시글 조회를 할 때 사용한다.
 
 [[resource-events-mypage-list]]
 === 내 정보 조회
-`GET` 요청을 사용해 내 정보를 확인 할 수 있다.
+`GET` 요청을 사용해 내 정보를 확인할 수 있다.
 
 operation::my-page-controller-test/get-my-profile[snippets='http-request,response-fields,http-response']
 
 === 내가 작성한 게시글 조회
-`GET` 요청을 사용해 내가 작성한 게시글 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 작성한 게시글 목록을 확인할 수 있다.
 
 operation::my-page-controller-test/get-my-posts[snippets='http-request,response-fields,http-response']
 
 === 내가 생성한 모임 조회
-`GET` 요청을 사용해 내가 생성한 모임 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 생성한 모임 목록을 확인할 수 있다.
 
 operation::my-page-controller-test/get-my-meetings[snippets='http-request,response-fields,http-response']
 
 === 내가 '좋아요'한 게시글 조회
-`GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인할 수 있다.
 
 operation::my-page-controller-test/get-my-heart-posts[snippets='http-request,response-fields,http-response']
 
