@@ -40,7 +40,7 @@ public class MeetingService {
      */
     @Transactional
     public MeetingResponseDto createMeeting(MeetingRequestDto meetingRequestDto, MultipartFile image, Member member) throws IOException {
-        String imageUrl = s3Uploader.upload(image, "/meeting/image");
+        String imageUrl = s3Uploader.upload(image, "meeting/image");
 
         Meeting meeting = Meeting.builder()
                 .title(meetingRequestDto.getTitle())
