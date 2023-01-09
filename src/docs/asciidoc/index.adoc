@@ -241,3 +241,21 @@ operation::my-page-controller-test/get-my-meetings[snippets='request-fields,http
 `GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인 할 수 있다.
 
 operation::my-page-controller-test/get-my-heart-posts[snippets='request-fields,http-request,response-fields,http-response']
+
+[[resources-events]]
+== 채팅
+
+채팅 리소스는 채팅방 생성, 채팅방 목록 조회를 할 때 사용한다.
+
+[[resources-events-list]]
+=== 채팅방 생성
+
+`POST` 요청을 사용하여 채팅방을 생성할 수 있다.
+
+operation::create chatRoom[snippets='response-fields,curl-request,http-response']
+
+=== 채팅방 조회
+
+`GET` 요청을 사용하여 채팅방 목록을 조회할 수 있다.
+
+operation::get chatRoomList[snippets='response-fields,curl-request,http-response']
