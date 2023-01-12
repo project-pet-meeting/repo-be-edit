@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import sideproject.petmeeting.post.domain.Category;
 import sideproject.petmeeting.post.domain.Post;
 
 import java.util.List;
@@ -18,11 +19,23 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByOrderByModifiedAtDesc(Pageable pageable);
 
     // 게시글 단건 조회
-    @Query("select p from Post p left join fetch p.member where p.id = :postId")
+    @Query("SELECT p FROM Post p LEFT JOIN FETCH p.member WHERE p.id = :postId")
     Optional<Post> findPostFetchJoin(@Param("postId")Long postId);
 
     // 마이페이지 '좋아요'한 게시글 조회
     List<Post> findAllByMemberId(Long id);
 
     Optional<Post> findByTitle(String post);
+
+    // 게시글 검색(제목, 내용)
+    @Query(value = "SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword%",
+            countQuery = "SELECT count(p) FROM Post p WHERE p.title LIKE %:keyword% OR p.content LIKE %:keyword%")
+    Page<Post> findByKeyword(@Param("keyword")String keyword, @Param("pageable")Pageable pageable);
+
+    // 카테고리 별 게시글 조회
+    @Query(value = "SELECT p FROM Post p WHERE p.category = :findCategory",
+            countQuery = "SELECT count(p) FROM Post p WHERE p.category = :findCategory")
+    Page<Post> findByCategory(@Param("findCategory") Category findCategory, @Param("pageable")Pageable pageable);
+
+
 }

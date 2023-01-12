@@ -183,6 +183,27 @@ operation::post-controller-test/put-post[snippets='http-request,response-fields,
 
 operation::post-controller-test/delete-post[snippets='http-request,response-fields,http-response']
 
+=== 게시글 '좋아요' 생성
+`POST` 요청을 사용해 게시글 '좋아요'를 생성할 수 있다.
+
+operation::post-controller-test/create-heart-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 '좋아요' 삭제
+`DELETE` 요청을 사용해 게시글 '좋아요'를 삭제할 수 있다.
+
+operation::post-controller-test/delete-heart-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 검색
+`GET` 요청을 사용해 게시글을 검색할 수 있다.
+
+operation::post-controller-test/search-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 카테고리별 조회
+`GET` 요청을 사용해 게시글을 카테고리별로 조회할 수 있다.
+
+operation::post-controller-test/get-category-post[snippets='http-request,response-fields,http-response']
+
+
 
 [[resources-events-comment]]
 == 댓글

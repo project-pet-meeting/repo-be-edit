@@ -29,7 +29,9 @@ public enum ErrorCode {
     // == Post ==//
     POST_NOT_EXIST(404, "POST_NOT_EXIST", "게시글이 존재하지 않습니다."),
     ALREADY_HEARTED(409, "ALREADY_HEARTED", "이미 좋아요를 누른 게시글 입니다."),
-    HEART_NOT_FOUND(404, "HEART_NOT_FOUND", "좋아요를 누르지 않은 게시글 입니다."),
+    HEART_NOT_FOUND(400, "HEART_NOT_FOUND", "좋아요를 누르지 않은 게시글 입니다."),
+    KEYWORD_NOT_FOUND(400, "KEYWORD_NOT_FOUND", "키워드와 일치하는 검색 결과를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(400, "CATEGORY_NOT_FOUND", "해당 카테고리의 게시글을 찾을 수 없습니다."),
 
     // == Meeting ==//
     MEETING_NOT_EXIST(404, "MEETING_NOT_EXIST", "모임이 존재하지 않습니다."),

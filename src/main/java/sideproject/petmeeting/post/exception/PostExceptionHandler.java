@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import sideproject.petmeeting.common.exception.ErrorCode;
 import sideproject.petmeeting.common.exception.ErrorResponse;
@@ -26,11 +27,7 @@ import java.io.IOException;
 public class PostExceptionHandler {
 
 
-    /**
-     * @Valid 유효성 체크에 통과하지 못하면 MethodArgumentNotValidException 발생
-     * @param e
-     * @return
-     */
+    // @Valid 유효성 체크에 통과하지 못하면 MethodArgumentNotValidException 발생
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
@@ -40,25 +37,12 @@ public class PostExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<ErrorResponse>handleConstraintViolationException(ConstraintViolationException e) {
+    protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
         log.error("handleConstraintViolationException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
 
         return new ResponseEntity<> (response, HttpStatus.BAD_REQUEST);
     }
-
-//    /**
-//     * Handler 에서 예외처리 되지 않은 Exception 처리
-//     * @param e
-//     * @return
-//     */
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-//        log.error("handleException", e);
-//        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
-//
-//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ErrorResponse> handleIOException(IOException e) {
@@ -68,9 +52,7 @@ public class PostExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * RequestPart 데이터가 없을 시 발생하는 에러 예외 처리
-     */
+    // RequestPart 데이터가 없을 시 발생하는 에러 예외 처리
     @ExceptionHandler(MissingServletRequestPartException.class)
     protected ResponseEntity<ErrorResponse> handleMissingServletRequestPartException(MissingServletRequestPartException e) {
         log.error("handleMissingServletRequestPartException", e);
@@ -79,9 +61,7 @@ public class PostExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * request parameter 가 없을 시 발생하는 에러 예외 처리
-     */
+    // request parameter 가 없을 시 발생하는 에러 예외 처리
     @ExceptionHandler(MissingServletRequestParameterException.class)
     protected ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         log.error("handleMissingServletRequestParameterException", e);
@@ -92,9 +72,7 @@ public class PostExceptionHandler {
 
 
 
-    /**
-     * 지원하지 않은 HTTP method 호출 시 발생하는 에러 예외 처리
-     */
+    // 지원하지 않은 HTTP method 호출 시 발생하는 에러 예외 처리
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportedException", e);
@@ -108,15 +86,13 @@ public class PostExceptionHandler {
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        log.error("handleHttpRequestMethodNotSupportedException", e);
+        log.error("handleHttpMediaTypeNotSupportedException", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_TYPE_VALUE, e.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * enum type 일치하지 않아서 발생하는 에러 예외 처리
-     */
+    // 유효하지 않은 포맷인 경우 발생하는 에러 예외 처리
     @ExceptionHandler(InvalidFormatException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidFormatException(InvalidFormatException e) {
         log.error("handleInvalidFormatException", e);
@@ -125,19 +101,35 @@ public class PostExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    //enum type 일치하지 않아서 발생하는 에러 예외 처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.error("handleIllegalArgumentException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
-//    /**
-//    * Authentication 객체가 필요한 권한을 보유하지 않은 경우 발생합
-//     */
-//    @ExceptionHandler(AccessDeniedException.class)
-//    protected ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
-//        log.error("handleAccessDeniedException", e);
-//        final ErrorResponse response = ErrorResponse.of(ErrorCode.HANDLE_ACCESS_DENIED);
-//
-//        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.HANDLE_ACCESS_DENIED.getStatus()));
-//    }
 
+    // 숫자형 포맷 input 에러 예외 처리
+    @ExceptionHandler(NumberFormatException.class)
+    protected ResponseEntity<ErrorResponse> handleNumberFormatException(NumberFormatException e) {
+        log.error("handleNumberFormatException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    // 메서드 타입이 일치하지 않는 경우 예외 처리
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("handleMethodArgumentTypeMismatchException", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,e.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 
 
 }
