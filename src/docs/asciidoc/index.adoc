@@ -338,3 +338,14 @@ operation::create chatRoom[snippets='response-fields,curl-request,http-response'
 `GET` 요청을 사용하여 채팅방 목록을 조회할 수 있다.
 
 operation::get chatRoomList[snippets='response-fields,curl-request,http-response']
+
+[[resources-events-message]]
+== 메세지
+메세지 리소스는 메세지 조회를 할 때 사용한다.
+
+[[resources-events-message-list]]
+=== 메세지 조회
+
+`GET` 요청을 사용하여 메세지 조회를 할 수 있다.
+
+operation::get MessageList[snippets='response-fields,curl-request,http-response']
