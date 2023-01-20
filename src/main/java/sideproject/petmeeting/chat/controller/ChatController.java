@@ -41,7 +41,7 @@ public class ChatController {
 
     @PostMapping("/{meetingId}")
     public ResponseEntity createChatRoom(@PathVariable Long meetingId,
-                                         @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto,
+                                        @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto,
                                          HttpServletRequest httpServletRequest,
                                          Errors errors) {
         Response message = new Response();
