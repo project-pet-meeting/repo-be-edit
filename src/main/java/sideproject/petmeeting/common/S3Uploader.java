@@ -13,8 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -44,9 +49,17 @@ public class S3Uploader {
             throw new BusinessException("지원하지 않은 파일 유형입니다.", ErrorCode.INVALID_FILE_TYPE);
         }
 
+//        File uploadFile = convert(image).orElseThrow(
+//                () -> new BusinessException("MultipartFile -> File 변환 실패", ErrorCode.FILE_CONVERT_FAIL));
+
+
+//        String fileName = imagePath + "/" + UUID.randomUUID() + uploadFile.getName();
         String fileName = imagePath + "/" + UUID.randomUUID() + image.getName() + "." + fileType;
 
+        //        removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
+
         return putS3(image, fileName, fileType);
+
     }
 
     private boolean validateFileExist(MultipartFile image) {
@@ -59,6 +72,26 @@ public class S3Uploader {
                 || fileType.equals("jpg")
                 || fileType.equals("jpeg");
     }
+
+
+//    /**
+//     * MultipartFile -> File 전환
+//     * 전환 시 로컬에 파일 생성됨
+//     * @param image : File 전환 할 MultipartFile
+//     * @return : File
+//     * @throws IOException : 예외 처리
+//     */
+//    private Optional<File> convert(MultipartFile image) throws IOException {
+//        File convertFile = new File(Objects.requireNonNull(image.getOriginalFilename()));
+//        // 지정된 경로에 파일 생성
+//        if (convertFile.createNewFile()) {
+//            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+//                fos.write(image.getBytes());
+//            }
+//            return Optional.of(convertFile);
+//        }
+//        return Optional.empty();
+//    }
 
 
     /**
@@ -79,12 +112,25 @@ public class S3Uploader {
     }
 
 
+//    /**
+//     * MultipartFile -> File 전환하면서 생성된 로컬에 저장된 파일 삭제
+//     * @param targetFile : File 전환하면서 생성된 로컬에 저장된 파일
+//     */
+//    private void removeNewFile(File targetFile) {
+//        if(targetFile.delete()) {
+//            log.info("파일이 삭제되었습니다.");
+//        }else {
+//            log.info("파일이 삭제되지 못했습니다.");
+//        }
+//    }
+
     /**
      * 이미지 파일 삭제
      * @param imageUrl : 삭제 할 파일명
      * @param imagePath : 이미지 경로
      */
     public void deleteImage(String imageUrl, String imagePath)  {
+//        fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8); //한글 인코딩
         log.info(imageUrl);
         String fileName =  imagePath + "/" + imageUrl.substring(imageUrl.lastIndexOf("/")+1);
         log.info(fileName);
