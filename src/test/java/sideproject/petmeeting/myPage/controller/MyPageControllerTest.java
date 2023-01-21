@@ -288,6 +288,7 @@ class MyPageControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(secondPost);
 
@@ -316,6 +317,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.myPostList[].content").description("content of post"),
                                         fieldWithPath("data.myPostList[].imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.myPostList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.myPostList[].viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.myPostList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.myPostList[].authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.myPostList[].authorLocation").description("authorLocation of post"),
@@ -435,6 +437,7 @@ class MyPageControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(firstPost);
 
@@ -446,6 +449,7 @@ class MyPageControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(secondPost);
 
@@ -481,6 +485,7 @@ class MyPageControllerTest {
                                         fieldWithPath("data.myHeartPostList[].content").description("content of post"),
                                         fieldWithPath("data.myHeartPostList[].imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.myHeartPostList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.myHeartPostList[].viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.myHeartPostList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.myHeartPostList[].authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.myHeartPostList[].authorImageUrl").description("authorImageUrl of post"),

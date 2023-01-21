@@ -36,6 +36,7 @@ import sideproject.petmeeting.token.repository.RefreshTokenRepository;
 
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
@@ -53,7 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
-import static sideproject.petmeeting.post.domain.Category.*;
+import static sideproject.petmeeting.post.domain.Category.RECOMMEND;
+import static sideproject.petmeeting.post.domain.Category.SHARE;
 
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest
@@ -117,20 +119,6 @@ class PostControllerTest {
         memberRepository.deleteAllInBatch();
     }
 
-//    @Order(0)
-//    @Test
-//    @DisplayName("공통으로 사용하는 ENTITY 생성")
-//    public void memberBuild() {
-//        Member member = Member.builder()
-//                .nickname(USERNAME)
-//                .password(PASSWORD)
-//                .email(USERNAME)
-//                .location("지역")
-//                .image("test-image")
-//                .userRole(ROLE_MEMBER)
-//                .build();
-//        memberRepository.save(member);
-//    }
 
     @Test
     @Transactional
@@ -189,6 +177,7 @@ class PostControllerTest {
                                         fieldWithPath("data.title").description("title of post"),
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
@@ -253,6 +242,7 @@ class PostControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(firstPost);
 
@@ -263,6 +253,7 @@ class PostControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(secondPost);
 
@@ -291,6 +282,7 @@ class PostControllerTest {
                                         fieldWithPath("data.postList[].content").description("content of post"),
                                         fieldWithPath("data.postList[].imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.postList[].viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.postList[].authorId").description("authorId of post"),
                                         fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
@@ -327,6 +319,7 @@ class PostControllerTest {
                 .member(savedMember)
                 .imageUrl("imageUrl")
                 .numHeart(0)
+                .viewCnt(0)
                 .build();
         postRepository.save(firstPost);
 
@@ -353,6 +346,7 @@ class PostControllerTest {
                                         fieldWithPath("data.title").description("title of post"),
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
@@ -372,6 +366,7 @@ class PostControllerTest {
         assertThat(firstPost.getTitle()).isEqualTo("first post title");
         assertThat(firstPost.getContent()).isEqualTo("first post content");
         assertThat(firstPost.getMember().getNickname()).isEqualTo(USERNAME);
+        assertThat(firstPost.getViewCnt()).isEqualTo(1);
     }
 
     @Test
@@ -398,6 +393,42 @@ class PostControllerTest {
                         .accept(HAL_JSON))
                 .andExpect(status().is4xxClientError())
         ;
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("게시글 조회수 테스트")
+    public void getPostView() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Post firstPost = Post.builder()
+                .category(RECOMMEND)
+                .title("first post title")
+                .content("first post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(firstPost);
+
+        // When & Then
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/" + firstPost.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/" + firstPost.getId())
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+        ;
+
+        // Then
+        assertThat(firstPost.getViewCnt()).isEqualTo(2);
     }
 
     @Test
@@ -473,6 +504,7 @@ class PostControllerTest {
                                         fieldWithPath("data.content").description("content of post"),
                                         fieldWithPath("data.imageUrl").description("imageUrl of post"),
                                         fieldWithPath("data.numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.viewCnt").description("viewCnt of post"),
                                         fieldWithPath("data.authorId").description("authorId of post"),
                                         fieldWithPath("data.authorNickname").description("authorNickname of post"),
                                         fieldWithPath("data.authorLocation").description("authorLocation of post"),
@@ -720,6 +752,169 @@ class PostControllerTest {
                         )
                 )
         ;
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("게시글 검색 - 정상응답")
+    public void searchPost() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Post firstPost = Post.builder()
+                .category(RECOMMEND)
+                .title("first post title")
+                .content("first post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(firstPost);
+
+        Post secondPost = Post.builder()
+                .category(SHARE)
+                .title("second post title")
+                .content("second post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(secondPost);
+
+        // When & Then
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/search")
+                        .param("keyword", "first")
+                        .param("page", String.valueOf(0))
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.postList[].id").description("id of post"),
+                                        fieldWithPath("data.postList[].category").description("category of post"),
+                                        fieldWithPath("data.postList[].title").description("title of post"),
+                                        fieldWithPath("data.postList[].content").description("content of post"),
+                                        fieldWithPath("data.postList[].imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.postList[].viewCnt").description("viewCnt of post"),
+                                        fieldWithPath("data.postList[].authorId").description("authorId of post"),
+                                        fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
+                                        fieldWithPath("data.postList[].authorImageUrl").description("authorImageUrl of post"),
+                                        fieldWithPath("data.postList[].createdAt").description("createdAt of post"),
+                                        fieldWithPath("data.postList[].modifiedAt").description("modifiedAt of post"),
+                                        fieldWithPath("data.totalPage").description("totalPage of postList"),
+                                        fieldWithPath("data.currentPage").description("currentPage of postList"),
+                                        fieldWithPath("data.totalPost").description("totalPost of postList"),
+                                        fieldWithPath("data.hasNextPage").description("hasNextPage of postList"),
+                                        fieldWithPath("data.hasPreviousPage").description("hasPreviousPage of postList"),
+                                        fieldWithPath("data.firstPage").description("firstPage of postList"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+        // Then
+        assertThat(postRepository.findAll().size()).isEqualTo(2);
+        assertThat(postRepository.findByTitle(firstPost.getTitle()).stream().count()).isEqualTo(1);
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("카테고리별 조회 - 정상응답")
+    public void getCategoryPost() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Post firstPost = Post.builder()
+                .category(RECOMMEND)
+                .title("first post title")
+                .content("first post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(firstPost);
+
+        Post secondPost = Post.builder()
+                .category(SHARE)
+                .title("second post title")
+                .content("second post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .viewCnt(0)
+                .build();
+        postRepository.save(secondPost);
+
+        // When & Then
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/post/category")
+                        .param("category", "recommend")
+                        .param("page", String.valueOf(0))
+                        .header("Authorization", getAccessToken())
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.postList[].id").description("id of post"),
+                                        fieldWithPath("data.postList[].category").description("category of post"),
+                                        fieldWithPath("data.postList[].title").description("title of post"),
+                                        fieldWithPath("data.postList[].content").description("content of post"),
+                                        fieldWithPath("data.postList[].imageUrl").description("imageUrl of post"),
+                                        fieldWithPath("data.postList[].numHeart").description("numHeart of post"),
+                                        fieldWithPath("data.postList[].viewCnt").description("viewCnt of post"),
+                                        fieldWithPath("data.postList[].authorId").description("authorId of post"),
+                                        fieldWithPath("data.postList[].authorNickname").description("authorNickname of post"),
+                                        fieldWithPath("data.postList[].authorLocation").description("authorLocation of post"),
+                                        fieldWithPath("data.postList[].authorImageUrl").description("authorImageUrl of post"),
+                                        fieldWithPath("data.postList[].createdAt").description("createdAt of post"),
+                                        fieldWithPath("data.postList[].modifiedAt").description("modifiedAt of post"),
+                                        fieldWithPath("data.totalPage").description("totalPage of postList"),
+                                        fieldWithPath("data.currentPage").description("currentPage of postList"),
+                                        fieldWithPath("data.totalPost").description("totalPost of postList"),
+                                        fieldWithPath("data.hasNextPage").description("hasNextPage of postList"),
+                                        fieldWithPath("data.hasPreviousPage").description("hasPreviousPage of postList"),
+                                        fieldWithPath("data.firstPage").description("firstPage of postList"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        Optional<Post> savedPost = postRepository.findByTitle(firstPost.getTitle());
+
+        // Then
+        assertThat(postRepository.findAll().size()).isEqualTo(2);
+        assertThat(savedPost.get().getCategory() == Category.RECOMMEND).isTrue();
 
     }
 

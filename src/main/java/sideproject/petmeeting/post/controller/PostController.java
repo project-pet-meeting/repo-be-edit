@@ -21,10 +21,11 @@ import java.io.IOException;
 
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api", produces = HAL_JSON_VALUE)
+@RequestMapping(value = "/api/post", produces = HAL_JSON_VALUE+";charset=UTF-8")
 public class PostController {
     private final PostService postService;
 
@@ -34,7 +35,7 @@ public class PostController {
      * @param image : 게시글에 첨부 할 이미지
      * @return :
      */
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity<Object> createPost(@RequestPart(value = "data") @Valid PostRequestDto postRequestDto, // @valid 객체 검증 수행
                                              @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
@@ -58,12 +59,12 @@ public class PostController {
      * @param pageNum : 조회할 페이지 번호
      * @return :
      */
-    @GetMapping("/post")
+    @GetMapping
     public ResponseEntity<Object> getAllPosts(@RequestParam("page") int pageNum) {
         PostPageResponseDto postPageResponseDto = postService.getAllPosts(pageNum);
 
         ResponseResource responseResource = new ResponseResource(postPageResponseDto);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(methodOn(PostController.class).getAllPosts(pageNum)).withSelfRel());
 
         Response response = new Response(StatusEnum.OK, "게시글 조회 성공", responseResource);
 
@@ -75,7 +76,7 @@ public class PostController {
      * @param postId : 조회할 게시글 id
      * @return :
      */
-    @GetMapping("/post/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<Object> getPost(@PathVariable Long postId) {
         PostResponseDto postResponseDto = postService.getPost(postId);
 
@@ -92,7 +93,7 @@ public class PostController {
      * @param postId : 수정할 게시글 id
      * @return :
      */
-    @PutMapping("/post/{postId}")
+    @PutMapping("/{postId}")
     public ResponseEntity<Object> updatePost(@PathVariable Long postId,
                                              @RequestPart(value = "data") @Valid PostRequestDto postRequestDto,
                                              @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
@@ -112,7 +113,7 @@ public class PostController {
      * @param postId : 삭제할 게시글 id
      * @return :
      */
-    @DeleteMapping( "/post/{postId}")
+    @DeleteMapping( "/{postId}")
     public ResponseEntity<Object> deletePost(@PathVariable Long postId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         postService.postDelete(postId, userDetails.getMember());
@@ -131,13 +132,13 @@ public class PostController {
      * @param userDetails : 게시글에 '좋아요'를 한 User
      * @return : 좋아요 성공 응답
      */
-    @PostMapping("/post/heart/{postId}")
+    @PostMapping("/heart/{postId}")
     public ResponseEntity<Object> addPostHeart(@PathVariable Long postId,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.addPostHeart(postId, userDetails.getMember());
 
         ResponseResource responseResource = new ResponseResource(null);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withSelfRel());
         responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withRel("heart-delete"));
 
         Response response = new Response(StatusEnum.OK, "좋아요 성공", responseResource);
@@ -151,17 +152,54 @@ public class PostController {
      * @param userDetails 게시글에 '좋아요' 취소를 한 user
      * @return : 좋아요 취소 성공 응답
      */
-    @DeleteMapping( "/post/heart/{postId}")
+    @DeleteMapping( "/heart/{postId}")
     public ResponseEntity<Object> deletePostHeart(@PathVariable Long postId,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePostHeart(postId, userDetails.getMember());
 
         ResponseResource responseResource = new ResponseResource(null);
-        responseResource.add(linkTo(PostController.class).withSelfRel());
+        responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withSelfRel());
         responseResource.add(linkTo(PostController.class).slash("heart").slash(postId).withRel("heart-post"));
 
         Response response = new Response(StatusEnum.OK, "좋아요 취소 성공", responseResource);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * 게시글 검색
+     * @param keyword: 검색 키워드
+     * @param pageNum: 페이지 번호
+     * @return 검색 결과 응답
+     */
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchPost(@RequestParam("keyword") String keyword, @RequestParam("page") int pageNum) {
+        PostPageResponseDto postPageResponseDto = postService.searchPost(keyword, pageNum);
+
+        ResponseResource responseResource = new ResponseResource(postPageResponseDto);
+        responseResource.add(linkTo(methodOn(PostController.class).searchPost(keyword, pageNum)).withSelfRel());
+
+        Response response = new Response(StatusEnum.OK, "게시글 검색 성공", responseResource);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * 카테고리별 조회
+     * @param category: 조회할 카테고리
+     * @param pageNum: 조회할 페이지 번호
+     * @return : 조회 결과 응답
+     */
+    @GetMapping("/category")
+    public ResponseEntity<Object> getCategoryPost(@RequestParam("category") String category, @RequestParam("page") int pageNum) {
+        PostPageResponseDto postPageResponseDto = postService.getCategoryPost(category, pageNum);
+
+        ResponseResource responseResource = new ResponseResource(postPageResponseDto);
+        responseResource.add(linkTo(methodOn(PostController.class).searchPost(category, pageNum)).withSelfRel());
+
+        Response response = new Response(StatusEnum.OK, "카테고리 조회 성공", responseResource);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

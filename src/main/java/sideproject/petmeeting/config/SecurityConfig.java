@@ -72,6 +72,7 @@ public class SecurityConfig {
                 .antMatchers("/api/member/signup", "/api/member/nickname", "/api/member/login", "/api/member/emailConfirm").permitAll()
                 .antMatchers("/user/kakao/*", "/user/naver/*").permitAll()
                 .antMatchers("/ws-stomp/**", "/chat/**","/webjars/**").permitAll()
+                .antMatchers("/docs/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -12,6 +12,7 @@ import sideproject.petmeeting.common.S3Uploader;
 import sideproject.petmeeting.common.exception.BusinessException;
 import sideproject.petmeeting.common.exception.ErrorCode;
 import sideproject.petmeeting.member.domain.Member;
+import sideproject.petmeeting.post.domain.Category;
 import sideproject.petmeeting.post.domain.HeartPost;
 import sideproject.petmeeting.post.domain.Post;
 import sideproject.petmeeting.post.dto.PostPageResponseDto;
@@ -64,42 +65,11 @@ public class PostService {
      */
     @Transactional(readOnly = true)
     public PostPageResponseDto getAllPosts(int pageNum) {
-        Pageable pageRequest = PageRequest.of(pageNum, 15, Sort.by("modifiedAt").descending());
+        Pageable pageable = PageRequest.of(pageNum, 15, Sort.by("modifiedAt").descending());
 
-        Page<Post> postPage = postRepository.findAllByOrderByModifiedAtDesc(pageRequest);
+        Page<Post> postPage = postRepository.findAllByOrderByModifiedAtDesc(pageable);
 
-        List<Post> content = postPage.getContent();
-
-        List<PostResponseDto> PostResponseDtoList = new ArrayList<>();
-        for (Post post : content) {
-            PostResponseDtoList.add(
-                    PostResponseDto.builder()
-                            .id(post.getId())
-                            .category(post.getCategory())
-                            .title(post.getTitle())
-                            .content(post.getContent())
-                            .imageUrl(post.getImageUrl())
-                            .numHeart(post.getNumHeart())
-                            .authorId(post.getMember().getId())
-                            .authorNickname(post.getMember().getNickname())
-                            .authorLocation(post.getMember().getLocation())
-                            .authorImageUrl(post.getMember().getImage())
-                            .createdAt(post.getCreatedAt())
-                            .modifiedAt(post.getModifiedAt())
-                            .build()
-            );
-        }
-
-        PostPageResponseDto postPageResponseDto = PostPageResponseDto.builder()
-                .postList(PostResponseDtoList)
-                .totalPage(postPage.getTotalPages() - 1)
-                .currentPage(pageNum)
-                .isFirstPage(postPage.isFirst())
-                .hasNextPage(postPage.hasNext())
-                .hasPreviousPage(postPage.hasPrevious())
-                .build();
-
-        return postPageResponseDto;
+        return getPostPageResponseDto(pageNum, postPage);
 
     }
 
@@ -109,12 +79,13 @@ public class PostService {
      * @param postId : 조회할 게시글 id
      * @return : 조회할 게시글
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponseDto getPost(Long postId) {
         Post post = postRepository.findPostFetchJoin(postId).orElseThrow(
                 () -> new BusinessException("존재하지 않는 게시글 id 입니다.", ErrorCode.POST_NOT_EXIST)
         );
 
+        post.viewCnt();
         return getPostResponseDto(post);
     }
 
@@ -229,6 +200,48 @@ public class PostService {
 
 
     /**
+     * 게시글 검색
+     * @param keyword: 검색 키워드
+     * @return 검색 결과 응답
+     */
+    @Transactional(readOnly = true)
+    public PostPageResponseDto searchPost(String keyword, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, 15, Sort.by("modifiedAt").descending());
+
+        Page<Post> postPage = postRepository.findByKeyword(keyword, pageable);
+
+        if(!postPage.hasContent()) {
+            throw new BusinessException("검색 결과가 없습니다.", ErrorCode.KEYWORD_NOT_FOUND);
+        }
+
+        return getPostPageResponseDto(pageNum, postPage);
+    }
+
+    /**
+     * 카테고리별 조회
+     * @param category: 조회할 카테고리
+     * @param pageNum: 조회할 페이지 번호
+     * @return : 조회 결과 응답
+     */
+    @Transactional(readOnly = true)
+    public PostPageResponseDto getCategoryPost(String category, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, 15, Sort.by("modifiedAt").descending());
+
+        Category findCategory = Category.valueOf(category.toUpperCase());
+
+        Page<Post> postPage = postRepository.findByCategory(findCategory, pageable);
+
+        if(!postPage.hasContent()) {
+            throw new BusinessException("해당 카테고리의 게시글이 없습니다.", ErrorCode.CATEGORY_NOT_FOUND);
+        }
+
+        return getPostPageResponseDto(pageNum, postPage);
+    }
+
+
+
+
+    /**
      * post 데이터를 postResponseDto 로 build
      * @param post : post 데이터
      * @return : 응답 데이터 postResponseDto
@@ -242,12 +255,33 @@ public class PostService {
                 .content(post.getContent())
                 .imageUrl(post.getImageUrl())
                 .numHeart(post.getNumHeart())
+                .viewCnt(post.getViewCnt())
                 .authorId(post.getMember().getId())
                 .authorNickname(post.getMember().getNickname())
                 .authorLocation(post.getMember().getLocation())
                 .authorImageUrl(post.getMember().getImage())
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
+                .build();
+    }
+
+
+    private PostPageResponseDto getPostPageResponseDto(int pageNum, Page<Post> postPage) {
+        List<Post> content = postPage.getContent();
+
+        List<PostResponseDto> PostResponseDtoList = new ArrayList<>();
+        for (Post post : content) {
+            PostResponseDtoList.add(getPostResponseDto(post));
+        }
+
+        return PostPageResponseDto.builder()
+                .postList(PostResponseDtoList)
+                .totalPage(postPage.getTotalPages() - 1)
+                .totalPost(postPage.getTotalElements())
+                .currentPage(pageNum)
+                .isFirstPage(postPage.isFirst())
+                .hasNextPage(postPage.hasNext())
+                .hasPreviousPage(postPage.hasPrevious())
                 .build();
     }
 }

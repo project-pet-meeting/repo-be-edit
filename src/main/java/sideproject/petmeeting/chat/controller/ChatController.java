@@ -41,7 +41,7 @@ public class ChatController {
 
     @PostMapping("/{meetingId}")
     public ResponseEntity createChatRoom(@PathVariable Long meetingId,
-                                         @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto,
+                                        @RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto,
                                          HttpServletRequest httpServletRequest,
                                          Errors errors) {
         Response message = new Response();
@@ -58,7 +58,13 @@ public class ChatController {
         Member member = checkAuthentication(httpServletRequest);
         ChatRoom chatRoom = chatRoomService.createChatRoom(member, meetingId, chatRoomRequestDto);
 
-        ResponseResource responseResource = new ResponseResource(chatRoom);
+        ChatRoomResponseDto chatRoomResponseDto = ChatRoomResponseDto.builder()
+                .id(chatRoom.getId())
+                .meetingId(chatRoom.getMeeting().getId())
+                .roomName(chatRoom.getRoomName())
+                .build();
+
+        ResponseResource responseResource = new ResponseResource(chatRoomResponseDto);
         responseResource.add(linkTo(ChatController.class).withSelfRel());
 
         message.setStatus(CREATED);

@@ -86,139 +86,266 @@
 
 // operation::index[snippets='response-body,http-response,links']
 
-[[resources-events]]
+[[resources-events-member]]
 == 회원
 
 회원 리소스는 회원 가입, 정보 수정, 로그아웃 및 탈퇴를 할 때 사용한다.
 
-[[resources-events-list]]
+[[resources-events-member-list]]
 === 회원 가입
 
 `POST` 요청을 사용하여 회원가입을 진행 할 수 있다.
 
 operation::member-signup[snippets='response-fields,curl-request,http-response']
 
+=== 닉네임 중복 검사
+`POST` 요청을 사용하여 닉네임 중복을 확인할 수 있다.
+
+operation::nickname-duplicate[snippets='response-fields,curl-request,http-response']
+
 === 로그인
 
 `POST` 요청을 사용하여 로그인을 진행 할 수 있다.
 
-// opertation::member-login
+operation::login[snippets='response-fields,curl-request,http-response']
+
+=== 회원 정보 수정
+`PUT` 요청을 사용하여 회원 정보 수정이 가능하다.
+
+operation::member edit[snippets='response-fields,curl-request,http-response']
+
+=== 로그아웃
+`DELETE` 요청을 사용하여 로그아웃이 가능하다.
+
+operation::logout[snippets='response-fields,curl-request,http-response']
+
+=== 이메일 유효성 검사
+`POST` 요청을 사용하여 이메일 유효성 검사가 가능하다.
+
+operation::email-validation[snippets='response-fields,curl-request,http-response']
 
 
-[[resources-events]]
+[[resources-events-pet]]
+== 반려동물
+
+반려동물 리소스는 반려동물 정보 생성, 조회, 수정 및 삭제할 때 사용한다.
+
+[[resource-events-pet-list]]
+=== 반려동물 정보 생성
+`POST` 요청을 사용해 반려동물 정보 생성을 진행할 수 있다.
+
+operation::pet-controller-test/create-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 조회
+`GET` 요청을 사용해 반려동물 정보를 조회할 수 있다.
+
+operation::pet-controller-test/get-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 수정
+`PUT` 요청을 사용해 반려동물 정보를 수정할 수 있다.
+
+operation::pet-controller-test/put-pet[snippets='http-request,response-fields,http-response']
+
+=== 반려동물 정보 삭제
+`DELETE` 요청을 사용해 반려동물 정보를 삭제할 수 있다.
+
+operation::pet-controller-test/delete-pet[snippets='http-request,response-fields,http-response']
+
+
+[[resources-events-post]]
 == 게시글
 
-게시글 리소스는 게시글 작성, 조회, 수정 및 삭제 할 때 사용한다.
+게시글 리소스는 게시글 작성, 조회, 수정 및 삭제할 때 사용한다.
 
-[[resource-events-list]]
+[[resource-events-post-list]]
 === 게시글 작성
 `POST` 요청을 사용해 게시글 작성을 진행할 수 있다.
 
-operation::post-controller-test/create-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/create-post[snippets='http-request,response-fields,http-response']
 
 === 게시글 전체 조회
 `GET` 요청을 사용해 게시글 목록을 확인할 수 있다.
 
-operation::post-controller-test/get-all-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/get-all-posts[snippets='http-request,response-fields,http-response']
 
 === 게시글 단건 조회
 `GET` 요청을 사용해 게시글을 확인할 수 있다.
 
-operation::post-controller-test/get-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/get-post[snippets='http-request,response-fields,http-response']
 
 === 게시글 수정
 `PUT` 요청을 사용해 게시글을 수정할 수 있다.
 
-operation::post-controller-test/put-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/put-post[snippets='http-request,response-fields,http-response']
 
 === 게시글 삭제
-`DELETE` 요청을 사용해 게시글을 삭제 할 수 있다.
+`DELETE` 요청을 사용해 게시글을 삭제할 수 있다.
 
-operation::post-controller-test/delete-post['snippets=request-fields,http-request,response-fields,http-response']
+operation::post-controller-test/delete-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 '좋아요' 생성
+`POST` 요청을 사용해 게시글 '좋아요'를 생성할 수 있다.
+
+operation::post-controller-test/create-heart-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 '좋아요' 삭제
+`DELETE` 요청을 사용해 게시글 '좋아요'를 삭제할 수 있다.
+
+operation::post-controller-test/delete-heart-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 검색
+`GET` 요청을 사용해 게시글을 검색할 수 있다.
+
+operation::post-controller-test/search-post[snippets='http-request,response-fields,http-response']
+
+=== 게시글 카테고리별 조회
+`GET` 요청을 사용해 게시글을 카테고리별로 조회할 수 있다.
+
+operation::post-controller-test/get-category-post[snippets='http-request,response-fields,http-response']
 
 
-[[resources-events]]
+
+[[resources-events-comment]]
 == 댓글
 
 댓글 리소스는 댓글 작성, 조회, 수정 및 삭제를 할 때 사용한다.
 
-[[resource-events-list]]
+[[resource-events-comment-list]]
 === 댓글 작성
 `POST` 요청을 사용해 댓글 작성을 진행 할 수 있다.
 
-operation::create-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::create-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 === 댓글 조회
 `GET` 요청을 사용해 댓글 목록을 확인 할 수 있다.
 
-operation::get-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::get-comment[snippets='http-request,response-fields,http-response']
 
 === 댓글 수정
 `PUT` 요청을 사용해 댓글을 수정 할 수 있다.
 
-operation::update-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::update-comment[snippets='request-fields,http-request,response-fields,http-response']
 
 === 댓글 삭제
 `DELETE` 요청을 사용해 댓글을 삭제 할 수 있다.
 
-operation::delete-comment['snippets=request-fields,http-request,response-fields,http-response']
+operation::delete-comment[snippets='http-request,response-fields,http-response']
 
 
-[[resources-events]]
+[[resources-events-meeting]]
 == 모임
 
 모임 리소스는 모임 생성, 조회, 수정 및 삭제를 할 때 사용한다.
 
-[[resource-events-list]]
+[[resource-events-meeting-list]]
 === 모임 생성
-`POST` 요청을 사용해 모임 생성을 진행 할 수 있다.
+`POST` 요청을 사용해 모임 생성을 진행할 수 있다.
 
-operation::meeting-controller-test/create-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/create-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 전체 조회
-`GET` 요청을 사용해 모임 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 모임 목록을 확인할 수 있다.
 
-operation::meeting-controller-test/get-all-meetings['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/get-all-meetings[snippets='http-request,response-fields,http-response']
 
 === 모임 단건 조회
-`GET` 요청을 사용해 모임을 확인 할 수 있다.
+`GET` 요청을 사용해 모임을 확인할 수 있다.
 
-operation::meeting-controller-test/get-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/get-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 수정
-`PUT` 요청을 사용해 모임을 수정 할 수 있다.
+`PUT` 요청을 사용해 모임을 수정할 수 있다.
 
-operation::meeting-controller-test/put-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/put-meeting[snippets='http-request,response-fields,http-response']
 
 === 모임 삭제
-`DELETE` 요청을 사용해 모임을 삭제 할 수 있다.
+`DELETE` 요청을 사용해 모임을 삭제할 수 있다.
 
-operation::meeting-controller-test/delete-meeting['snippets=request-fields,http-request,response-fields,http-response']
+operation::meeting-controller-test/delete-meeting[snippets='http-request,response-fields,http-response']
 
 
 
-[[resources-events]]
+[[resources-events-mypage]]
 == 마이페이지
 
-마이페이지 리소스는 내 정보 조회, 내가 작성한 게시글 조회, 내가 생성한 모임 조회, 내가 '좋아요한' 게시글 조회를 할 때 사용한다.
+마이페이지 리소스는 내 정보 조회, 내가 작성한 게시글 조회, 내가 생성한 모임 조회, 내가 '좋아요'한 게시글 조회를 할 때 사용한다.
 
-[[resource-events-list]]
+[[resource-events-mypage-list]]
 === 내 정보 조회
-`GET` 요청을 사용해 내 정보를 확인 할 수 있다.
+`GET` 요청을 사용해 내 정보를 확인할 수 있다.
 
-operation::my-page-controller-test/get-my-profile['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-profile[snippets='http-request,response-fields,http-response']
 
 === 내가 작성한 게시글 조회
-`GET` 요청을 사용해 내가 작성한 게시글 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 작성한 게시글 목록을 확인할 수 있다.
 
-operation::my-page-controller-test/get-my-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-posts[snippets='http-request,response-fields,http-response']
 
 === 내가 생성한 모임 조회
-`GET` 요청을 사용해 내가 생성한 모임 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 생성한 모임 목록을 확인할 수 있다.
 
-operation::my-page-controller-test/get-my-meetings['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-meetings[snippets='http-request,response-fields,http-response']
 
 === 내가 '좋아요'한 게시글 조회
-`GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인 할 수 있다.
+`GET` 요청을 사용해 내가 '좋아요'한 게시글 목록을 확인할 수 있다.
 
-operation::my-page-controller-test/get-my-heart-posts['snippets=request-fields,http-request,response-fields,http-response']
+operation::my-page-controller-test/get-my-heart-posts[snippets='http-request,response-fields,http-response']
+
+[[resources-events-follow]]
+== 팔로우
+
+팔로우 리소스는 팔로우 신청, 팔로우 취소, 팔로우 한 사람들 조회, 팔로워 조회를 할 때 사용한다.
+
+[[resources-events-follow-list]]
+=== 팔로우 신청
+
+`POST` 요청을 사용하여 팔로우를 신청할 수 있다.
+
+operation::request follow[snippets='response-fields,curl-request,http-response']
+
+=== 팔로우 취소
+
+`DELETE` 요청을 사용하여 팔로우를 취소할 수 있다.
+
+operation::delete follow[snippets='response-fields,curl-request,http-response']
+
+=== 팔로우 하는 회원 조회
+
+`GET` 요청을 사용하여  내가 팔로우하는 회원을 조회할 수 있다.
+
+operation::get follow member list[snippets='response-fields,curl-request,http-response']
+
+== 팔로워 조회
+
+`GET` 요청을 사용하여  나를 팔로우하는 회원을 조회할 수 있다.
+
+operation::get follower list[snippets='response-fields,curl-request,http-response']
+
+[[resources-events-chat]]
+== 채팅
+
+채팅 리소스는 채팅방 생성, 채팅방 목록 조회를 할 때 사용한다.
+
+[[resources-events-chat-list]]
+=== 채팅방 생성
+
+`POST` 요청을 사용하여 채팅방을 생성할 수 있다.
+
+operation::create chatRoom[snippets='response-fields,curl-request,http-response']
+
+=== 채팅방 조회
+
+`GET` 요청을 사용하여 채팅방 목록을 조회할 수 있다.
+
+operation::get chatRoomList[snippets='response-fields,curl-request,http-response']
+
+[[resources-events-message]]
+== 메세지
+메세지 리소스는 메세지 조회를 할 때 사용한다.
+
+[[resources-events-message-list]]
+=== 메세지 조회
+
+`GET` 요청을 사용하여 메세지 조회를 할 수 있다.
+
+operation::get MessageList[snippets='response-fields,curl-request,http-response']
