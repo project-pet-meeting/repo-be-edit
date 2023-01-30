@@ -1,7 +1,7 @@
 package sideproject.petmeeting.chat.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import sideproject.petmeeting.common.Timestamped;
 
 import javax.persistence.*;
 
@@ -10,7 +10,10 @@ import static javax.persistence.EnumType.STRING;
 @Getter
 @Setter
 @Entity
-public class ChatMessage {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ChatMessage extends Timestamped {
     @Id
     @GeneratedValue
     private Long id;
