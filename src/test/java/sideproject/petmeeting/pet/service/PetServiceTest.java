@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.filter.CharacterEncodingFilter;
 import sideproject.petmeeting.member.domain.Member;
 import sideproject.petmeeting.member.repository.MemberRepository;
 import sideproject.petmeeting.pet.domain.Pet;
@@ -20,11 +17,6 @@ import sideproject.petmeeting.pet.repository.PetRepository;
 import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static sideproject.petmeeting.member.domain.UserRole.ROLE_MEMBER;
 
 @SpringBootTest
@@ -140,7 +132,7 @@ class PetServiceTest {
                 .weight(3.5)
                 .species("강아지")
                 .gender("여")
-                .gender("imageUrl")
+                .imageUrl("imageUrl")
                 .member(savedMember)
                 .build();
         petRepository.save(pet);

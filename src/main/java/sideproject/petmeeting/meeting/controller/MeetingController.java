@@ -33,8 +33,9 @@ public class MeetingController {
 
     /**
      * 모임 생성
+     *
      * @param meetingRequestDto : 모임 생성에 필요한 데이터
-     * @param image : 모임 생성에 첨부 할 이미지
+     * @param image             : 모임 생성에 첨부 할 이미지
      * @return :
      */
     @PostMapping
@@ -65,6 +66,7 @@ public class MeetingController {
 
     /**
      * 모임 전체 조회
+     *
      * @param pageNum : 조회할 페이지 번호
      * @return :
      */
@@ -83,6 +85,7 @@ public class MeetingController {
 
     /**
      * 모임 단건 조회
+     *
      * @param meetingId : 조회할 모임 id
      * @return :
      */
@@ -101,13 +104,14 @@ public class MeetingController {
 
     /**
      * 모임 수정
+     *
      * @param meetingId : 수정할 모임 id
      * @return :
      */
     @PutMapping("/{meetingId}")
     public ResponseEntity<Object> updateMeeting(@PathVariable Long meetingId,
                                                 @RequestPart(value = "data") @Valid MeetingRequestDto meetingRequestDto,
-                                                @RequestPart(value = "image", required = false) @Valid MultipartFile image,
+                                                @RequestPart(value = "image", required = false) MultipartFile image,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         MeetingResponseDto meetingResponseDto = meetingService.updateMeeting(meetingId, meetingRequestDto, image, userDetails.getMember());
 
@@ -121,6 +125,7 @@ public class MeetingController {
 
     /**
      * 모임 삭제
+     *
      * @param meetingId : 삭제할 모임 id
      * @return : 삭제 완료 응답
      */
@@ -139,7 +144,8 @@ public class MeetingController {
 
     /**
      * 모임 참석
-     * @param meetingId: 참석할 모임 id
+     *
+     * @param meetingId:   참석할 모임 id
      * @param userDetails: 회원 정보
      * @return : 참석한 모임 정보
      */
@@ -162,7 +168,8 @@ public class MeetingController {
 
     /**
      * 모임 참석 취소
-     * @param meetingId: 참석 취소할 모임 id
+     *
+     * @param meetingId:   참석 취소할 모임 id
      * @param userDetails: 회원 정보
      * @return : 취소 완료 응답
      */
@@ -182,7 +189,8 @@ public class MeetingController {
 
     /**
      * 모임 참석자 리스트 조회
-     * @param meetingId: 모임 id
+     *
+     * @param meetingId:   모임 id
      * @param userDetails: 회원 정보
      * @return : 모임 참석자 리스트
      */
