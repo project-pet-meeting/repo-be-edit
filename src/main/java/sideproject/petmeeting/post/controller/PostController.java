@@ -96,7 +96,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<Object> updatePost(@PathVariable Long postId,
                                              @RequestPart(value = "data") @Valid PostRequestDto postRequestDto,
-                                             @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
+                                             @RequestPart(value = "image" ,required = false) MultipartFile image,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         PostResponseDto postResponseDto = postService.updatePost(postId, postRequestDto, image, userDetails.getMember());
 

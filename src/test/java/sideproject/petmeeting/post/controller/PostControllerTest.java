@@ -586,6 +586,47 @@ class PostControllerTest {
     }
 
     @Test
+    @Transactional
+    @DisplayName("게시글 수정 - 정상 응답(이미지는 수정하지 않는 경우)")
+    public void putPost_NoImage() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Post firstPost = Post.builder()
+                .category(RECOMMEND)
+                .title("first post title")
+                .content("first post content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .numHeart(0)
+                .build();
+        postRepository.save(firstPost);
+
+        PostRequestDto postRequestDto = PostRequestDto.builder()
+                .category(SHARE)
+                .title("수정 제목")
+                .content("수정 내용")
+                .build();
+
+        String postRequestDtoJson = objectMapper.writeValueAsString(postRequestDto);
+        MockMultipartFile data = new MockMultipartFile(
+                "data",
+                "data",
+                "application/json",
+                postRequestDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        // When & Then
+        mockMvc.perform(multipartPutBuilder("/api/post/" + firstPost.getId())
+                        .file(data)
+                        .header("Authorization", getAccessToken())
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(HAL_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("게시글 삭제 - 정상응답")
     public void deletePost() throws Exception {
         // Given

@@ -553,6 +553,109 @@ class MeetingControllerTest {
 
     @Test
     @Transactional
+    @DisplayName("모임 수정 - 정상 응답(이미지는 수정하지 않는 경우)")
+    public void putMeeting_NoImage() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Meeting firstMeeting = Meeting.builder()
+                .title("first meeting title")
+                .content("first meeting content")
+                .member(savedMember)
+                .imageUrl("imageUrl")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
+                .build();
+        meetingRepository.save(firstMeeting);
+
+        MeetingRequestDto meetingRequestDto = MeetingRequestDto.builder()
+                .title("수정 제목")
+                .content("수정 내용")
+                .address("address")
+                .coordinateX("coordinateX")
+                .coordinateY("coordinateY")
+                .placeName("placeName")
+                .time(LocalDateTime.now().plusDays((1)))
+                .recruitNum(5)
+                .species("species")
+                .build();
+
+        String meetingRequestDtoJson = objectMapper.writeValueAsString(meetingRequestDto);
+        MockMultipartFile data = new MockMultipartFile(
+                "data",
+                "data",
+                "application/json",
+                meetingRequestDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        // When & Then
+        mockMvc.perform(multipartPutBuilder("/api/meeting/" + firstMeeting.getId())
+                        .file(data)
+                        .header("Authorization", getAccessToken())
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(HAL_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.id").exists())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("title").description("title of meetingRequestDto"),
+                                        fieldWithPath("content").description("content of meetingRequestDto"),
+                                        fieldWithPath("address").description("address of meetingRequestDto"),
+                                        fieldWithPath("coordinateX").description("coordinateX of meetingRequestDto"),
+                                        fieldWithPath("coordinateY").description("coordinateY of meetingRequestDto"),
+                                        fieldWithPath("placeName").description("placeName of meetingRequestDto"),
+                                        fieldWithPath("time").description("time of meetingRequestDto"),
+                                        fieldWithPath("recruitNum").description("recruitNum of meetingRequestDto"),
+                                        fieldWithPath("species").description("species of meetingRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of meeting"),
+                                        fieldWithPath("data.title").description("title of meeting"),
+                                        fieldWithPath("data.content").description("content of meeting"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of meeting"),
+                                        fieldWithPath("data.address").description("address of meeting"),
+                                        fieldWithPath("data.coordinateX").description("coordinateX of meeting"),
+                                        fieldWithPath("data.coordinateY").description("coordinateY of meeting"),
+                                        fieldWithPath("data.placeName").description("placeName of meeting"),
+                                        fieldWithPath("data.time").description("time of meeting"),
+                                        fieldWithPath("data.recruitNum").description("recruitNum of meeting"),
+                                        fieldWithPath("data.currentNum").description("currentNum of meeting"),
+                                        fieldWithPath("data.species").description("species of meeting"),
+                                        fieldWithPath("data.authorId").description("authorId of meeting"),
+                                        fieldWithPath("data.authorNickname").description("authorNickname of meeting"),
+                                        fieldWithPath("data.authorImageUrl").description("authorImageUrl of meeting"),
+                                        fieldWithPath("data.createdAt").description("createdAt of meeting"),
+                                        fieldWithPath("data.modifiedAt").description("modifiedAt of meeting"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        // Then
+        assertThat(meetingRequestDto.getTitle()).isEqualTo("수정 제목");
+        assertThat(meetingRequestDto.getContent()).isEqualTo("수정 내용");
+    }
+
+    @Test
+    @Transactional
     @DisplayName("모임 수정 - 권한이 없는 경우 Error")
     public void putMeeting_Not_Authorization() throws Exception {
         // Given
