@@ -110,12 +110,12 @@ public class PostService {
 
         String imageUrl = post.getImageUrl();
 
-        // 이미지 존재 시 삭제 후 업로드
-        if (imageUrl != null) {
+        // 이미지가 수정된 경우만 이미지 삭제 후 업로드
+        if (image != null) {
             s3Uploader.deleteImage(imageUrl, "post/image");
+            imageUrl = s3Uploader.upload(image, "post/image");
         }
 
-        imageUrl = s3Uploader.upload(image, "post/image");
         post.update(postRequestDto, imageUrl);
 
         return getPostResponseDto(post);

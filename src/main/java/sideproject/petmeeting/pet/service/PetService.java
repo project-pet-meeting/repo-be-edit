@@ -62,12 +62,11 @@ public class PetService {
 
         String imageUrl = pet.getImageUrl();
 
-        // 이미지 존재 시 삭제 후 업로드
-        if (imageUrl != null) {
+        if (image != null) {
             s3Uploader.deleteImage(imageUrl, "pet/image");
+            imageUrl = s3Uploader.upload(image, "pet/image");
         }
 
-        imageUrl = s3Uploader.upload(image, "pet/image");
         pet.update(petRequestDto, imageUrl);
 
         return getPetResponseDto(pet);

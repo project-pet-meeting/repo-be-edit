@@ -35,7 +35,6 @@ import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -108,21 +107,6 @@ class PetControllerTest {
         refreshTokenRepository.deleteAllInBatch();
         memberRepository.deleteAllInBatch();
     }
-
-//    @Order(0)
-//    @Test
-//    @DisplayName("공통으로 사용하는 ENTITY 생성")
-//    public void memberBuild() {
-//        Member member = Member.builder()
-//                .nickname(USERNAME)
-//                .password(PASSWORD)
-//                .email(USERNAME)
-//                .image("test-image")
-//                .location("지역")
-//                .userRole(ROLE_MEMBER)
-//                .build();
-//        memberRepository.save(member);
-//    }
 
 
     @Test
@@ -421,6 +405,97 @@ class PetControllerTest {
         assertThat(savedPet.getSpecies()).isEqualTo("강아지");
         assertThat(savedPet.getGender()).isEqualTo("남");
     }
+
+    @Test
+    @Transactional
+    @DisplayName("반려동물 정보 수정 - 정상응답(이미지는 수정하지 않는 경우)")
+    public void putPet_NoImage() throws Exception {
+        // Given
+        Member savedMember = memberRepository.findByNickname(USERNAME).orElseThrow();
+
+        Pet pet = Pet.builder()
+                .name("멍멍이")
+                .age(2)
+                .weight(3.5)
+                .species("강아지")
+                .gender("여")
+                .imageUrl("imageUrl")
+                .member(savedMember)
+                .build();
+        petRepository.save(pet);
+
+        PetRequestDto petRequestDto = PetRequestDto.builder()
+                .name("뭉뭉이")
+                .age(3)
+                .weight(4.5)
+                .species("강아지")
+                .gender("남")
+                .build();
+
+        String petRequestDtoJson = objectMapper.writeValueAsString(petRequestDto);
+        MockMultipartFile data = new MockMultipartFile(
+                "data",
+                "data",
+                "application/json",
+                petRequestDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        // When & Then
+        mockMvc.perform(multipartPutBuilder("/api/pet/" + pet.getId())
+                        .file(data)
+                        .header("Authorization", getAccessToken())
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(HAL_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("data.id").exists())
+                .andDo(document("{class-name}/{method-name}",
+                                requestHeaders(
+                                        headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                        headerWithName(HttpHeaders.AUTHORIZATION).description("access token"),
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                requestPartFields("data",
+                                        fieldWithPath("name").description("name of petRequestDto"),
+                                        fieldWithPath("age").description("age of petRequestDto"),
+                                        fieldWithPath("weight").description("weight of petRequestDto"),
+                                        fieldWithPath("species").description("species of petRequestDto"),
+                                        fieldWithPath("gender").description("gender of petRequestDto")
+                                ),
+                                responseHeaders(
+                                        headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").description("status of action"),
+                                        fieldWithPath("message").description("message of action"),
+                                        fieldWithPath("data.id").description("id of pet"),
+                                        fieldWithPath("data.name").description("name of pet"),
+                                        fieldWithPath("data.age").description("age of pet"),
+                                        fieldWithPath("data.weight").description("weight of pet"),
+                                        fieldWithPath("data.species").description("species of pet"),
+                                        fieldWithPath("data.gender").description("gender of pet"),
+                                        fieldWithPath("data.imageUrl").description("imageUrl of pet"),
+                                        fieldWithPath("data.memberId").description("ud of member"),
+                                        fieldWithPath("data.memberNickname").description("nickname of member"),
+                                        fieldWithPath("data.createdAt").description("createdAt of pet"),
+                                        fieldWithPath("data.modifiedAt").description("modifiedAt of pet"),
+                                        fieldWithPath("data.links[0].rel").description("relation"),
+                                        fieldWithPath("data.links[0].href").description("url of action")
+                                )
+                        )
+                )
+        ;
+
+        // Then
+        Pet savedPet = petRepository.findById(pet.getId()).orElseThrow();
+
+        assertThat(savedPet.getName()).isEqualTo("뭉뭉이");
+        assertThat(savedPet.getAge()).isEqualTo(3);
+        assertThat(savedPet.getWeight()).isEqualTo(4.5);
+        assertThat(savedPet.getSpecies()).isEqualTo("강아지");
+        assertThat(savedPet.getGender()).isEqualTo("남");
+    }
+
 
     @Test
     @DisplayName("반려동물 정보 수정 - 권한이 없는 경우 Error")

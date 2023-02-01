@@ -28,9 +28,9 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping
-    public ResponseEntity<Object> createPet(@RequestPart(value = "data") @Valid PetRequestDto petRequestDto, // @valid 객체 검증 수행
-                                             @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseEntity<Object> createPet(@RequestPart(value = "data") @Valid PetRequestDto petRequestDto,
+                                            @RequestPart(value = "image", required = false) @Valid MultipartFile image,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         PetResponseDto petResponseDto = petService.createPet(petRequestDto, image, userDetails.getMember());
 
@@ -59,9 +59,9 @@ public class PetController {
 
     @PutMapping("/{petId}")
     public ResponseEntity<Object> updatePet(@PathVariable Long petId,
-                                             @RequestPart(value = "data") @Valid PetRequestDto petRequestDto,
-                                             @RequestPart(value = "image" ,required = false) @Valid MultipartFile image,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                            @RequestPart(value = "data") @Valid PetRequestDto petRequestDto,
+                                            @RequestPart(value = "image", required = false) MultipartFile image,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         PetResponseDto petResponseDto = petService.updatePet(petId, petRequestDto, image, userDetails.getMember());
 
         ResponseResource responseResource = new ResponseResource(petResponseDto);
@@ -72,7 +72,7 @@ public class PetController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping( "/{petId}")
+    @DeleteMapping("/{petId}")
     public ResponseEntity<Object> deletePet(@PathVariable Long petId,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         petService.petDelete(petId, userDetails.getMember());
