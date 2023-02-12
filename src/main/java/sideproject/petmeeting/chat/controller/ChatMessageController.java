@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sideproject.petmeeting.chat.domain.ChatMessage;
+import sideproject.petmeeting.chat.dto.response.ChatMessageResponseDto;
 import sideproject.petmeeting.chat.repository.ChatMessageRepository;
 import sideproject.petmeeting.chat.service.ChatMessageService;
 import sideproject.petmeeting.common.Response;
@@ -46,7 +47,7 @@ public class ChatMessageController {
         checkAuthentication(httpServletRequest);
 
         ResponseResource responseResource;
-        List<ChatMessage> chatMessageList = chatMessageService.getMessageList(chatRoomId);
+        List<ChatMessageResponseDto> chatMessageList = chatMessageService.getMessageList(chatRoomId);
         responseResource = new ResponseResource(chatMessageList);
         if (chatMessageList.isEmpty()) {
             responseResource = new ResponseResource("Empty Message");
