@@ -40,6 +40,12 @@ public class MessageController {
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         log.info("Message controller topic : {}", channelTopic.getTopic());
         redisTemplate.convertAndSend(channelTopic.getTopic(), message);
-        chatMessageRepository.save(message);
+        ChatMessage MySQLMessage = ChatMessage.builder()
+                .type(message.getType())
+                .roomId(message.getRoomId())
+                .sender(message.getSender())
+                .message(message.getMessage())
+                .build();
+        chatMessageRepository.save(MySQLMessage);
     }
 }
