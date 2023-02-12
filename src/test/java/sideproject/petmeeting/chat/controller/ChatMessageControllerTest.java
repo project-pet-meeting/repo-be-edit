@@ -127,6 +127,7 @@ class ChatMessageControllerTest {
                                 fieldWithPath("data.object[0].type").description("type of message"),
                                 fieldWithPath("data.object[0].roomId").description("id of chatRoom"),
                                 fieldWithPath("data.object[0].sender").description("message sender"),
+                                fieldWithPath("data.object[0].senderImage").description("image of sender"),
                                 fieldWithPath("data.object[0].message").description("content of message"),
                                 fieldWithPath("data.links[0].rel").description("relation"),
                                 fieldWithPath("data.links[0].href").description("url of action")
