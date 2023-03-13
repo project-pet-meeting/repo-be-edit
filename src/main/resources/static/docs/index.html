@@ -963,13 +963,13 @@ Content-Length: 360
   "status" : "CREATED",
   "message" : "회원 가입 성공",
   "data" : {
-    "id" : 47,
+    "id" : 49,
     "links" : [ {
       "rel" : "self",
       "href" : "http://tommy.me/api/member"
     }, {
       "rel" : "profile-edit",
-      "href" : "http://tommy.me/api/member/47"
+      "href" : "http://tommy.me/api/member/49"
     }, {
       "rel" : "log-out",
       "href" : "http://tommy.me/api/member/logout"
@@ -1133,8 +1133,8 @@ Content-Length: 211
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3OTAyfQ.sy_mKRqSrkSmD641uToQL0eiABU0MAPkESKetS0_mjY
-RefreshToken: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzQxMjE5MDJ9.jqPf_bOakIjM9c0ppXfv6Ov0kW9YMVhhGiCxrWMJjA0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU4fQ.75KZ9UFA_v8N7L-uIp2GitlhBLhgfOPNz-7WdNhRtoo
+RefreshToken: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzQ4MTg1NTh9.Hr2Xle_9VCBkqROu6-LwQVLUh4jvwnOoJ2DGzgsF0nA
 Content-Type: application/json;charset=UTF-8
 Content-Length: 210
 
@@ -1208,7 +1208,7 @@ Content-Length: 210
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/member' -i -X PUT \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk3fQ.StiwYV9A62jJfEQgLHY016O1JJ0Udc8DnPicQGUzuE4' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8' \
     -H 'Accept: application/hal+json' \
     -d '{
   "nickname" : "TommyKim",
@@ -1224,8 +1224,8 @@ Content-Length: 210
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzg5N30.8mdCDS-AF3u--yRwKYrCsFJCF-9VBwWey0jwtduBCwE
-RefreshToken: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzQxMjE4OTd9.fVarBIIuy--xQHs5F5pngWkUvIp8j7JZt1jz1qPKVbY
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QG5hdmVyLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1NH0.rMJe9pSzUdqpDaqjkQ5zwL9dCS4fhyWI9Ud_Jz9Ufqg
+RefreshToken: eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzQ4MTg1NTR9.zHqlgkSKea5w29ygZyZHSKUq4qaDCuWgrQh4vFK2FKA
 Content-Type: application/json;charset=UTF-8
 Content-Length: 305
 
@@ -1297,7 +1297,7 @@ Content-Length: 305
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/member/logout' -i -X DELETE \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk3fQ.StiwYV9A62jJfEQgLHY016O1JJ0Udc8DnPicQGUzuE4' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8' \
     -H 'Accept: application/hal+json'</code></pre>
 </div>
 </div>
@@ -1380,7 +1380,7 @@ Content-Length: 168
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/member/emailConfirm' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
     -H 'Accept: application/hal+json' \
-    -d 'email=hhhhh823%40naver.com'</code></pre>
+    -d 'email=kbs4520%40naver.com'</code></pre>
 </div>
 </div>
 </div>
@@ -1396,7 +1396,7 @@ Content-Length: 223
   "status" : "OK",
   "message" : "Email 검증을 진행해주세요",
   "data" : {
-    "object" : "NJHm7Ru8",
+    "object" : "qyA7M9zy",
     "links" : [ {
       "rel" : "self",
       "href" : "http://tommy.me/api/member/emailConfirm"
@@ -1426,7 +1426,7 @@ Content-Length: 223
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/pet HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwNX0.eGAISn0GKuIwfeXaMKxef8Kj8571eQTHEwYiEQyy5O0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.ZYGv67igWDl2y3e6XttgSgjLlyuBK_802n61oT7Pj68
 Accept: application/hal+json
 Host: localhost
 
@@ -1564,11 +1564,11 @@ Content-Length: 814
     "weight" : 2.5,
     "species" : "강아지",
     "gender" : "여",
-    "imageUrl" : "https://localhost/pet/image/971d5455-0340-4774-87e6-567a795b85efimage.png",
-    "memberId" : 92,
+    "imageUrl" : "https://localhost/pet/image/6ab6afc2-4b22-4aeb-a09f-24c64882c96dimage.png",
+    "memberId" : 94,
     "memberNickname" : "petController@Username.com",
-    "createdAt" : "2023-01-12T18:51:45.338508",
-    "modifiedAt" : "2023-01-12T18:51:45.338508",
+    "createdAt" : "2023-01-20T20:22:39.954897",
+    "modifiedAt" : "2023-01-20T20:22:39.954897",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/pet"
@@ -1599,7 +1599,7 @@ Content-Length: 814
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/pet/3 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwNH0.ilF80_-r-zcitMYtnKiI12KB1VUqII9J3TpFcyyqVk0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.ZYGv67igWDl2y3e6XttgSgjLlyuBK_802n61oT7Pj68
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -1726,10 +1726,10 @@ Content-Length: 501
     "species" : "강아지",
     "gender" : "여",
     "imageUrl" : "imageUrl",
-    "memberId" : 88,
+    "memberId" : 90,
     "memberNickname" : "petController@Username.com",
-    "createdAt" : "2023-01-12T18:51:44.874562",
-    "modifiedAt" : "2023-01-12T18:51:44.874562",
+    "createdAt" : "2023-01-20T20:22:39.719471",
+    "modifiedAt" : "2023-01-20T20:22:39.719471",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/pet/3"
@@ -1751,7 +1751,7 @@ Content-Length: 501
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/pet/4 HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwNH0.ilF80_-r-zcitMYtnKiI12KB1VUqII9J3TpFcyyqVk0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.ZYGv67igWDl2y3e6XttgSgjLlyuBK_802n61oT7Pj68
 Accept: application/hal+json
 Host: localhost
 
@@ -1877,7 +1877,7 @@ X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
-Content-Length: 574
+Content-Length: 572
 
 {
   "status" : "OK",
@@ -1889,11 +1889,11 @@ Content-Length: 574
     "weight" : 4.5,
     "species" : "강아지",
     "gender" : "남",
-    "imageUrl" : "https://localhost/pet/image/a3e89543-eaa3-4677-a0b0-5f824e0d806aimage.jpeg",
-    "memberId" : 89,
+    "imageUrl" : "https://localhost/pet/image/7af15416-5b55-4d06-bb2f-a866cdaede90image.jpeg",
+    "memberId" : 91,
     "memberNickname" : "petController@Username.com",
-    "createdAt" : "2023-01-12T18:51:44.959076",
-    "modifiedAt" : "2023-01-12T18:51:44.959076",
+    "createdAt" : "2023-01-20T20:22:39.73708",
+    "modifiedAt" : "2023-01-20T20:22:39.73708",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/pet/4"
@@ -1915,7 +1915,7 @@ Content-Length: 574
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/pet/5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwNX0.eGAISn0GKuIwfeXaMKxef8Kj8571eQTHEwYiEQyy5O0
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwZXRDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.ZYGv67igWDl2y3e6XttgSgjLlyuBK_802n61oT7Pj68
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -2009,7 +2009,7 @@ Content-Length: 182
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/post HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTF9.gAwjQ_sfrcxTboox5Hj4dGlv23N8Eq4lVntRoj9c2zQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTR9.nBnW97SJZagfo5lNYHvl-eMSDIHJSi9ueNaSdWim33E
 Accept: application/hal+json
 Host: localhost
 
@@ -2145,7 +2145,7 @@ X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
-Content-Length: 920
+Content-Length: 918
 
 {
   "status" : "CREATED",
@@ -2155,15 +2155,15 @@ Content-Length: 920
     "category" : "RECOMMEND",
     "title" : "제목입니다.",
     "content" : "내용입니다.",
-    "imageUrl" : "https://localhost/post/image/969a4319-723f-45e8-a7b2-946b15cb5e2dimage.png",
+    "imageUrl" : "https://localhost/post/image/d074751a-0604-4162-8d53-a90162ab1d36image.png",
     "numHeart" : null,
     "viewCnt" : null,
     "authorId" : 14,
     "authorNickname" : "postController@Username.com",
     "authorLocation" : "지역",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:31.971548",
-    "modifiedAt" : "2023-01-12T18:51:31.971548",
+    "createdAt" : "2023-01-20T20:22:34.07232",
+    "modifiedAt" : "2023-01-20T20:22:34.07232",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/post"
@@ -2194,7 +2194,7 @@ Content-Length: 920
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/post?page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4ODl9._jdGt-3v4AaLb9Pxs40cqMiWnyAtNAx8-EbWFy-4wto
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -2366,8 +2366,8 @@ Content-Length: 1262
       "authorNickname" : "postController@Username.com",
       "authorLocation" : "지역",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:29.943793",
-      "modifiedAt" : "2023-01-12T18:51:29.943793"
+      "createdAt" : "2023-01-20T20:22:33.405822",
+      "modifiedAt" : "2023-01-20T20:22:33.405822"
     }, {
       "id" : 7,
       "category" : "RECOMMEND",
@@ -2380,8 +2380,8 @@ Content-Length: 1262
       "authorNickname" : "postController@Username.com",
       "authorLocation" : "지역",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:29.939274",
-      "modifiedAt" : "2023-01-12T18:51:29.939274"
+      "createdAt" : "2023-01-20T20:22:33.405026",
+      "modifiedAt" : "2023-01-20T20:22:33.405026"
     } ],
     "totalPage" : 0,
     "currentPage" : 0,
@@ -2410,7 +2410,7 @@ Content-Length: 1262
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/post/10 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTF9.gAwjQ_sfrcxTboox5Hj4dGlv23N8Eq4lVntRoj9c2zQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -2551,8 +2551,8 @@ Content-Length: 601
     "authorNickname" : "postController@Username.com",
     "authorLocation" : "지역",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:31.535346",
-    "modifiedAt" : "2023-01-12T18:51:31.535346",
+    "createdAt" : "2023-01-20T20:22:33.947736",
+    "modifiedAt" : "2023-01-20T20:22:33.947736",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/post/10"
@@ -2574,7 +2574,7 @@ Content-Length: 601
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/post/9 HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTB9.SqbLxGmNz0C4NGT3AuQfOPloi96CMBBxCl5OOBMG71s
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost
 
@@ -2720,15 +2720,15 @@ Content-Length: 656
     "category" : "SHARE",
     "title" : "수정 제목",
     "content" : "수정 내용",
-    "imageUrl" : "https://localhost/post/image/f6d8dace-792c-4018-8af6-c27ba303224cimage.jpeg",
+    "imageUrl" : "https://localhost/post/image/25fa4bc1-873a-4168-937e-fce80b355189image.jpeg",
     "numHeart" : 0,
     "viewCnt" : null,
     "authorId" : 9,
     "authorNickname" : "postController@Username.com",
     "authorLocation" : "지역",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:30.148853",
-    "modifiedAt" : "2023-01-12T18:51:30.148853",
+    "createdAt" : "2023-01-20T20:22:33.447653",
+    "modifiedAt" : "2023-01-20T20:22:33.447653",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/post/9"
@@ -2750,7 +2750,7 @@ Content-Length: 656
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/post/14 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTJ9.d8ixv2Ca4OKSkh2VWtW7xctBWtiZ8uQLuIIn0me8l3c
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTR9.nBnW97SJZagfo5lNYHvl-eMSDIHJSi9ueNaSdWim33E
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -2836,7 +2836,7 @@ Content-Length: 174
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/post/heart/4 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4ODl9._jdGt-3v4AaLb9Pxs40cqMiWnyAtNAx8-EbWFy-4wto
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -2925,7 +2925,7 @@ Content-Length: 262
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/post/heart/12 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTF9.gAwjQ_sfrcxTboox5Hj4dGlv23N8Eq4lVntRoj9c2zQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -3014,7 +3014,7 @@ Content-Length: 269
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/post/search?keyword=first&amp;page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4ODl9._jdGt-3v4AaLb9Pxs40cqMiWnyAtNAx8-EbWFy-4wto
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTN9.aRXLWTJ-4DmHSUWiqAwfnCJw9mDqBvbh6smNpXg9EBk
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -3186,8 +3186,8 @@ Content-Length: 826
       "authorNickname" : "postController@Username.com",
       "authorLocation" : "지역",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:29.480088",
-      "modifiedAt" : "2023-01-12T18:51:29.480088"
+      "createdAt" : "2023-01-20T20:22:33.240668",
+      "modifiedAt" : "2023-01-20T20:22:33.240668"
     } ],
     "totalPage" : 0,
     "currentPage" : 0,
@@ -3216,7 +3216,7 @@ Content-Length: 826
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/post/category?category=recommend&amp;page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc4OTJ9.d8ixv2Ca4OKSkh2VWtW7xctBWtiZ8uQLuIIn0me8l3c
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwb3N0Q29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTR9.nBnW97SJZagfo5lNYHvl-eMSDIHJSi9ueNaSdWim33E
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -3388,8 +3388,8 @@ Content-Length: 835
       "authorNickname" : "postController@Username.com",
       "authorLocation" : "지역",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:32.203698",
-      "modifiedAt" : "2023-01-12T18:51:32.203698"
+      "createdAt" : "2023-01-20T20:22:34.146324",
+      "modifiedAt" : "2023-01-20T20:22:34.146324"
     } ],
     "totalPage" : 0,
     "currentPage" : 0,
@@ -3450,7 +3450,7 @@ Content-Length: 835
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/comment/24 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk1fQ.NArykOzbe6YfPBE9e62Q3G3wKDZiA2sj3g1vOg2Fe10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8
 Accept: application/hal+json
 Content-Length: 32
 Host: tommy.me
@@ -3548,7 +3548,7 @@ Content-Length: 470
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/comment/29 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk2fQ.NJPMROh4z70zLaNHeXtCdKZYX0WAMWkATZl1gNaPDYI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8
 Accept: application/hal+json
 Host: tommy.me</code></pre>
 </div>
@@ -3667,7 +3667,7 @@ Content-Length: 314
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/comment/2 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk2fQ.NJPMROh4z70zLaNHeXtCdKZYX0WAMWkATZl1gNaPDYI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8
 Accept: application/hal+json
 Content-Length: 35
 Host: tommy.me
@@ -3759,7 +3759,7 @@ Content-Length: 278
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/comment/3 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk2fQ.NJPMROh4z70zLaNHeXtCdKZYX0WAMWkATZl1gNaPDYI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8
 Accept: application/hal+json
 Host: tommy.me</code></pre>
 </div>
@@ -3851,7 +3851,7 @@ Content-Length: 190
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/meeting HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc5MDN9.KZqehPSx3U1kjLhy6ov6ZX0cOl54l46ugq4gLXmvZ-M
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTl9.-mfAcA-_EGxNmQoHB_4sMgwV78ezGjLutuyrdt5tjOQ
 Accept: application/hal+json
 Host: localhost
 
@@ -3859,7 +3859,7 @@ Host: localhost
 Content-Disposition: form-data; name=data; filename=data
 Content-Type: application/json
 
-{"title":"first meeting title","content":"first meeting content","address":"address","coordinateX":"coordinateX","coordinateY":"coordinateY","placeName":"placeName","time":"2023-01-13 18:51:43","recruitNum":5,"species":"species"}
+{"title":"first meeting title","content":"first meeting content","address":"address","coordinateX":"coordinateX","coordinateY":"coordinateY","placeName":"placeName","time":"2023-01-21 20:22:39","recruitNum":5,"species":"species"}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=image; filename=jjang.png
 Content-Type: image/png
@@ -4013,35 +4013,35 @@ Content-Length: 1079
   "status" : "CREATED",
   "message" : "모임 생성 성공",
   "data" : {
-    "id" : 12,
+    "id" : 14,
     "title" : "first meeting title",
     "content" : "first meeting content",
-    "imageUrl" : "https://localhost/meeting/image/0af9b29f-c898-45c3-b724-22cd4bf3823eimage.png",
+    "imageUrl" : "https://localhost/meeting/image/3a04438b-73f3-4c01-a130-4127ddb6296cimage.png",
     "address" : "address",
     "coordinateX" : "coordinateX",
     "coordinateY" : "coordinateY",
     "placeName" : "placeName",
-    "time" : "2023-01-13T18:51:43",
+    "time" : "2023-01-21T20:22:39",
     "recruitNum" : 5,
     "currentNum" : 1,
     "species" : "species",
-    "authorId" : 68,
+    "authorId" : 70,
     "authorNickname" : "meetingController@Username.com",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:43.527948",
-    "modifiedAt" : "2023-01-12T18:51:43.527948",
+    "createdAt" : "2023-01-20T20:22:39.235657",
+    "modifiedAt" : "2023-01-20T20:22:39.235657",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost/api/meeting"
     }, {
       "rel" : "meeting-get",
-      "href" : "http://localhost/api/meeting/12"
+      "href" : "http://localhost/api/meeting/14"
     }, {
       "rel" : "meeting-edit",
-      "href" : "http://localhost/api/meeting/12"
+      "href" : "http://localhost/api/meeting/14"
     }, {
       "rel" : "meeting-delete",
-      "href" : "http://localhost/api/meeting/12"
+      "href" : "http://localhost/api/meeting/14"
     } ]
   }
 }</code></pre>
@@ -4060,7 +4060,7 @@ Content-Length: 1079
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/meeting?page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc5MDN9.KZqehPSx3U1kjLhy6ov6ZX0cOl54l46ugq4gLXmvZ-M
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTl9.-mfAcA-_EGxNmQoHB_4sMgwV78ezGjLutuyrdt5tjOQ
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -4241,7 +4241,7 @@ Content-Length: 1583
   "message" : "모임 조회 성공",
   "data" : {
     "meetingList" : [ {
-      "id" : 11,
+      "id" : 13,
       "title" : "second meeting title",
       "content" : "second meeting content",
       "imageUrl" : "imageUrl",
@@ -4249,17 +4249,17 @@ Content-Length: 1583
       "coordinateX" : "coordinateX",
       "coordinateY" : "coordinateY",
       "placeName" : "placeName",
-      "time" : "2023-01-13T18:51:43.258393",
+      "time" : "2023-01-21T20:22:39.155026",
       "recruitNum" : 5,
       "currentNum" : 0,
       "species" : "species",
-      "authorId" : 67,
+      "authorId" : 69,
       "authorNickname" : "meetingController@Username.com",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:43.258835",
-      "modifiedAt" : "2023-01-12T18:51:43.258835"
+      "createdAt" : "2023-01-20T20:22:39.155073",
+      "modifiedAt" : "2023-01-20T20:22:39.155073"
     }, {
-      "id" : 10,
+      "id" : 12,
       "title" : "first meeting title",
       "content" : "first meeting content",
       "imageUrl" : "imageUrl",
@@ -4267,15 +4267,15 @@ Content-Length: 1583
       "coordinateX" : "coordinateX",
       "coordinateY" : "coordinateY",
       "placeName" : "placeName",
-      "time" : "2023-01-13T18:51:43.255611",
+      "time" : "2023-01-21T20:22:39.154582",
       "recruitNum" : 5,
       "currentNum" : 0,
       "species" : "species",
-      "authorId" : 67,
+      "authorId" : 69,
       "authorNickname" : "meetingController@Username.com",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:43.255928",
-      "modifiedAt" : "2023-01-12T18:51:43.255928"
+      "createdAt" : "2023-01-20T20:22:39.154656",
+      "modifiedAt" : "2023-01-20T20:22:39.154656"
     } ],
     "totalPage" : 0,
     "currentPage" : 0,
@@ -4302,9 +4302,9 @@ Content-Length: 1583
 <h4 id="_모임_단건_조회_http_request"><a class="link" href="#_모임_단건_조회_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/meeting/20 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/meeting/22 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc5MDR9.jjy3aFoYSMZtcmkVn3Q-dY6w33_RxkkH0tE_b7uu-FU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTl9.-mfAcA-_EGxNmQoHB_4sMgwV78ezGjLutuyrdt5tjOQ
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -4448,13 +4448,13 @@ X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
-Content-Length: 749
+Content-Length: 750
 
 {
   "status" : "OK",
   "message" : "모임 조회 성공",
   "data" : {
-    "id" : 20,
+    "id" : 22,
     "title" : "first meeting title",
     "content" : "first meeting content",
     "imageUrl" : "imageUrl",
@@ -4462,18 +4462,18 @@ Content-Length: 749
     "coordinateX" : "coordinateX",
     "coordinateY" : "coordinateY",
     "placeName" : "placeName",
-    "time" : "2023-01-13T18:51:44.36274",
+    "time" : "2023-01-21T20:22:39.505322",
     "recruitNum" : 5,
     "currentNum" : 0,
     "species" : "species",
-    "authorId" : 82,
+    "authorId" : 84,
     "authorNickname" : "meetingController@Username.com",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:44.363025",
-    "modifiedAt" : "2023-01-12T18:51:44.363025",
+    "createdAt" : "2023-01-20T20:22:39.505414",
+    "modifiedAt" : "2023-01-20T20:22:39.505414",
     "links" : [ {
       "rel" : "self",
-      "href" : "http://localhost/api/meeting/20"
+      "href" : "http://localhost/api/meeting/22"
     } ]
   }
 }</code></pre>
@@ -4490,9 +4490,9 @@ Content-Length: 749
 <h4 id="_모임_수정_http_request"><a class="link" href="#_모임_수정_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/meeting/17 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/meeting/19 HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc5MDN9.KZqehPSx3U1kjLhy6ov6ZX0cOl54l46ugq4gLXmvZ-M
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTl9.-mfAcA-_EGxNmQoHB_4sMgwV78ezGjLutuyrdt5tjOQ
 Accept: application/hal+json
 Host: localhost
 
@@ -4500,7 +4500,7 @@ Host: localhost
 Content-Disposition: form-data; name=data; filename=data
 Content-Type: application/json
 
-{"title":"수정 제목","content":"수정 내용","address":"address","coordinateX":"coordinateX","coordinateY":"coordinateY","placeName":"placeName","time":"2023-01-13 18:51:43","recruitNum":5,"species":"species"}
+{"title":"수정 제목","content":"수정 내용","address":"address","coordinateX":"coordinateX","coordinateY":"coordinateY","placeName":"placeName","time":"2023-01-21 20:22:39","recruitNum":5,"species":"species"}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=image; filename=jjang.png
 Content-Type: image/png
@@ -4654,26 +4654,26 @@ Content-Length: 798
   "status" : "OK",
   "message" : "모임 수정 성공",
   "data" : {
-    "id" : 17,
+    "id" : 19,
     "title" : "수정 제목",
     "content" : "수정 내용",
-    "imageUrl" : "https://localhost/meeting/image/30e1e617-7430-401b-a071-35029633cac9image.png",
+    "imageUrl" : "https://localhost/meeting/image/e78fc00b-8f00-44d6-ab16-5b594cb1d492image.png",
     "address" : "address",
     "coordinateX" : "coordinateX",
     "coordinateY" : "coordinateY",
     "placeName" : "placeName",
-    "time" : "2023-01-13T18:51:43",
+    "time" : "2023-01-21T20:22:39",
     "recruitNum" : 5,
     "currentNum" : 0,
     "species" : "species",
-    "authorId" : 77,
+    "authorId" : 79,
     "authorNickname" : "meetingController@Username.com",
     "authorImageUrl" : "test-image",
-    "createdAt" : "2023-01-12T18:51:43.990923",
-    "modifiedAt" : "2023-01-12T18:51:43.990923",
+    "createdAt" : "2023-01-20T20:22:39.388149",
+    "modifiedAt" : "2023-01-20T20:22:39.388149",
     "links" : [ {
       "rel" : "self",
-      "href" : "http://localhost/api/meeting/17"
+      "href" : "http://localhost/api/meeting/19"
     } ]
   }
 }</code></pre>
@@ -4690,9 +4690,9 @@ Content-Length: 798
 <h4 id="_모임_삭제_http_request"><a class="link" href="#_모임_삭제_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/meeting/16?meetingId=16 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/meeting/18?meetingId=18 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzM1Mjc5MDN9.KZqehPSx3U1kjLhy6ov6ZX0cOl54l46ugq4gLXmvZ-M
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZWV0aW5nQ29udHJvbGxlckBVc2VybmFtZS5jb20iLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzQyMjQ1NTl9.-mfAcA-_EGxNmQoHB_4sMgwV78ezGjLutuyrdt5tjOQ
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -4759,7 +4759,7 @@ Content-Length: 174
   "data" : {
     "links" : [ {
       "rel" : "self",
-      "href" : "http://localhost/api/meeting/16"
+      "href" : "http://localhost/api/meeting/18"
     } ]
   }
 }</code></pre>
@@ -4786,7 +4786,7 @@ Content-Length: 174
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/mypage HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwMn0.NIldDT0gy9rECWdoW4EzJjpvsQMXa8cnoVNHRQhYgNI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OH0.2lgT1oEIah0n7mq019hZiso498krD-3lbXx3fOeFXb0
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -4881,7 +4881,7 @@ Content-Length: 444
   "status" : "OK",
   "message" : "내 프로필 조회 성공",
   "data" : {
-    "id" : 52,
+    "id" : 54,
     "nickname" : "mypageController@Username.com",
     "email" : "mypageController@Username.com",
     "location" : "서울",
@@ -4911,7 +4911,7 @@ Content-Length: 444
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/mypage/post?page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwMn0.NIldDT0gy9rECWdoW4EzJjpvsQMXa8cnoVNHRQhYgNI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.tIlEZTgRl14Z83HHk1EEzxparHrqR-SXrE-jlYgiPjg
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -5049,12 +5049,12 @@ Content-Length: 1140
       "imageUrl" : "imageUrl",
       "numHeart" : 0,
       "viewCnt" : null,
-      "authorId" : 53,
+      "authorId" : 55,
       "authorNickname" : "mypageController@Username.com",
       "authorLocation" : null,
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:42.546296",
-      "modifiedAt" : "2023-01-12T18:51:42.546296"
+      "createdAt" : "2023-01-20T20:22:39.003473",
+      "modifiedAt" : "2023-01-20T20:22:39.003473"
     }, {
       "id" : 33,
       "category" : "SHARE",
@@ -5063,12 +5063,12 @@ Content-Length: 1140
       "imageUrl" : "imageUrl",
       "numHeart" : 0,
       "viewCnt" : null,
-      "authorId" : 53,
+      "authorId" : 55,
       "authorNickname" : "mypageController@Username.com",
       "authorLocation" : null,
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:42.549241",
-      "modifiedAt" : "2023-01-12T18:51:42.549241"
+      "createdAt" : "2023-01-20T20:22:39.003803",
+      "modifiedAt" : "2023-01-20T20:22:39.003803"
     } ],
     "links" : [ {
       "rel" : "self",
@@ -5091,7 +5091,7 @@ Content-Length: 1140
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/mypage/meeting?page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwMn0.NIldDT0gy9rECWdoW4EzJjpvsQMXa8cnoVNHRQhYgNI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.tIlEZTgRl14Z83HHk1EEzxparHrqR-SXrE-jlYgiPjg
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -5242,7 +5242,7 @@ Content-Length: 1452
   "message" : "내가 만든 모임 조회 성공",
   "data" : {
     "myMeetingList" : [ {
-      "id" : 5,
+      "id" : 7,
       "title" : "first meeting title",
       "content" : "first meeting content",
       "imageUrl" : "imageUrl",
@@ -5250,17 +5250,17 @@ Content-Length: 1452
       "coordinateX" : "coordinateX",
       "coordinateY" : "coordinateY",
       "placeName" : "placeName",
-      "time" : "2023-01-13T18:51:42.643282",
+      "time" : "2023-01-21T20:22:39.022523",
       "recruitNum" : 5,
       "currentNum" : 0,
       "species" : "species",
-      "authorId" : 54,
+      "authorId" : 56,
       "authorNickname" : "mypageController@Username.com",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:42.643637",
-      "modifiedAt" : "2023-01-12T18:51:42.643637"
+      "createdAt" : "2023-01-20T20:22:39.022599",
+      "modifiedAt" : "2023-01-20T20:22:39.022599"
     }, {
-      "id" : 6,
+      "id" : 8,
       "title" : "second meeting title",
       "content" : "second meeting content",
       "imageUrl" : "imageUrl",
@@ -5268,15 +5268,15 @@ Content-Length: 1452
       "coordinateX" : "coordinateX",
       "coordinateY" : "coordinateY",
       "placeName" : "placeName",
-      "time" : "2023-01-13T18:51:42.647399",
+      "time" : "2023-01-21T20:22:39.022989",
       "recruitNum" : 5,
       "currentNum" : 0,
       "species" : "species",
-      "authorId" : 54,
+      "authorId" : 56,
       "authorNickname" : "mypageController@Username.com",
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:42.647734",
-      "modifiedAt" : "2023-01-12T18:51:42.647734"
+      "createdAt" : "2023-01-20T20:22:39.023031",
+      "modifiedAt" : "2023-01-20T20:22:39.023031"
     } ],
     "links" : [ {
       "rel" : "self",
@@ -5299,7 +5299,7 @@ Content-Length: 1452
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/mypage/heart?page=0 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzkwMn0.NIldDT0gy9rECWdoW4EzJjpvsQMXa8cnoVNHRQhYgNI
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteXBhZ2VDb250cm9sbGVyQFVzZXJuYW1lLmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1OX0.tIlEZTgRl14Z83HHk1EEzxparHrqR-SXrE-jlYgiPjg
 Accept: application/hal+json
 Host: localhost</code></pre>
 </div>
@@ -5437,12 +5437,12 @@ Content-Length: 690
       "imageUrl" : "imageUrl",
       "numHeart" : 0,
       "viewCnt" : null,
-      "authorId" : 55,
+      "authorId" : 57,
       "authorNickname" : "mypageController@Username.com",
       "authorLocation" : null,
       "authorImageUrl" : "test-image",
-      "createdAt" : "2023-01-12T18:51:42.755509",
-      "modifiedAt" : "2023-01-12T18:51:42.755509"
+      "createdAt" : "2023-01-20T20:22:39.044594",
+      "modifiedAt" : "2023-01-20T20:22:39.044594"
     } ],
     "links" : [ {
       "rel" : "self",
@@ -5517,10 +5517,10 @@ Content-Length: 690
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/follow' -i -X POST \
     -H 'Content-Type: application/json' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzg5N30.IBrWCHBIc1ljypv3rdJ83-hFnkSels0UC3NqYh31fR8' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1NH0.9ETt7fD8eirPnk0Eb360PJrO2aPWrwBWwndcx67Ipzg' \
     -H 'Accept: application/hal+json' \
     -d '{
-  "followMemberId" : 33
+  "followMemberId" : 35
 }'</code></pre>
 </div>
 </div>
@@ -5543,7 +5543,7 @@ Content-Length: 571
       "href" : "http://tommy.me/api/follow"
     }, {
       "rel" : "팔로우 취소",
-      "href" : "http://tommy.me/api/follow/2"
+      "href" : "http://tommy.me/api/follow/3"
     }, {
       "rel" : "get Following List",
       "href" : "http://tommy.me/api/follow/follow-member"
@@ -5610,8 +5610,8 @@ Content-Length: 571
 <h4 id="_팔로우_취소_curl_request"><a class="link" href="#_팔로우_취소_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/follow/4' -i -X DELETE \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzg5N30.IBrWCHBIc1ljypv3rdJ83-hFnkSels0UC3NqYh31fR8'</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/follow/5' -i -X DELETE \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1NH0.9ETt7fD8eirPnk0Eb360PJrO2aPWrwBWwndcx67Ipzg'</code></pre>
 </div>
 </div>
 </div>
@@ -5630,7 +5630,7 @@ Content-Length: 559
     "object" : "팔로우가 정상적으로 취소되었습니다.",
     "links" : [ {
       "rel" : "self",
-      "href" : "http://tommy.me/api/follow/4"
+      "href" : "http://tommy.me/api/follow/5"
     }, {
       "rel" : "팔로우",
       "href" : "http://tommy.me/api/follow"
@@ -5711,7 +5711,7 @@ Content-Length: 559
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/follow/follow-member' -i -X GET \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzg5N30.IBrWCHBIc1ljypv3rdJ83-hFnkSels0UC3NqYh31fR8'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1NH0.9ETt7fD8eirPnk0Eb360PJrO2aPWrwBWwndcx67Ipzg'</code></pre>
 </div>
 </div>
 </div>
@@ -5728,7 +5728,7 @@ Content-Length: 583
   "message" : "팔로잉 멤버 조회 완료",
   "data" : {
     "object" : [ {
-      "memberId" : 43,
+      "memberId" : 45,
       "memberNickname" : "Lisa",
       "memberImage" : "test-image"
     } ],
@@ -5818,7 +5818,7 @@ Content-Length: 583
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/follow/follower' -i -X GET \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3MzUyNzg5N30.IBrWCHBIc1ljypv3rdJ83-hFnkSels0UC3NqYh31fR8'</code></pre>
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21teUB0ZXN0LmNvbSIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NDIyNDU1NH0.9ETt7fD8eirPnk0Eb360PJrO2aPWrwBWwndcx67Ipzg'</code></pre>
 </div>
 </div>
 </div>
@@ -5835,7 +5835,7 @@ Content-Length: 577
   "message" : "팔로워 조회 완료",
   "data" : {
     "object" : [ {
-      "memberId" : 31,
+      "memberId" : 33,
       "memberNickname" : "Lisa",
       "memberImage" : "test-image"
     } ],
@@ -5928,9 +5928,9 @@ Content-Length: 577
 <h4 id="resources-events-chat-list_curl_request"><a class="link" href="#resources-events-chat-list_curl_request">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/chat/1' -i -X POST \
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/chat/3' -i -X POST \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODkzfQ.z76TbhhvtSvWEPHfA2W7oCkJLy99fAyC-IHXgipm05Y' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8' \
     -H 'Accept: application/hal+json' \
     -d '{
   "name" : "test room"
@@ -5950,8 +5950,8 @@ Content-Length: 258
   "status" : "CREATED",
   "message" : "채팅방 생성이 완료되었습니다",
   "data" : {
-    "id" : 1,
-    "meetingId" : 1,
+    "id" : 3,
+    "meetingId" : 3,
     "roomName" : "test room",
     "links" : [ {
       "rel" : "self",
@@ -6028,7 +6028,7 @@ Content-Length: 258
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">$ curl 'http://tommy.me/api/chat' -i -X GET \
     -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjczNTI3ODk0fQ.M69dFSqbp2LwH-QzMcZzxLqI9_sc75NMxW_6hhoizJw' \
+    -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY29tIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc0MjI0NTU0fQ.9w-WTg1rUejHQYl9eWMXCmah8kO7xvdLeoyF19LEtI8' \
     -H 'Accept: application/hal+json'</code></pre>
 </div>
 </div>
@@ -6046,12 +6046,12 @@ Content-Length: 360
   "message" : "채팅방 조회 완료",
   "data" : {
     "object" : [ {
-      "id" : 2,
-      "meetingId" : 2,
+      "id" : 4,
+      "meetingId" : 4,
       "roomName" : "first chat room"
     }, {
-      "id" : 3,
-      "meetingId" : 3,
+      "id" : 5,
+      "meetingId" : 5,
       "roomName" : "second chat room"
     } ],
     "links" : [ {
@@ -6070,7 +6070,7 @@ Content-Length: 360
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-01-12 17:30:22 +0900
+Last updated 2023-01-17 15:18:03 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
